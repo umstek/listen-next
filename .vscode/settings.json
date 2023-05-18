@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "deps",
-        "player"
+        "player",
+        "dx"
     ]
 }
