@@ -11,9 +11,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
     "events": "^3.3.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5"
   },
   "devDependencies": {
     "@types/events": "^3.0.0",
@@ -32,6 +34,7 @@
     "rimraf": "^5.0.0",
     "tailwindcss": "^3.3.2",
     "typescript": "^5.0.4",
-    "vite": "^4.3.5"
+    "vite": "^4.3.5",
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }
