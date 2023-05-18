@@ -50,7 +50,7 @@ export default class AudioPlayer extends EventEmitter {
     this.audioContext = new AudioContext();
 
     this.audioElement = createAudioElement();
-    this.audioElement.addEventListener('ended', this.onEnded.bind(this));
+    this.audioElement.addEventListener('ended', this.onEnded);
     this.sourceNode = this.audioContext.createMediaElementSource(
       this.audioElement,
     );
@@ -79,67 +79,67 @@ export default class AudioPlayer extends EventEmitter {
     }
   }
 
-  dispose() {
+  dispose = () => {
     clearInterval(this.analyserTimer);
     this.audioElement.removeEventListener('ended', this.onEnded);
     this.audioElement.src = '';
     this.audioElement.remove();
     this.audioContext.close();
-  }
+  };
 
-  private onEnded() {
+  private onEnded = () => {
     this.emit('ended');
-  }
+  };
 
-  setAudioSource(url: string) {
+  setAudioSource = (url: string) => {
     this.audioElement.src = url;
-  }
+  };
 
-  play() {
+  play = () => {
     if (this.audioContext.state === 'suspended') {
       this.audioContext.resume();
     }
     this.audioElement.play();
-  }
+  };
 
-  pause() {
+  pause = () => {
     this.audioElement.pause();
     this.emit('paused');
-  }
+  };
 
-  stop() {
+  stop = () => {
     this.audioElement.pause();
     this.audioElement.currentTime = 0;
     this.emit('stopped');
-  }
+  };
 
-  setPlaybackRate(rate: number) {
+  setPlaybackRate = (rate: number) => {
     this.audioElement.playbackRate = rate;
     this.emit('playbackRateChanged', rate);
-  }
+  };
 
-  setVolume(volume: number) {
+  setVolume = (volume: number) => {
     this.gainNode.gain.value = volume;
     this.emit('volumeChanged', volume);
-  }
+  };
 
-  setPan(pan: number) {
+  setPan = (pan: number) => {
     this.pannerNode.pan.value = pan;
     this.emit('panChanged', pan);
-  }
+  };
 
-  rewind(seconds: number) {
+  rewind = (seconds: number) => {
     this.audioElement.currentTime -= seconds;
     this.emit('rewound', seconds);
-  }
+  };
 
-  forward(seconds: number) {
+  forward = (seconds: number) => {
     this.audioElement.currentTime += seconds;
     this.emit('forwarded', seconds);
-  }
+  };
 
-  seek(seconds: number) {
+  seek = (seconds: number) => {
     this.audioElement.currentTime = seconds;
     this.emit('seeked', seconds);
-  }
+  };
 }

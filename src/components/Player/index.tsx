@@ -1,51 +1,39 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import AudioPlayer from '../../lib/AudioPlayer';
-import sample51 from '../../assets/sample-5_1.mp3';
+import AudioPlayer from ':AudioPlayer';
 
-export function Player() {
+interface PlayerProps {
+  url: string;
+  settings: unknown | undefined;
+  metadata: unknown | undefined;
+}
+
+export function Player({ url }: PlayerProps) {
   const playerRef = useRef<AudioPlayer | undefined>(undefined);
   const [volume, setVolume] = useState(1);
   const [pan, setPan] = useState(0);
-  const [src, setSrc] = useState(sample51);
+
+  useEffect(() => {
+    if (!url) return;
+
+    if (!playerRef.current) {
+      playerRef.current = new AudioPlayer({
+        analyserOutputInterval: 100,
+      });
+    }
+    playerRef.current.setAudioSource(url);
+    playerRef.current.play();
+
+    return () => playerRef.current?.dispose();
+  }, [url]);
 
   return (
     <div>
-      <input
-        type="text"
-        name="source"
-        id="source"
-        value={src}
-        onChange={(e) => setSrc(e.target.value)}
-      />
-      <button
-        className="bg-blue-500"
-        onClick={() => {
-          if (!playerRef.current) {
-            playerRef.current = new AudioPlayer({
-              analyserOutputInterval: 100,
-            });
-          }
-          playerRef.current.setAudioSource(src);
-          playerRef.current.play();
-        }}
-      >
+      <button className="bg-blue-500" onClick={playerRef.current?.play}>
         Play
       </button>
-      <button
-        onClick={() => {
-          playerRef.current?.pause();
-        }}
-      >
-        Pause
-      </button>
-      <button
-        onClick={() => {
-          playerRef.current?.stop();
-        }}
-      >
-        Stop
-      </button>
+      <button onClick={playerRef.current?.pause}>Pause</button>
+      <button onClick={playerRef.current?.stop}>Stop</button>
       Volume
       <input
         type="range"
@@ -55,8 +43,9 @@ export function Player() {
         value={volume}
         step="0.01"
         onChange={(e) => {
-          playerRef.current?.setVolume(parseFloat(e.target.value));
-          setVolume(parseFloat(e.target.value));
+          const value = parseFloat(e.target.value);
+          playerRef.current?.setVolume(value);
+          setVolume(value);
         }}
       />
       Pan
@@ -68,8 +57,9 @@ export function Player() {
         value={pan}
         step="0.01"
         onChange={(e) => {
-          playerRef.current?.setPan(parseFloat(e.target.value));
-          setPan(parseFloat(e.target.value));
+          const value = parseFloat(e.target.value);
+          playerRef.current?.setPan(value);
+          setPan(value);
         }}
       />
     </div>

@@ -1,9 +1,9 @@
-import { Player } from './components/Player';
+import { PlayerView } from ':player/PlayerView';
 
 function App() {
   return (
     <div id="app">
-      <Player />
+      <PlayerView />
     </div>
   );
 }
