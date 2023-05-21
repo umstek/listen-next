@@ -14,17 +14,18 @@ export function Player({ url }: PlayerProps) {
   const [pan, setPan] = useState(0);
 
   useEffect(() => {
-    if (!url) return;
+    playerRef.current = new AudioPlayer({
+      analyserOutputInterval: 100,
+    });
 
-    if (!playerRef.current) {
-      playerRef.current = new AudioPlayer({
-        analyserOutputInterval: 100,
-      });
-    }
-    playerRef.current.setAudioSource(url);
-    playerRef.current.play();
+    return () => {
+      playerRef.current?.dispose();
+      playerRef.current = undefined;
+    };
+  }, []);
 
-    return () => playerRef.current?.dispose();
+  useEffect(() => {
+    playerRef.current?.setAudioSource(url);
   }, [url]);
 
   return (

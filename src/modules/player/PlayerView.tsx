@@ -30,7 +30,7 @@ export function PlayerView() {
       >
         OK
       </button>
-      <Player url={playerState.url} settings metadata />;
+      <Player url={playerState.url} settings metadata />
     </div>
   );
 }

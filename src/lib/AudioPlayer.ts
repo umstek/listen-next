@@ -79,12 +79,16 @@ export default class AudioPlayer extends EventEmitter {
     }
   }
 
-  dispose = () => {
-    clearInterval(this.analyserTimer);
-    this.audioElement.removeEventListener('ended', this.onEnded);
-    this.audioElement.src = '';
-    this.audioElement.remove();
-    this.audioContext.close();
+  dispose = async () => {
+    try {
+      clearInterval(this.analyserTimer);
+      this.audioElement.removeEventListener('ended', this.onEnded);
+      this.audioElement.src = '';
+      this.audioElement.remove();
+      await this.audioContext.close();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   private onEnded = () => {
@@ -98,8 +102,10 @@ export default class AudioPlayer extends EventEmitter {
   play = () => {
     if (this.audioContext.state === 'suspended') {
       this.audioContext.resume();
+    } else {
+      this.audioElement.play();
     }
-    this.audioElement.play();
+    this.emit('started');
   };
 
   pause = () => {
