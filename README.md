@@ -1,11 +1,5 @@
-# vite-typescript-react-tailwind
+# Listen
 
-## What we have here
+A simple web based audio player for offline files.
 
-1. Vite
-2. TypeScript
-3. ReactJS
-4. TailwindCSS
-5. PostCSS
-6. ESLint
-7. Prettier
+It's boring yet but I'll make it interesting if I feel like it.

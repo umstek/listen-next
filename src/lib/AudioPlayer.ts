@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter, Listener } from 'events';
 
 function createAudioElement() {
   const audioElement = new Audio();
@@ -34,7 +34,23 @@ interface AudioPlayerOptions {
   analyserOutputInterval?: number;
 }
 
-export default class AudioPlayer extends EventEmitter {
+type EventMap = {
+  loadedmetadata: [
+    arg: {
+      duration: number;
+      seekable: TimeRanges;
+      tracks: TextTrackList;
+    },
+  ];
+  play: [];
+  pause: [];
+  timeupdate: [currentTime: number];
+  ended: [];
+};
+
+export default class AudioPlayer {
+  private eventEmitter: EventEmitter;
+
   private audioContext: AudioContext;
 
   private audioElement: HTMLAudioElement;
@@ -45,11 +61,15 @@ export default class AudioPlayer extends EventEmitter {
   private gainNode: GainNode;
 
   constructor({ analyserOutputInterval = 0 }: AudioPlayerOptions) {
-    super();
+    this.eventEmitter = new EventEmitter();
 
     this.audioContext = new AudioContext();
 
     this.audioElement = createAudioElement();
+    this.audioElement.addEventListener('loadedmetadata', this.onLoadedMetadata);
+    this.audioElement.addEventListener('play', this.onPlay);
+    this.audioElement.addEventListener('pause', this.onPause);
+    this.audioElement.addEventListener('timeupdate', this.onTimeUpdate);
     this.audioElement.addEventListener('ended', this.onEnded);
     this.sourceNode = this.audioContext.createMediaElementSource(
       this.audioElement,
@@ -58,7 +78,7 @@ export default class AudioPlayer extends EventEmitter {
     const { analyserNode, analyserTimer } = createAnalyser(
       this.audioContext,
       analyserOutputInterval,
-      this.emit.bind(this, 'analyserData'),
+      this.eventEmitter.emit.bind(this, 'analyserdata'),
     );
     this.analyserNode = analyserNode;
     this.analyserTimer = analyserTimer;
@@ -79,9 +99,41 @@ export default class AudioPlayer extends EventEmitter {
     }
   }
 
+  on = <K extends keyof EventMap>(
+    type: K,
+    listener: (...arg: EventMap[K]) => void,
+  ): this => {
+    this.eventEmitter.on(type, listener as Listener);
+    return this;
+  };
+
+  once = <K extends keyof EventMap>(
+    type: K,
+    listener: (...arg: EventMap[K]) => void,
+  ): this => {
+    this.eventEmitter.once(type, listener as Listener);
+    return this;
+  };
+
+  off = <K extends keyof EventMap>(
+    type: K,
+    listener: (...arg: EventMap[K]) => void,
+  ): this => {
+    this.eventEmitter.off(type, listener as Listener);
+    return this;
+  };
+
   dispose = async () => {
     try {
       clearInterval(this.analyserTimer);
+      this.eventEmitter.removeAllListeners();
+      this.audioElement.removeEventListener(
+        'loadedmetadata',
+        this.onLoadedMetadata,
+      );
+      this.audioElement.removeEventListener('play', this.onPlay);
+      this.audioElement.removeEventListener('pause', this.onPause);
+      this.audioElement.removeEventListener('timeupdate', this.onTimeUpdate);
       this.audioElement.removeEventListener('ended', this.onEnded);
       this.audioElement.src = '';
       this.audioElement.remove();
@@ -91,8 +143,29 @@ export default class AudioPlayer extends EventEmitter {
     }
   };
 
+  private onLoadedMetadata = () => {
+    this.eventEmitter.emit('loadedmetadata', {
+      duration: this.audioElement.duration,
+      seekable: this.audioElement.seekable,
+      tracks: this.audioElement.textTracks,
+      // metadata: this.audioElement.metadata,
+    });
+  };
+
+  private onPlay = () => {
+    this.eventEmitter.emit('play');
+  };
+
+  private onPause = () => {
+    this.eventEmitter.emit('pause');
+  };
+
+  private onTimeUpdate = () => {
+    this.eventEmitter.emit('timeupdate', this.audioElement.currentTime);
+  };
+
   private onEnded = () => {
-    this.emit('ended');
+    this.eventEmitter.emit('ended');
   };
 
   setAudioSource = (url: string) => {
@@ -105,47 +178,25 @@ export default class AudioPlayer extends EventEmitter {
     } else {
       this.audioElement.play();
     }
-    this.emit('started');
   };
 
   pause = () => {
     this.audioElement.pause();
-    this.emit('paused');
-  };
-
-  stop = () => {
-    this.audioElement.pause();
-    this.audioElement.currentTime = 0;
-    this.emit('stopped');
   };
 
   setPlaybackRate = (rate: number) => {
     this.audioElement.playbackRate = rate;
-    this.emit('playbackRateChanged', rate);
   };
 
   setVolume = (volume: number) => {
     this.gainNode.gain.value = volume;
-    this.emit('volumeChanged', volume);
   };
 
   setPan = (pan: number) => {
     this.pannerNode.pan.value = pan;
-    this.emit('panChanged', pan);
-  };
-
-  rewind = (seconds: number) => {
-    this.audioElement.currentTime -= seconds;
-    this.emit('rewound', seconds);
-  };
-
-  forward = (seconds: number) => {
-    this.audioElement.currentTime += seconds;
-    this.emit('forwarded', seconds);
   };
 
   seek = (seconds: number) => {
     this.audioElement.currentTime = seconds;
-    this.emit('seeked', seconds);
   };
 }
