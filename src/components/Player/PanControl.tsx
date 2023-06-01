@@ -27,6 +27,7 @@ export function PanControl({ onChange, value }: VolumeControlProps) {
           overlay: value,
         }}
         defaultValue={0}
+        startPoint={0}
         min={-1}
         max={1}
         value={value}

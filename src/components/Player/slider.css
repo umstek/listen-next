@@ -1,59 +1,45 @@
 .rc-slider {
-  @apply relative w-full h-3 rounded-md box-border;
-  padding: 5px 0;
-  touch-action: none;
+  @apply relative w-full h-3 rounded-md box-border touch-none py-1;
 }
 .rc-slider * {
   @apply box-border;
 }
 .rc-slider-rail {
-  @apply absolute w-full h-1 bg-gray-300 rounded-md;
+  @apply absolute w-full h-1 bg-gradient-to-r from-s-200 to-p-200 rounded-md;
 }
 .rc-slider-track {
-  @apply absolute h-1 bg-blue-200 rounded-md;
+  @apply absolute h-1 bg-gradient-to-r from-s-500 to-p-500 rounded-md;
 }
 .rc-slider-handle {
-  @apply absolute w-3 h-3 -mt-1 bg-white;
-  touch-action: pan-x;
-  border-radius: 50%;
-  cursor: grab;
-  opacity: 0.8;
-  border: solid 2px #96dbfa;
+  @apply transition absolute w-1 h-1 bg-transparent touch-pan-x rounded-full cursor-grab;
 }
 .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
-  @apply border-blue-400;
-  box-shadow: 0 0 0 5px #96dbfa;
+  @apply border-p-400 w-3 h-3 -mt-1 ring-4;
 }
 .rc-slider-handle:focus {
-  outline: none;
-  @apply shadow-none;
+  @apply shadow-none outline-none;
 }
 .rc-slider-handle:focus-visible {
-  @apply border-blue-500;
-  box-shadow: 0 0 0 3px #96dbfa;
+  @apply border-p-500 w-3 h-3 -mt-1 ring-offset-2 ring-offset-transparent ring-2;
 }
 .rc-slider-handle-click-focused:focus {
-  @apply border-blue-300;
-  box-shadow: unset;
+  @apply border-p-300;
 }
 .rc-slider-handle:hover {
-  @apply border-blue-400;
+  @apply bg-p-400 w-3 h-3 -mt-1;
 }
 .rc-slider-handle:active {
-  @apply border-blue-400;
-  box-shadow: 0 0 5px #57c5f7;
-  cursor: grabbing;
+  @apply border-p-400 cursor-grabbing;
 }
 .rc-slider-mark {
   top: 18px;
   @apply absolute left-0 w-full text-xs;
 }
 .rc-slider-mark-text {
-  color: #999;
-  @apply absolute inline-block text-center align-middle cursor-pointer;
+  @apply absolute inline-block text-center align-middle cursor-pointer text-gray-500;
 }
 .rc-slider-mark-text-active {
-  color: #666;
+  @apply text-gray-700;
 }
 .rc-slider-step {
   @apply absolute w-full h-1 bg-transparent pointer-events-none;
@@ -65,7 +51,7 @@
   border-radius: 50%;
 }
 .rc-slider-dot-active {
-  @apply border-blue-300;
+  @apply border-p-300;
 }
 .rc-slider-dot-reverse {
   @apply -mr-1;

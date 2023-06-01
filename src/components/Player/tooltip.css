@@ -4,7 +4,7 @@
 }
 .rc-tooltip.rc-tooltip-zoom-enter,
 .rc-tooltip.rc-tooltip-zoom-leave {
-  display: block;
+  @apply block;
 }
 .rc-tooltip-zoom-enter,
 .rc-tooltip-zoom-appear {
@@ -54,13 +54,7 @@
   }
 }
 .rc-tooltip {
-  position: absolute;
-  z-index: 1070;
-  display: block;
-  visibility: visible;
-  font-size: 12px;
-  line-height: 1.5;
-  opacity: 0.9;
+  @apply absolute block visible z-30 text-xs opacity-90;
 }
 .rc-tooltip-hidden {
   display: none;
@@ -96,11 +90,7 @@
   min-height: 34px;
 }
 .rc-tooltip-arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
+  @apply absolute h-0 w-0 border-transparent border-solid;
 }
 .rc-tooltip-placement-top .rc-tooltip-arrow,
 .rc-tooltip-placement-topLeft .rc-tooltip-arrow,

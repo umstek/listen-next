@@ -24,6 +24,8 @@ export function PlaybackRateControl({
           2: '2x',
           4: '4x',
         }}
+        defaultValue={1}
+        startPoint={1}
         tipFormatter={(value) => value}
         tipProps={{
           placement: 'top',
