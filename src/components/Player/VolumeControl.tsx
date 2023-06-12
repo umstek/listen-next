@@ -1,4 +1,5 @@
 import { SpeakerHigh, SpeakerLow, SpeakerNone } from '@phosphor-icons/react';
+
 import Slider from './Slider';
 
 export interface VolumeControlProps {
