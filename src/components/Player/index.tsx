@@ -1,6 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import {
+  PlayPause,
+  ClockCounterClockwise,
+  ClockClockwise,
+} from '@phosphor-icons/react';
 
-import AudioPlayer from ':AudioPlayer';
+import usePlayer from './usePlayer';
+import { VolumeControl } from './VolumeControl';
+import { PanControl } from './PanControl';
+import { SeekBar } from './SeekBar';
+import { PlaybackRateControl } from './PlaybackRateControl';
 
 interface PlayerProps {
   url: string;
@@ -9,59 +17,55 @@ interface PlayerProps {
 }
 
 export function Player({ url }: PlayerProps) {
-  const playerRef = useRef<AudioPlayer | undefined>(undefined);
-  const [volume, setVolume] = useState(1);
-  const [pan, setPan] = useState(0);
-
-  useEffect(() => {
-    if (!url) return;
-
-    if (!playerRef.current) {
-      playerRef.current = new AudioPlayer({
-        analyserOutputInterval: 100,
-      });
-    }
-    playerRef.current.setAudioSource(url);
-    playerRef.current.play();
-
-    return () => playerRef.current?.dispose();
-  }, [url]);
+  const {
+    playPause,
+    rewind,
+    forward,
+    seek,
+    setVolume,
+    volume,
+    setPan,
+    pan,
+    setPlaybackRate,
+    playbackRate,
+    duration,
+    position,
+    state,
+  } = usePlayer(url);
 
   return (
-    <div>
-      <button className="bg-blue-500" onClick={playerRef.current?.play}>
-        Play
-      </button>
-      <button onClick={playerRef.current?.pause}>Pause</button>
-      <button onClick={playerRef.current?.stop}>Stop</button>
-      Volume
-      <input
-        type="range"
-        id="volume"
-        min="0"
-        max="2"
-        value={volume}
-        step="0.01"
-        onChange={(e) => {
-          const value = parseFloat(e.target.value);
-          playerRef.current?.setVolume(value);
-          setVolume(value);
-        }}
-      />
-      Pan
-      <input
-        type="range"
-        id="pan"
-        min="-1"
-        max="1"
-        value={pan}
-        step="0.01"
-        onChange={(e) => {
-          const value = parseFloat(e.target.value);
-          playerRef.current?.setPan(value);
-          setPan(value);
-        }}
-      />
+    <div className="flex flex-col w-full p-4">
+      <div className="flex flex-row w-full justify-evenly">
+        <button onClick={() => rewind(10)}>
+          <ClockCounterClockwise size={24} />
+        </button>
+        <button
+          className="text-blue-600 hover:text-blue-400 active:text-blue-800"
+          onClick={playPause}
+        >
+          <PlayPause size={24} weight="fill" />
+        </button>
+        <button onClick={() => forward(10)}>
+          <ClockClockwise size={24} />
+        </button>
+      </div>
+      <div className="px-2">
+        <div className="py-4">
+          <VolumeControl value={volume} onChange={setVolume} />
+        </div>
+        <div className="py-4">
+          <PanControl value={pan} onChange={setPan} />
+        </div>
+        <div className="py-4">
+          <PlaybackRateControl
+            value={playbackRate}
+            onChange={setPlaybackRate}
+          />
+        </div>
+        <div className="py-4">
+          <SeekBar duration={duration} position={position} onChange={seek} />
+        </div>
+      </div>
     </div>
   );
 }

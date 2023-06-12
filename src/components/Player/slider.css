@@ -1,0 +1,180 @@
+.rc-slider {
+  @apply relative w-full h-3 rounded-md box-border touch-none py-1;
+}
+.rc-slider * {
+  @apply box-border;
+}
+.rc-slider-rail {
+  @apply absolute w-full h-1 bg-gradient-to-r from-s-200 to-p-200 rounded-md;
+}
+.rc-slider-track {
+  @apply absolute h-1 bg-gradient-to-r from-s-500 to-p-500 rounded-md;
+}
+.rc-slider-handle {
+  @apply transition absolute w-1 h-1 bg-transparent touch-pan-x rounded-full cursor-grab;
+}
+.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
+  @apply border-p-400 w-3 h-3 -mt-1 ring-4;
+}
+.rc-slider-handle:focus {
+  @apply shadow-none outline-none;
+}
+.rc-slider-handle:focus-visible {
+  @apply border-p-500 w-3 h-3 -mt-1 ring-offset-2 ring-offset-transparent ring-2;
+}
+.rc-slider-handle-click-focused:focus {
+  @apply border-p-300;
+}
+.rc-slider-handle:hover {
+  @apply bg-p-400 w-3 h-3 -mt-1;
+}
+.rc-slider-handle:active {
+  @apply border-p-400 cursor-grabbing;
+}
+.rc-slider-mark {
+  top: 18px;
+  @apply absolute left-0 w-full text-xs;
+}
+.rc-slider-mark-text {
+  @apply absolute inline-block text-center align-middle cursor-pointer text-gray-500;
+}
+.rc-slider-mark-text-active {
+  @apply text-gray-700;
+}
+.rc-slider-step {
+  @apply absolute w-full h-1 bg-transparent pointer-events-none;
+}
+.rc-slider-dot {
+  @apply absolute w-2 h-2 align-middle bg-white cursor-pointer;
+  bottom: -2px;
+  border: 2px solid #e9e9e9;
+  border-radius: 50%;
+}
+.rc-slider-dot-active {
+  @apply border-p-300;
+}
+.rc-slider-dot-reverse {
+  @apply -mr-1;
+}
+.rc-slider-disabled {
+  @apply bg-gray-300;
+}
+.rc-slider-disabled .rc-slider-track {
+  background-color: #ccc;
+}
+.rc-slider-disabled .rc-slider-handle,
+.rc-slider-disabled .rc-slider-dot {
+  border-color: #ccc;
+  @apply bg-white shadow-none cursor-not-allowed;
+}
+.rc-slider-disabled .rc-slider-mark-text,
+.rc-slider-disabled .rc-slider-dot {
+  @apply cursor-not-allowed;
+}
+.rc-slider-vertical {
+  @apply w-3 h-full;
+  padding: 0 5px;
+}
+.rc-slider-vertical .rc-slider-rail {
+  @apply w-1 h-full;
+}
+.rc-slider-vertical .rc-slider-track {
+  @apply bottom-0 w-1;
+  left: 5px;
+}
+.rc-slider-vertical .rc-slider-handle {
+  @apply mt-0 -ml-1;
+  touch-action: pan-y;
+}
+.rc-slider-vertical .rc-slider-mark {
+  @apply top-0 h-full;
+  left: 18px;
+}
+.rc-slider-vertical .rc-slider-step {
+  @apply w-1 h-full;
+}
+.rc-slider-vertical .rc-slider-dot {
+  @apply -ml-1;
+}
+.rc-slider-tooltip-zoom-down-enter,
+.rc-slider-tooltip-zoom-down-appear {
+  @apply block;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-play-state: paused;
+}
+.rc-slider-tooltip-zoom-down-leave {
+  @apply block;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-play-state: paused;
+}
+.rc-slider-tooltip-zoom-down-enter.rc-slider-tooltip-zoom-down-enter-active,
+.rc-slider-tooltip-zoom-down-appear.rc-slider-tooltip-zoom-down-appear-active {
+  animation-name: rcSliderTooltipZoomDownIn;
+  animation-play-state: running;
+}
+.rc-slider-tooltip-zoom-down-leave.rc-slider-tooltip-zoom-down-leave-active {
+  animation-name: rcSliderTooltipZoomDownOut;
+  animation-play-state: running;
+}
+.rc-slider-tooltip-zoom-down-enter,
+.rc-slider-tooltip-zoom-down-appear {
+  transform: scale(0, 0);
+  animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+.rc-slider-tooltip-zoom-down-leave {
+  animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+}
+@keyframes rcSliderTooltipZoomDownIn {
+  0% {
+    transform: scale(0, 0);
+    transform-origin: 50% 100%;
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1, 1);
+    transform-origin: 50% 100%;
+  }
+}
+@keyframes rcSliderTooltipZoomDownOut {
+  0% {
+    transform: scale(1, 1);
+    transform-origin: 50% 100%;
+  }
+  100% {
+    transform: scale(0, 0);
+    transform-origin: 50% 100%;
+    opacity: 0;
+  }
+}
+.rc-slider-tooltip {
+  top: -9999px;
+  left: -9999px;
+  @apply absolute visible box-border;
+}
+.rc-slider-tooltip * {
+  @apply box-border;
+}
+.rc-slider-tooltip-hidden {
+  @apply hidden;
+}
+.rc-slider-tooltip-placement-top {
+  padding: 4px 0 8px 0;
+}
+.rc-slider-tooltip-inner {
+  min-width: 24px;
+  padding: 6px 2px;
+  box-shadow: 0 0 4px #d9d9d9;
+  @apply h-6 text-white text-xs leading-none text-center no-underline bg-gray-700 rounded-md;
+}
+.rc-slider-tooltip-arrow {
+  @apply absolute w-0 h-0 border-transparent border-solid;
+}
+.rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
+  @apply -ml-1;
+  bottom: 4px;
+  left: 50%;
+  border-width: 4px 4px 0;
+  border-top-color: #6c6c6c;
+}
