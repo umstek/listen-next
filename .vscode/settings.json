@@ -2,6 +2,7 @@
     "conventionalCommits.scopes": [
         "deps",
         "player",
-        "dx"
+        "dx",
+        "file-loader"
     ]
 }
