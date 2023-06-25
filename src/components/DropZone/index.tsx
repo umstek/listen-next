@@ -1,4 +1,10 @@
-import { openDirectory, openFiles } from ':FileLoader';
+import {
+  ChevronDownIcon,
+  QuestionMarkCircledIcon,
+} from '@radix-ui/react-icons';
+
+import { FileEntity, openDirectory, openFiles } from ':FileLoader';
+import { Alert, AlertDescription, AlertTitle } from ':ui/alert';
 import { Button } from ':ui/button';
 import {
   Card,
@@ -14,9 +20,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from ':ui/dropdown-menu';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
+import { DataTable, columns } from './FileList';
+import { useState } from 'react';
 
 export function DropZone() {
+  const [files, setFiles] = useState<FileEntity[]>([]);
+
   return (
     <Card>
       <CardHeader>
@@ -27,22 +36,48 @@ export function DropZone() {
       </CardHeader>
       <CardContent>
         <div className="h-96 w-full bg-secondary rounded-lg p-4">
-          <div className="h-full w-full outline-1 outline-dashed outline-input rounded-lg">
-            <Button
-              variant="ghost"
-              onClick={() => openFiles({ multiple: true }).then(console.log)}
-            >
-              Add Files
-            </Button>
-            <Button onClick={() => openDirectory().then(console.log)}>
-              Add Folder
-            </Button>
+          <div className="flex flex-col h-full w-full outline-1 outline-dashed outline-input rounded-lg justify-center items-center">
+            <div className="flex flex-col items-center space-y-8 p-8 max-w-md">
+              <div className="flex flex-row space-x-4">
+                <Button
+                  variant="link"
+                  onClick={() =>
+                    openFiles({ multiple: true }).then(
+                      ({ files } = { files: [], directories: [] }) =>
+                        setFiles(files),
+                    )
+                  }
+                >
+                  Add Files
+                </Button>
+                <Button
+                  onClick={() =>
+                    openDirectory().then(
+                      ({ files } = { files: [], directories: [] }) =>
+                        setFiles(files),
+                    )
+                  }
+                >
+                  Add Folder
+                </Button>
+              </div>
+              <Alert variant="default">
+                <QuestionMarkCircledIcon className="h-4 w-4" />
+                <AlertTitle>Files or Folders?</AlertTitle>
+                <AlertDescription>
+                  Consider organizing your audio content under a single folder
+                  or a few folders on your operating system so you can easily
+                  add them here.
+                </AlertDescription>
+              </Alert>
+            </div>
           </div>
         </div>
+        <DataTable columns={columns} data={files} />
       </CardContent>
       <CardFooter className="flex justify-end space-x-4">
         {/* Store in Provider -- someday */}
-        <Button variant="ghost">Play Now</Button>
+        <Button variant="link">Play Now</Button>
         <div className="flex">
           <Button className="rounded-r-none pr-2">Copy to Browser</Button>
           <DropdownMenu>
