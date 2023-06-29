@@ -22,12 +22,19 @@ import {
 } from ':ui/dropdown-menu';
 import { DataTable, columns } from './FileList';
 import { useState } from 'react';
+import { NotImplementedDialog } from ':NotImplementedDialog';
 
 export function DropZone() {
   const [files, setFiles] = useState<FileEntity[]>([]);
+  const [showNotImplementedDialog, setShowNotImplementedDialog] =
+    useState(false);
 
   return (
     <Card>
+      <NotImplementedDialog
+        open={showNotImplementedDialog}
+        onOpenChange={setShowNotImplementedDialog}
+      />
       <CardHeader>
         <CardTitle>Add Audio Files</CardTitle>
         <CardDescription>
@@ -35,7 +42,7 @@ export function DropZone() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-96 w-full bg-secondary rounded-lg p-4">
+        <div className="h-96 w-full bg-secondary rounded-t-lg p-4">
           <div className="flex flex-col h-full w-full outline-1 outline-dashed outline-input rounded-lg justify-center items-center">
             <div className="flex flex-col items-center space-y-8 p-8 max-w-md">
               <div className="flex flex-row space-x-4">
@@ -79,7 +86,12 @@ export function DropZone() {
         {/* Store in Provider -- someday */}
         <Button variant="link">Play Now</Button>
         <div className="flex">
-          <Button className="rounded-r-none pr-2">Copy to Browser</Button>
+          <Button
+            className="rounded-r-none pr-2"
+            onClick={() => setShowNotImplementedDialog(true)}
+          >
+            Copy to Browser
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="rounded-l-none p-2">
@@ -87,11 +99,15 @@ export function DropZone() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>Store as Links</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setShowNotImplementedDialog(true)}
+              >
+                Store as Links
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline">Clear</Button>
       </CardFooter>
     </Card>
   );

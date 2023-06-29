@@ -104,7 +104,7 @@ export function DataTable<TData, TValue>({
   return (
     <div
       ref={tableContainerRef}
-      className="rounded-md border h-[500px] overflow-auto"
+      className="rounded-b-md border h-[500px] overflow-auto"
     >
       <Table>
         <TableHeader>
