@@ -7,6 +7,7 @@ const Env = z.object({
     z.string().startsWith('.').array(),
   ),
 });
+
 const env = Env.parse(
   Object.fromEntries(
     Object.entries(import.meta.env).map(([key, value]) => [

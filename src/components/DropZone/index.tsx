@@ -26,6 +26,13 @@ import { DataTable, columns } from './FileList';
 import { useState } from 'react';
 import { NotImplementedDialog } from ':NotImplementedDialog';
 
+const types = [
+  {
+    description: 'All Audio Files',
+    accept: { 'audio/*': config.supportedExtensions },
+  },
+];
+
 export function DropZone() {
   const [files, setFiles] = useState<FileEntity[]>([]);
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
@@ -51,9 +58,12 @@ export function DropZone() {
                 <Button
                   variant="link"
                   onClick={() =>
-                    openFiles({ multiple: true }).then(
-                      ({ files } = { files: [], directories: [] }) =>
-                        setFiles(files),
+                    openFiles({
+                      multiple: true,
+                      types,
+                      excludeAcceptAllOption: true,
+                    }).then(({ files } = { files: [], directories: [] }) =>
+                      setFiles(files),
                     )
                   }
                 >
@@ -61,15 +71,9 @@ export function DropZone() {
                 </Button>
                 <Button
                   onClick={() =>
-                    openDirectory({
-                      types: [
-                        {
-                          description: 'All Audio Files',
-                          accept: { 'audio/*': config.supportedExtensions },
-                        },
-                      ],
-                    }).then(({ files } = { files: [], directories: [] }) =>
-                      setFiles(files),
+                    openDirectory({ types }).then(
+                      ({ files } = { files: [], directories: [] }) =>
+                        setFiles(files),
                     )
                   }
                 >
