@@ -47,6 +47,9 @@ export declare interface DirectoryPickerOptions {
    * in.
    */
   startIn?: FileSystemHandle | WellKnownDirectoryNames;
+
+  // Non-standard properties
+  types?: FilePickerAcceptType[] | undefined;
 }
 
 function supportsDirectoryPicker() {
@@ -60,7 +63,7 @@ function supportsDirectoryPicker() {
 async function openDirectoryWithNewPicker(options?: DirectoryPickerOptions) {
   try {
     const handle = await window.showDirectoryPicker(options);
-    return getFilesAndFolders(handle);
+    return getFilesAndFolders(handle, options?.types || []);
   } catch (e) {
     const err = e as Error;
     // Fail silently if the user has simply canceled the dialog.
@@ -72,7 +75,10 @@ async function openDirectoryWithNewPicker(options?: DirectoryPickerOptions) {
   return undefined;
 }
 
-async function getFilesAndFolders(directoryEntry: FileSystemDirectoryHandle) {
+async function getFilesAndFolders(
+  directoryEntry: FileSystemDirectoryHandle,
+  types: FilePickerAcceptType[],
+) {
   const rootDirectoryEntity: DirectoryEntity = {
     kind: 'directory',
     name: directoryEntry.name,
@@ -81,14 +87,27 @@ async function getFilesAndFolders(directoryEntry: FileSystemDirectoryHandle) {
     handle: directoryEntry,
   };
 
+  const extensions = types
+    .flatMap((t) => Object.values(t.accept))
+    .flat()
+    .map((a) => a.slice(1));
+  const regex =
+    extensions.length > 0
+      ? new RegExp(`\\.(${extensions.join('|')})$`)
+      : undefined;
+
   const { files, directories } = await getFilesAndFoldersRecursively(
     rootDirectoryEntity,
+    regex,
   );
 
   return { files, directories: [rootDirectoryEntity, ...directories] };
 }
 
-async function getFilesAndFoldersRecursively(directoryEntry: DirectoryEntity) {
+async function getFilesAndFoldersRecursively(
+  directoryEntry: DirectoryEntity,
+  type?: RegExp,
+) {
   const basePath = directoryEntry.path;
   const directories: DirectoryEntity[] = [];
   const files: FileEntity[] = [];
@@ -104,11 +123,15 @@ async function getFilesAndFoldersRecursively(directoryEntry: DirectoryEntity) {
       directories.push(directoryEntry);
       const { files: f, directories: d } = await getFilesAndFoldersRecursively(
         directoryEntry,
+        type,
       );
       directories.push(...d);
       files.push(...f);
     } else if (handle.kind === 'file') {
       const file = await handle.getFile();
+      if (type && !type.test(file.name)) {
+        continue;
+      }
       Object.defineProperty(file, 'webkitRelativePath', {
         configurable: true,
         enumerable: true,

@@ -3,6 +3,8 @@ import {
   QuestionMarkCircledIcon,
 } from '@radix-ui/react-icons';
 
+import config from '~config';
+
 import { FileEntity, openDirectory, openFiles } from ':FileLoader';
 import { Alert, AlertDescription, AlertTitle } from ':ui/alert';
 import { Button } from ':ui/button';
@@ -59,9 +61,15 @@ export function DropZone() {
                 </Button>
                 <Button
                   onClick={() =>
-                    openDirectory().then(
-                      ({ files } = { files: [], directories: [] }) =>
-                        setFiles(files),
+                    openDirectory({
+                      types: [
+                        {
+                          description: 'All Audio Files',
+                          accept: { 'audio/*': config.supportedExtensions },
+                        },
+                      ],
+                    }).then(({ files } = { files: [], directories: [] }) =>
+                      setFiles(files),
                     )
                   }
                 >

@@ -25,6 +25,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/react-table": "^8.9.3",
     "@tanstack/react-virtual": "3.0.0-alpha.0",
+    "camelcase": "^7.0.1",
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "events": "^3.3.0",
@@ -36,7 +37,8 @@
     "react-redux": "^8.1.0",
     "tailwind-merge": "^1.13.2",
     "tailwind-variants": "^0.1.6",
-    "tailwindcss-animate": "^1.0.6"
+    "tailwindcss-animate": "^1.0.6",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.4.2",
