@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react';
+import { useVirtual } from '@tanstack/react-virtual';
 import {
   ColumnDef,
   Row,
@@ -6,6 +8,9 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { Play } from '@phosphor-icons/react';
+
+import { FileEntity, FileSystemEntity } from '~lib/FileLoader';
 
 import {
   Table,
@@ -15,11 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from ':ui/table';
-import { FileEntity, FileSystemEntity } from ':FileLoader';
 import { Button } from ':ui/button';
-import { Play } from '@phosphor-icons/react';
-import { useEffect, useRef, useState } from 'react';
-import { useVirtual } from '@tanstack/react-virtual';
 
 function RowActions({ row }: { row: Row<FileSystemEntity> }) {
   const [url, setUrl] = useState<string>('');

@@ -1,4 +1,4 @@
-import { cn } from "src/util"
+import { cn } from "~util/styles"
 
 function Skeleton({
   className,

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import AudioPlayer from ':AudioPlayer';
+import AudioPlayer from '~lib/AudioPlayer';
 
 export enum PlayerState {
   STOPPED = 'STOPPED',

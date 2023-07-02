@@ -1,5 +1,6 @@
+import { PlayerView } from '~modules/player/PlayerView';
+
 import { DropZone } from ':DropZone';
-import { PlayerView } from ':player/PlayerView';
 
 function App() {
   return (

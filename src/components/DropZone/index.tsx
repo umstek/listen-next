@@ -1,18 +1,20 @@
+import { useState } from 'react';
 import {
+  QuestionMarkCircledIcon,
   ArrowDownIcon,
   ChevronDownIcon,
-  QuestionMarkCircledIcon,
 } from '@radix-ui/react-icons';
 
 import config from '~config';
-
 import {
   FileEntity,
   handleDragOverItems,
   handleDroppedFilesAndFolders,
   openDirectory,
   openFiles,
-} from ':FileLoader';
+} from '~lib/FileLoader';
+import { cn } from '~util/styles';
+
 import { Alert, AlertDescription, AlertTitle } from ':ui/alert';
 import { Button } from ':ui/button';
 import {
@@ -29,10 +31,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from ':ui/dropdown-menu';
-import { DataTable, columns } from './FileList';
-import { useState } from 'react';
 import { NotImplementedDialog } from ':NotImplementedDialog';
-import { cn } from '~util';
+import { DataTable, columns } from './FileList';
 
 const types = [
   {
@@ -73,7 +73,7 @@ export function DropZone() {
 
               handleDragOverItems(e.dataTransfer);
             }}
-            onDrop={(e) => {
+            onDrop={async (e) => {
               e.preventDefault();
               e.stopPropagation();
               setDraggingOver(false);
@@ -82,9 +82,14 @@ export function DropZone() {
                 return;
               }
 
-              handleDroppedFilesAndFolders(e.dataTransfer, { types }).then(
-                ({ files } = { files: [], directories: [] }) => setFiles(files),
-              );
+              const { files: fs } = (await handleDroppedFilesAndFolders(
+                e.dataTransfer,
+                {
+                  types,
+                },
+              )) || { files: [], directories: [] };
+
+              setFiles(files.concat(fs));
             }}
           >
             <ArrowDownIcon
@@ -102,25 +107,25 @@ export function DropZone() {
               <div className="flex flex-row space-x-4">
                 <Button
                   variant="link"
-                  onClick={() =>
-                    openFiles({
+                  onClick={async () => {
+                    const { files: fs } = (await openFiles({
                       multiple: true,
                       types,
                       excludeAcceptAllOption: true,
-                    }).then(({ files } = { files: [], directories: [] }) =>
-                      setFiles(files),
-                    )
-                  }
+                    })) || { files: [], directories: [] };
+                    setFiles(files.concat(fs));
+                  }}
                 >
                   Add Files
                 </Button>
                 <Button
-                  onClick={() =>
-                    openDirectory({ types }).then(
-                      ({ files } = { files: [], directories: [] }) =>
-                        setFiles(files),
-                    )
-                  }
+                  onClick={async () => {
+                    const { files: fs } = (await openDirectory({
+                      types,
+                    })) || { files: [], directories: [] };
+
+                    setFiles(files.concat(fs));
+                  }}
                 >
                   Add Folder
                 </Button>
@@ -164,7 +169,9 @@ export function DropZone() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <Button variant="outline">Clear</Button>
+        <Button variant="outline" onClick={() => setFiles([])}>
+          Clear
+        </Button>
       </CardFooter>
     </Card>
   );

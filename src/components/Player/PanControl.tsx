@@ -3,7 +3,9 @@ import {
   SpeakerSimpleLow,
   SpeakerSimpleNone,
 } from '@phosphor-icons/react';
-import { clamp } from ':math';
+
+import { clamp } from '~util/math';
+
 import Slider from './Slider';
 import { VolumeControlProps } from './VolumeControl';
 
