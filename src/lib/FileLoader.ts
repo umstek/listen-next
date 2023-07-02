@@ -352,10 +352,35 @@ function isADirectory(
   return handle.isDirectory;
 }
 
+/**
+ * Changes the drop effect.
+ *
+ * @param {DataTransfer} dataTransfer - The data transfer object.
+ * @return {void} This function does not return a value.
+ */
+export function handleDragOverItems(dataTransfer: DataTransfer): void {
+  const items = [...dataTransfer.items];
+  if (items.every((item) => item.kind === 'file')) {
+    dataTransfer.dropEffect = 'link';
+  } else {
+    dataTransfer.dropEffect = 'none';
+  }
+}
+
+/**
+ * Handles dropped files and folders.
+ *
+ * @param {DataTransfer} dataTransfer - The data transfer object.
+ * @param {Object} options - The options object.
+ * @param {FilePickerAcceptType[]} options.types - The accepted file types.
+ * @return {Promise<{ files: FileEntity[], directories: DirectoryEntity[] } | undefined>} - The files and directories.
+ */
 export async function handleDroppedFilesAndFolders(
   dataTransfer: DataTransfer,
   { types }: { types?: FilePickerAcceptType[] },
-) {
+): Promise<
+  { files: FileEntity[]; directories: DirectoryEntity[] } | undefined
+> {
   const type = types && filePickerAcceptTypeExtToRegex(types);
 
   const fileItems = dataTransfer.items?.length

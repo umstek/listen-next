@@ -1,4 +1,5 @@
 import {
+  ArrowDownIcon,
   ChevronDownIcon,
   QuestionMarkCircledIcon,
 } from '@radix-ui/react-icons';
@@ -7,6 +8,7 @@ import config from '~config';
 
 import {
   FileEntity,
+  handleDragOverItems,
   handleDroppedFilesAndFolders,
   openDirectory,
   openFiles,
@@ -30,6 +32,7 @@ import {
 import { DataTable, columns } from './FileList';
 import { useState } from 'react';
 import { NotImplementedDialog } from ':NotImplementedDialog';
+import { cn } from '~util';
 
 const types = [
   {
@@ -40,6 +43,7 @@ const types = [
 
 export function DropZone() {
   const [files, setFiles] = useState<FileEntity[]>([]);
+  const [draggingOver, setDraggingOver] = useState(false);
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
     useState(false);
 
@@ -58,17 +62,43 @@ export function DropZone() {
       <CardContent>
         <div className="h-96 w-full bg-secondary rounded-t-lg p-4">
           <div
-            className="flex flex-col h-full w-full outline-1 outline-dashed outline-input rounded-lg justify-center items-center hover:bg-white"
-            onDragOver={(e) => e.preventDefault()}
+            className={cn(
+              'flex flex-col h-full w-full rounded-lg justify-center items-center transition-colors duration-300 border border-dashed border-secondary-foreground',
+              draggingOver ? 'bg-primary/5' : '',
+            )}
+            onDragEnter={() => setDraggingOver(true)}
+            onDragLeave={() => setDraggingOver(false)}
+            onDragOver={(e) => {
+              e.preventDefault();
+
+              handleDragOverItems(e.dataTransfer);
+            }}
             onDrop={(e) => {
               e.preventDefault();
+              e.stopPropagation();
+              setDraggingOver(false);
+
+              if (e.dataTransfer.items?.[0].kind !== 'file') {
+                return;
+              }
 
               handleDroppedFilesAndFolders(e.dataTransfer, { types }).then(
                 ({ files } = { files: [], directories: [] }) => setFiles(files),
               );
             }}
           >
-            <div className="flex flex-col items-center space-y-8 p-8 max-w-md">
+            <ArrowDownIcon
+              className={cn(
+                'h-8 w-8 animate-bounce pointer-events-none',
+                draggingOver ? 'block' : 'hidden',
+              )}
+            />
+            <div
+              className={cn(
+                'flex-col items-center space-y-8 p-8 max-w-md',
+                draggingOver ? 'hidden' : 'flex',
+              )}
+            >
               <div className="flex flex-row space-x-4">
                 <Button
                   variant="link"
