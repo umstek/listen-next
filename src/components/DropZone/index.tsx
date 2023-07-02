@@ -5,7 +5,12 @@ import {
 
 import config from '~config';
 
-import { FileEntity, openDirectory, openFiles } from ':FileLoader';
+import {
+  FileEntity,
+  handleDroppedFilesAndFolders,
+  openDirectory,
+  openFiles,
+} from ':FileLoader';
 import { Alert, AlertDescription, AlertTitle } from ':ui/alert';
 import { Button } from ':ui/button';
 import {
@@ -52,7 +57,17 @@ export function DropZone() {
       </CardHeader>
       <CardContent>
         <div className="h-96 w-full bg-secondary rounded-t-lg p-4">
-          <div className="flex flex-col h-full w-full outline-1 outline-dashed outline-input rounded-lg justify-center items-center">
+          <div
+            className="flex flex-col h-full w-full outline-1 outline-dashed outline-input rounded-lg justify-center items-center hover:bg-white"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+
+              handleDroppedFilesAndFolders(e.dataTransfer, { types }).then(
+                ({ files } = { files: [], directories: [] }) => setFiles(files),
+              );
+            }}
+          >
             <div className="flex flex-col items-center space-y-8 p-8 max-w-md">
               <div className="flex flex-row space-x-4">
                 <Button
