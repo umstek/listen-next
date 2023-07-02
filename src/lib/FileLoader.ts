@@ -360,11 +360,8 @@ function isADirectory(
  */
 export function handleDragOverItems(dataTransfer: DataTransfer): void {
   const items = [...dataTransfer.items];
-  if (items.every((item) => item.kind === 'file')) {
-    dataTransfer.dropEffect = 'link';
-  } else {
-    dataTransfer.dropEffect = 'none';
-  }
+  const allItemsAreFiles = items.every((item) => item.kind === 'file');
+  dataTransfer.dropEffect = allItemsAreFiles ? 'link' : 'none';
 }
 
 /**
@@ -383,10 +380,9 @@ export async function handleDroppedFilesAndFolders(
 > {
   const type = types && filePickerAcceptTypeExtToRegex(types);
 
-  const fileItems = dataTransfer.items?.length
-    ? // Files and folders, not strings
-      [...dataTransfer.items].filter((item) => item.kind === 'file')
-    : [];
+  const fileItems = [...dataTransfer.items].filter(
+    (item) => item.kind === 'file',
+  );
 
   const directories: DirectoryEntity[] = [];
   const files: FileEntity[] = [];
@@ -408,11 +404,10 @@ export async function handleDroppedFilesAndFolders(
           path: handle.name,
           handle,
         };
-        directories.push(directoryEntity);
-        const { files: f, directories: d } =
+        const { files: childFiles, directories: childDirectories } =
           await getFilesAndFoldersRecursively(directoryEntity, type);
-        directories.push(...d);
-        files.push(...f);
+        directories.push(directoryEntity, ...childDirectories);
+        files.push(...childFiles);
       } else if (isAFile(handle)) {
         const file = await handle.getFile();
         if (type && !type.test(file.name)) {
@@ -448,13 +443,13 @@ export async function handleDroppedFilesAndFolders(
           path: entry.fullPath || entry.name,
           handle: undefined,
         };
-        directories.push(directoryEntity);
-        const { files: f, directories: d } = (await scanDirectoryEntry(
-          entry,
-          type,
-        )) || { files: [], directories: [] };
-        directories.push(...d);
-        files.push(...f);
+        const { files: childFiles, directories: childDirectories } =
+          (await scanDirectoryEntry(entry, type)) || {
+            files: [],
+            directories: [],
+          };
+        directories.push(directoryEntity, ...childDirectories);
+        files.push(...childFiles);
       } else if (isAFile(entry)) {
         const file = await new Promise<File>((resolve, reject) =>
           entry.file(resolve, reject),
@@ -497,6 +492,7 @@ async function scanDirectoryEntry(
     const entries = await new Promise<FileSystemEntry[]>((resolve, reject) => {
       directoryReader.readEntries(resolve, reject);
     });
+
     for (const entry of entries) {
       if (isADirectory(entry)) {
         const directoryEntity: DirectoryEntity = {
@@ -505,16 +501,16 @@ async function scanDirectoryEntry(
           parent: directoryEntry.fullPath,
           path:
             entry.fullPath ||
-            `${directoryEntry.fullPath || directoryEntry.name}/entry.name`,
+            `${directoryEntry.fullPath || directoryEntry.name}/${entry.name}`,
           handle: undefined,
         };
-        directories.push(directoryEntity);
-        const { files: f, directories: d } = (await scanDirectoryEntry(
-          entry,
-          type,
-        )) || { files: [], directories: [] };
-        directories.push(...d);
-        files.push(...f);
+        const { files: childFiles, directories: childDirectories } =
+          (await scanDirectoryEntry(entry, type)) || {
+            files: [],
+            directories: [],
+          };
+        directories.push(directoryEntity, ...childDirectories);
+        files.push(...childFiles);
       } else if (isAFile(entry)) {
         const file = await new Promise<File>((resolve, reject) =>
           entry.file(resolve, reject),
@@ -527,7 +523,7 @@ async function scanDirectoryEntry(
           enumerable: true,
           get: () =>
             entry.fullPath ||
-            `${directoryEntry.fullPath || directoryEntry.name}/entry.name`,
+            `${directoryEntry.fullPath || directoryEntry.name}/${entry.name}`,
         });
         files.push({
           kind: 'file',
