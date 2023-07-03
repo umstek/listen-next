@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import AudioPlayer from ':AudioPlayer';
+import AudioPlayer from '~lib/AudioPlayer';
 
 export enum PlayerState {
   STOPPED = 'STOPPED',
@@ -8,7 +8,7 @@ export enum PlayerState {
   PLAYING = 'PLAYING',
 }
 
-function usePlayer(url: string) {
+function usePlayer({ autoPlay = false }: { autoPlay?: boolean } = {}) {
   const playerRef = useRef<AudioPlayer | undefined>(undefined);
 
   // Outputs from AudioPlayer
@@ -17,6 +17,7 @@ function usePlayer(url: string) {
   const [state, setState] = useState(PlayerState.STOPPED);
 
   // Inputs to AudioPlayer
+  const [url, setUrl] = useState('');
   const [volume, setVolume] = useState(1);
   const [pan, setPan] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
@@ -29,7 +30,9 @@ function usePlayer(url: string) {
     // Collect outputs from AudioPlayer
     playerRef.current.on('loadedmetadata', ({ duration, seekable, tracks }) => {
       setDuration(duration);
-      console.log(duration, seekable, tracks);
+      if (autoPlay) {
+        playerRef.current?.play();
+      }
     });
     playerRef.current.on('play', () => {
       setState(PlayerState.PLAYING);
@@ -48,7 +51,7 @@ function usePlayer(url: string) {
       playerRef.current?.dispose();
       playerRef.current = undefined;
     };
-  }, []);
+  }, [autoPlay]);
 
   // Sends inputs to AudioPlayer
   useEffect(() => {
@@ -60,6 +63,11 @@ function usePlayer(url: string) {
   useEffect(() => {
     playerRef.current?.setPan(pan);
   }, [pan]);
+  const setSource = (src: string) => {
+    if (src !== url) {
+      setUrl(src);
+    }
+  };
   const play = () => {
     playerRef.current?.play();
   };
@@ -88,6 +96,7 @@ function usePlayer(url: string) {
   };
 
   return {
+    setSource,
     play,
     pause,
     playPause,
