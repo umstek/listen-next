@@ -30,7 +30,7 @@ function usePlayer({ autoPlay = false }: { autoPlay?: boolean } = {}) {
     // Collect outputs from AudioPlayer
     playerRef.current.on('loadedmetadata', ({ duration, seekable, tracks }) => {
       setDuration(duration);
-      if (autoPlay) {
+      if (autoPlay || state === PlayerState.PLAYING) {
         playerRef.current?.play();
       }
     });
@@ -51,7 +51,7 @@ function usePlayer({ autoPlay = false }: { autoPlay?: boolean } = {}) {
       playerRef.current?.dispose();
       playerRef.current = undefined;
     };
-  }, [autoPlay]);
+  }, [autoPlay, state]);
 
   // Sends inputs to AudioPlayer
   useEffect(() => {

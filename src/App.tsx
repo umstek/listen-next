@@ -1,12 +1,11 @@
 import { PlayerView } from '~modules/player/PlayerView';
-
-import { FileLoader } from ':FileLoader';
+import { FileLoaderView } from '~modules/fileLoader/fileLoaderView';
 
 function App() {
   return (
     <div id="app">
       <PlayerView />
-      <FileLoader></FileLoader>
+      <FileLoaderView />
     </div>
   );
 }

@@ -1,7 +1,10 @@
+import { useEffect } from 'react';
 import {
   PlayPause,
   ClockCounterClockwise,
   ClockClockwise,
+  SkipForward,
+  SkipBack,
 } from '@phosphor-icons/react';
 
 import usePlayer from '~hooks/usePlayer';
@@ -10,15 +13,24 @@ import { VolumeControl } from './VolumeControl';
 import { PanControl } from './PanControl';
 import { SeekBar } from './SeekBar';
 import { PlaybackRateControl } from './PlaybackRateControl';
-import { useEffect } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from ':ui/card';
+import { Button } from ':ui/button';
 
 interface PlayerProps {
   url: string;
+  onPrevious: () => void;
+  onNext: () => void;
   settings: unknown | undefined;
   metadata: unknown | undefined;
 }
 
-export function Player({ url }: PlayerProps) {
+export function Player({ url, onPrevious, onNext }: PlayerProps) {
   const {
     setSource,
     playPause,
@@ -38,41 +50,54 @@ export function Player({ url }: PlayerProps) {
 
   useEffect(() => {
     setSource(url);
-  }, [url]);
+  }, [setSource, url]);
 
   return (
-    <div className="flex flex-col w-full p-4">
-      <div className="flex flex-row w-full justify-evenly">
-        <button onClick={() => rewind(10)}>
-          <ClockCounterClockwise size={24} />
-        </button>
-        <button
-          className="text-blue-600 hover:text-blue-400 active:text-blue-800"
-          onClick={playPause}
-        >
-          <PlayPause size={24} weight="fill" />
-        </button>
-        <button onClick={() => forward(10)}>
-          <ClockClockwise size={24} />
-        </button>
-      </div>
-      <div className="px-2">
-        <div className="py-4">
-          <VolumeControl value={volume} onChange={setVolume} />
+    <Card>
+      <CardHeader>
+        <CardTitle>Listen</CardTitle>
+        <CardDescription></CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-row w-full justify-evenly">
+          <Button variant="ghost" onClick={onPrevious}>
+            <SkipBack size={24} />
+          </Button>
+          <Button variant="ghost" onClick={() => rewind(10)}>
+            <ClockCounterClockwise size={24} />
+          </Button>
+          <Button
+            variant="secondary"
+            className="text-blue-600 hover:text-blue-400 active:text-blue-800"
+            onClick={playPause}
+          >
+            <PlayPause size={24} weight="fill" />
+          </Button>
+          <Button variant="ghost" onClick={() => forward(10)}>
+            <ClockClockwise size={24} />
+          </Button>
+          <Button variant="ghost" onClick={onNext}>
+            <SkipForward size={24} />
+          </Button>
         </div>
-        <div className="py-4">
-          <PanControl value={pan} onChange={setPan} />
+        <div className="px-2">
+          <div className="py-4">
+            <VolumeControl value={volume} onChange={setVolume} />
+          </div>
+          <div className="py-4">
+            <PanControl value={pan} onChange={setPan} />
+          </div>
+          <div className="py-4">
+            <PlaybackRateControl
+              value={playbackRate}
+              onChange={setPlaybackRate}
+            />
+          </div>
+          <div className="py-4">
+            <SeekBar duration={duration} position={position} onChange={seek} />
+          </div>
         </div>
-        <div className="py-4">
-          <PlaybackRateControl
-            value={playbackRate}
-            onChange={setPlaybackRate}
-          />
-        </div>
-        <div className="py-4">
-          <SeekBar duration={duration} position={position} onChange={seek} />
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
