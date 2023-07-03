@@ -4,7 +4,8 @@ import {
   ClockClockwise,
 } from '@phosphor-icons/react';
 
-import usePlayer from './usePlayer';
+import usePlayer from '~hooks/usePlayer';
+
 import { VolumeControl } from './VolumeControl';
 import { PanControl } from './PanControl';
 import { SeekBar } from './SeekBar';

@@ -22,7 +22,7 @@ import {
 import { NotImplementedDialog } from ':NotImplementedDialog';
 
 import { DataTable, columns } from './FileList';
-import { DropBox } from './DropBox';
+import { DropZone } from './DropZone';
 import { DropChoiceHelpAlert } from './DropChoiceHelpAlert';
 
 const types = [
@@ -32,7 +32,7 @@ const types = [
   },
 ];
 
-export function DropZone() {
+export function FileLoader() {
   const [files, setFiles] = useState<FileEntity[]>([]);
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
     useState(false);
@@ -50,12 +50,12 @@ export function DropZone() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <DropBox
+        <DropZone
           onFilesAccepted={(fs) => setFiles(files.concat(fs))}
           types={types}
         >
           <DropChoiceHelpAlert />
-        </DropBox>
+        </DropZone>
         <DataTable columns={columns} data={files} />
       </CardContent>
       <CardFooter className="flex justify-end space-x-4">

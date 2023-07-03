@@ -1,12 +1,12 @@
 import { PlayerView } from '~modules/player/PlayerView';
 
-import { DropZone } from ':DropZone';
+import { FileLoader } from ':FileLoader';
 
 function App() {
   return (
     <div id="app">
       <PlayerView />
-      <DropZone></DropZone>
+      <FileLoader></FileLoader>
     </div>
   );
 }

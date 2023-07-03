@@ -19,7 +19,7 @@ export interface DropBoxProps {
   children?: React.ReactNode;
 }
 
-export function DropBox({ onFilesAccepted, types, children }: DropBoxProps) {
+export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
   const [draggingOver, setDraggingOver] = useState(false);
 
   return (
@@ -38,63 +38,55 @@ export function DropBox({ onFilesAccepted, types, children }: DropBoxProps) {
         }}
         onDrop={async (e) => {
           e.preventDefault();
-          e.stopPropagation();
           setDraggingOver(false);
 
           if (e.dataTransfer.items?.[0].kind !== 'file') {
             return;
           }
 
-          const { files: fs } = (await handleDroppedFilesAndFolders(
+          const { files } = (await handleDroppedFilesAndFolders(
             e.dataTransfer,
             {
               types,
             },
           )) || { files: [], directories: [] };
 
-          onFilesAccepted(fs);
+          onFilesAccepted(files);
         }}
       >
-        <ArrowDownIcon
-          className={cn(
-            'h-8 w-8 animate-bounce pointer-events-none',
-            draggingOver ? 'block' : 'hidden',
-          )}
-        />
-        <div
-          className={cn(
-            'flex-col items-center space-y-8 p-8 max-w-md',
-            draggingOver ? 'hidden' : 'flex',
-          )}
-        >
-          <div className="flex flex-row space-x-4">
-            <Button
-              variant="link"
-              onClick={async () => {
-                const { files: fs } = (await openFiles({
-                  multiple: true,
-                  types,
-                  excludeAcceptAllOption: true,
-                })) || { files: [], directories: [] };
-                onFilesAccepted(fs);
-              }}
-            >
-              Add Files
-            </Button>
-            <Button
-              onClick={async () => {
-                const { files: fs } = (await openDirectory({
-                  types,
-                })) || { files: [], directories: [] };
+        {draggingOver ? (
+          <ArrowDownIcon className="h-8 w-8 animate-bounce pointer-events-none" />
+        ) : (
+          <div className="flex flex-col items-center space-y-8 p-8 max-w-md">
+            <div className="flex flex-row space-x-4">
+              <Button
+                variant="link"
+                onClick={async () => {
+                  const { files } = (await openFiles({
+                    multiple: true,
+                    types,
+                    excludeAcceptAllOption: true,
+                  })) || { files: [], directories: [] };
+                  onFilesAccepted(files);
+                }}
+              >
+                Add Files
+              </Button>
+              <Button
+                onClick={async () => {
+                  const { files } = (await openDirectory({
+                    types,
+                  })) || { files: [], directories: [] };
 
-                onFilesAccepted(fs);
-              }}
-            >
-              Add Folder
-            </Button>
+                  onFilesAccepted(files);
+                }}
+              >
+                Add Folder
+              </Button>
+            </div>
+            {children}
           </div>
-          {children}
-        </div>
+        )}
       </div>
     </div>
   );
