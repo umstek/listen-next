@@ -32,7 +32,11 @@ const types = [
   },
 ];
 
-export function FileLoader() {
+interface FileLoaderProps {
+  onPlayNow: (files: FileEntity[]) => void;
+}
+
+export function FileLoader({ onPlayNow }: FileLoaderProps) {
   const [files, setFiles] = useState<FileEntity[]>([]);
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
     useState(false);
@@ -60,7 +64,9 @@ export function FileLoader() {
       </CardContent>
       <CardFooter className="flex justify-end space-x-4">
         {/* Store in Provider -- someday */}
-        <Button variant="link">Play Now</Button>
+        <Button variant="link" onClick={() => onPlayNow(files)}>
+          Play Now
+        </Button>
         <div className="flex">
           <Button
             className="rounded-r-none pr-2"

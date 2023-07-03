@@ -1,12 +1,15 @@
-import { PlayerView } from '~modules/player/PlayerView';
+import { useSelector } from 'react-redux';
 
-import { FileLoader } from ':FileLoader';
+import { PlayerView } from '~modules/player/PlayerView';
+import { FileLoaderView } from '~modules/fileLoader/fileLoaderView';
+import { selectPlaylistState } from '~modules/playlist/playlistSlice';
 
 function App() {
+  const playlistState = useSelector(selectPlaylistState);
+
   return (
     <div id="app">
-      <PlayerView />
-      <FileLoader></FileLoader>
+      {playlistState.playlist.length > 0 ? <PlayerView /> : <FileLoaderView />}
     </div>
   );
 }

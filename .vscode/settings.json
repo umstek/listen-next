@@ -3,6 +3,7 @@
         "deps",
         "player",
         "dx",
-        "file-loader"
+        "file-loader",
+        "playlist"
     ]
 }
