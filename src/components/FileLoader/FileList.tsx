@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useVirtual } from '@tanstack/react-virtual';
 import {
   Row,
@@ -81,7 +81,10 @@ function EmptyTableContent(props: EmptyTableContentProps): JSX.Element {
 }
 
 export function FileList({ data }: FileListProps) {
-  const player = usePlayer();
+  const player = usePlayer({ autoPlay: true });
+  const playPause = useCallback((url: string) => {
+    player.setSource(url);
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -93,15 +96,7 @@ export function FileList({ data }: FileListProps) {
       columnHelper.accessor('name', { header: 'File Name' }),
       columnHelper.display({
         id: 'actions',
-        cell: (props) => (
-          <RowActions
-            row={props.row}
-            playPause={(url) => {
-              player.setSource(url);
-              player.playPause();
-            }}
-          />
-        ),
+        cell: (props) => <RowActions row={props.row} playPause={playPause} />,
       }),
     ],
     [],

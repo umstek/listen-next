@@ -8,7 +8,7 @@ export enum PlayerState {
   PLAYING = 'PLAYING',
 }
 
-function usePlayer() {
+function usePlayer({ autoPlay = false }: { autoPlay?: boolean } = {}) {
   const playerRef = useRef<AudioPlayer | undefined>(undefined);
 
   // Outputs from AudioPlayer
@@ -30,7 +30,9 @@ function usePlayer() {
     // Collect outputs from AudioPlayer
     playerRef.current.on('loadedmetadata', ({ duration, seekable, tracks }) => {
       setDuration(duration);
-      console.log(duration, seekable, tracks);
+      if (autoPlay) {
+        playerRef.current?.play();
+      }
     });
     playerRef.current.on('play', () => {
       setState(PlayerState.PLAYING);
@@ -49,7 +51,7 @@ function usePlayer() {
       playerRef.current?.dispose();
       playerRef.current = undefined;
     };
-  }, []);
+  }, [autoPlay]);
 
   // Sends inputs to AudioPlayer
   useEffect(() => {
@@ -61,8 +63,10 @@ function usePlayer() {
   useEffect(() => {
     playerRef.current?.setPan(pan);
   }, [pan]);
-  const setSource = (url: string) => {
-    setUrl(url);
+  const setSource = (src: string) => {
+    if (src !== url) {
+      setUrl(src);
+    }
   };
   const play = () => {
     playerRef.current?.play();
