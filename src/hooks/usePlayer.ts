@@ -8,7 +8,7 @@ export enum PlayerState {
   PLAYING = 'PLAYING',
 }
 
-function usePlayer(url: string) {
+function usePlayer() {
   const playerRef = useRef<AudioPlayer | undefined>(undefined);
 
   // Outputs from AudioPlayer
@@ -17,6 +17,7 @@ function usePlayer(url: string) {
   const [state, setState] = useState(PlayerState.STOPPED);
 
   // Inputs to AudioPlayer
+  const [url, setUrl] = useState('');
   const [volume, setVolume] = useState(1);
   const [pan, setPan] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
@@ -60,6 +61,9 @@ function usePlayer(url: string) {
   useEffect(() => {
     playerRef.current?.setPan(pan);
   }, [pan]);
+  const setSource = (url: string) => {
+    setUrl(url);
+  };
   const play = () => {
     playerRef.current?.play();
   };
@@ -88,6 +92,7 @@ function usePlayer(url: string) {
   };
 
   return {
+    setSource,
     play,
     pause,
     playPause,

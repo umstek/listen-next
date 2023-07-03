@@ -21,7 +21,7 @@ import {
 } from ':ui/dropdown-menu';
 import { NotImplementedDialog } from ':NotImplementedDialog';
 
-import { DataTable, columns } from './FileList';
+import { FileList } from './FileList';
 import { DropZone } from './DropZone';
 import { DropChoiceHelpAlert } from './DropChoiceHelpAlert';
 
@@ -56,7 +56,7 @@ export function FileLoader() {
         >
           <DropChoiceHelpAlert />
         </DropZone>
-        <DataTable columns={columns} data={files} />
+        <FileList data={files} />
       </CardContent>
       <CardFooter className="flex justify-end space-x-4">
         {/* Store in Provider -- someday */}

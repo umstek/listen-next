@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useVirtual } from '@tanstack/react-virtual';
 import {
-  ColumnDef,
   Row,
   createColumnHelper,
   flexRender,
@@ -11,6 +10,8 @@ import {
 import { Play } from '@phosphor-icons/react';
 
 import { FileEntity, FileSystemEntity } from '~lib/FileLoader';
+
+import usePlayer from '~hooks/usePlayer';
 
 import {
   Table,
@@ -22,15 +23,24 @@ import {
 } from ':ui/table';
 import { Button } from ':ui/button';
 
-function RowActions({ row }: { row: Row<FileSystemEntity> }) {
-  const [url, setUrl] = useState<string>('');
+function RowActions({
+  row,
+  playPause,
+}: {
+  row: Row<FileSystemEntity>;
+  playPause: (url: string) => void;
+}) {
+  const [url, setUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (row.original.kind === 'file') {
-      const url = URL.createObjectURL((row.original as FileEntity).file);
+      const fileEntity = row.original as FileEntity;
+      const url = URL.createObjectURL(fileEntity.file);
       setUrl(url);
+
+      return () => URL.revokeObjectURL(url);
     }
-  }, [row]);
+  }, [row, playPause]);
 
   return (
     <div className="flex gap-2 invisible group-hover:visible">
@@ -38,17 +48,9 @@ function RowActions({ row }: { row: Row<FileSystemEntity> }) {
         variant="ghost"
         onClick={(e) => {
           e.stopPropagation();
-          // Play audio file
 
-          if (row.original.kind === 'file') {
-            const audio = new Audio(url);
-            audio.play();
-
-            return () => {
-              audio.pause();
-              audio.currentTime = 0;
-              audio.remove();
-            };
+          if (row.original.kind === 'file' && url) {
+            playPause(url);
           }
         }}
       >
@@ -60,29 +62,51 @@ function RowActions({ row }: { row: Row<FileSystemEntity> }) {
 
 const columnHelper = createColumnHelper<FileSystemEntity>();
 
-export const columns = [
-  columnHelper.group({
-    id: 'parent',
-    header: 'Parent',
-    aggregationFn: 'count',
-  }),
-  columnHelper.accessor('name', { header: 'File Name' }),
-  columnHelper.display({
-    id: 'actions',
-    cell: (props) => <RowActions row={props.row} />,
-  }),
-];
-
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface FileListProps {
+  data: FileSystemEntity[];
 }
 
-// TODO Files and folders expanding tree view
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+type EmptyTableContentProps = {
+  length: number;
+};
+
+function EmptyTableContent(props: EmptyTableContentProps): JSX.Element {
+  return (
+    <TableRow>
+      <TableCell colSpan={props.length} className="h-24 text-center">
+        No results.
+      </TableCell>
+    </TableRow>
+  );
+}
+
+export function FileList({ data }: FileListProps) {
+  const player = usePlayer();
+
+  const columns = useMemo(
+    () => [
+      columnHelper.group({
+        id: 'parent',
+        header: 'Parent',
+        aggregationFn: 'count',
+      }),
+      columnHelper.accessor('name', { header: 'File Name' }),
+      columnHelper.display({
+        id: 'actions',
+        cell: (props) => (
+          <RowActions
+            row={props.row}
+            playPause={(url) => {
+              player.setSource(url);
+              player.playPause();
+            }}
+          />
+        ),
+      }),
+    ],
+    [],
+  );
+
   const table = useReactTable({
     data,
     columns,
@@ -96,10 +120,10 @@ export function DataTable<TData, TValue>({
     overscan: 10,
   });
   const { virtualItems: virtualRows, totalSize } = rowVirtualizer;
-  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
+  const paddingTop = virtualRows.length > 0 ? virtualRows[0].start || 0 : 0;
   const paddingBottom =
     virtualRows.length > 0
-      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
+      ? totalSize - (virtualRows[virtualRows.length - 1].end || 0)
       : 0;
 
   return (
@@ -128,9 +152,9 @@ export function DataTable<TData, TValue>({
         </TableHeader>
         <TableBody>
           {paddingTop > 0 && (
-            <tr>
-              <td style={{ height: `${paddingTop}px` }} />
-            </tr>
+            <TableRow>
+              <TableCell style={{ height: `${paddingTop}px` }} />
+            </TableRow>
           )}
           {table.getRowModel().rows?.length ? (
             virtualRows.map((virtualRow) => {
@@ -153,16 +177,12 @@ export function DataTable<TData, TValue>({
               );
             })
           ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
+            <EmptyTableContent length={columns.length} />
           )}
           {paddingBottom > 0 && (
-            <tr>
-              <td style={{ height: `${paddingBottom}px` }} />
-            </tr>
+            <TableRow>
+              <TableCell style={{ height: `${paddingBottom}px` }} />
+            </TableRow>
           )}
         </TableBody>
       </Table>
