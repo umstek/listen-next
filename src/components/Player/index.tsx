@@ -10,6 +10,7 @@ import { VolumeControl } from './VolumeControl';
 import { PanControl } from './PanControl';
 import { SeekBar } from './SeekBar';
 import { PlaybackRateControl } from './PlaybackRateControl';
+import { useEffect } from 'react';
 
 interface PlayerProps {
   url: string;
@@ -19,6 +20,7 @@ interface PlayerProps {
 
 export function Player({ url }: PlayerProps) {
   const {
+    setSource,
     playPause,
     rewind,
     forward,
@@ -32,7 +34,11 @@ export function Player({ url }: PlayerProps) {
     duration,
     position,
     state,
-  } = usePlayer(url);
+  } = usePlayer();
+
+  useEffect(() => {
+    setSource(url);
+  }, [url]);
 
   return (
     <div className="flex flex-col w-full p-4">
