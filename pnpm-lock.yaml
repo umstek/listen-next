@@ -92,8 +92,8 @@ dependencies:
 
 devDependencies:
   '@total-typescript/ts-reset':
-    specifier: ^0.4.2
-    version: 0.4.2
+    specifier: ^0.5.0
+    version: 0.5.0
   '@types/events':
     specifier: ^3.0.0
     version: 3.0.0
@@ -1672,8 +1672,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /@total-typescript/ts-reset@0.4.2:
-    resolution: {integrity: sha512-vqd7ZUDSrXFVT1n8b2kc3LnklncDQFPvR58yUS1kEP23/nHPAO9l1lMjUfnPrXYYk4Hj54rrLKMW5ipwk7k09A==}
+  /@total-typescript/ts-reset@0.5.0:
+    resolution: {integrity: sha512-Q0vtuArmLzP5YSo2Z1DWoQjgH/Fth32bbjDFmXVra4SvYW3LSxnfDOtNsbhi+hEC9pobT7j1fw/zCf+WXAeQ2w==}
     dev: true
 
   /@types/events@3.0.0:
