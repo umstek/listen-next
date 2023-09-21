@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useVirtual } from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   CellContext,
   Row,
@@ -115,22 +115,17 @@ export function FileList({ data }: FileListProps) {
   });
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const rowVirtualizer = useVirtual({
-    parentRef: tableContainerRef,
-    size: data.length,
+  const rowVirtualizer = useVirtualizer({
+    count: data.length,
+    getScrollElement: () => tableContainerRef.current,
+    estimateSize: () => 50,
     overscan: 10,
   });
-  const { virtualItems: virtualRows, totalSize } = rowVirtualizer;
-  const paddingTop = virtualRows.length > 0 ? virtualRows[0].start || 0 : 0;
-  const paddingBottom =
-    virtualRows.length > 0
-      ? totalSize - (virtualRows[virtualRows.length - 1].end || 0)
-      : 0;
 
   return (
     <div
       ref={tableContainerRef}
-      className="rounded-b-md border h-[500px] overflow-auto"
+      className="rounded-b-md border overflow-auto"
     >
       <Table>
         <TableHeader>
@@ -152,13 +147,8 @@ export function FileList({ data }: FileListProps) {
           ))}
         </TableHeader>
         <TableBody>
-          {paddingTop > 0 && (
-            <TableRow>
-              <TableCell style={{ height: `${paddingTop}px` }} />
-            </TableRow>
-          )}
           {table.getRowModel().rows?.length ? (
-            virtualRows.map((virtualRow) => {
+            rowVirtualizer.getVirtualItems().map((virtualRow) => {
               const row = table.getRowModel().rows[virtualRow.index];
               return (
                 <TableRow
@@ -179,11 +169,6 @@ export function FileList({ data }: FileListProps) {
             })
           ) : (
             <EmptyTableContent length={columns.length} />
-          )}
-          {paddingBottom > 0 && (
-            <TableRow>
-              <TableCell style={{ height: `${paddingBottom}px` }} />
-            </TableRow>
           )}
         </TableBody>
       </Table>
