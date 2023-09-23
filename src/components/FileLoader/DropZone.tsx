@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowDownIcon } from '@radix-ui/react-icons';
+import { Button } from '@radix-ui/themes';
 
 import {
   FileEntity,
@@ -10,8 +11,6 @@ import {
 } from '~lib/FileLoader';
 
 import { cn } from '~util/styles';
-
-import { Button } from ':ui/button';
 
 export interface DropBoxProps {
   types?: FilePickerAcceptType[] | undefined;
@@ -60,7 +59,7 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
           <div className="flex flex-col items-center space-y-8 p-8 max-w-md">
             <div className="flex flex-row space-x-4">
               <Button
-                variant="link"
+                variant="outline"
                 onClick={async () => {
                   const { files } = (await openFiles({
                     multiple: true,

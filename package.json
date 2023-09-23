@@ -4,11 +4,12 @@
   "version": "0.2.0",
   "scripts": {
     "clean": "rimraf dist",
-    "start": "vite --host --open",
+    "dev": "vite --host --open",
+    "start": "pnpm build && vite preview",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "format": "prettier --write .",
-    "lint": "eslint ."
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.0.13",

@@ -1,11 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from '@radix-ui/themes';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   CellContext,
-  Row,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  Row,
   useReactTable,
 } from '@tanstack/react-table';
 import { Play } from '@phosphor-icons/react';
@@ -13,16 +21,6 @@ import { Play } from '@phosphor-icons/react';
 import { FileEntity, FileSystemEntity } from '~lib/FileLoader';
 
 import usePlayer from '~hooks/usePlayer';
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from ':ui/table';
-import { Button } from ':ui/button';
 
 function RowActions({
   row,
@@ -123,24 +121,21 @@ export function FileList({ data }: FileListProps) {
   });
 
   return (
-    <div
-      ref={tableContainerRef}
-      className="rounded-b-md border overflow-auto"
-    >
-      <Table>
+    <div ref={tableContainerRef} className="rounded-b-md border overflow-auto">
+      <Table.Root>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHeader key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
-                  </TableHead>
+                  </TableHeader>
                 );
               })}
             </TableRow>
@@ -171,7 +166,7 @@ export function FileList({ data }: FileListProps) {
             <EmptyTableContent length={columns.length} />
           )}
         </TableBody>
-      </Table>
+      </Table.Root>
     </div>
   );
 }

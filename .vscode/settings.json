@@ -4,6 +4,7 @@
         "player",
         "dx",
         "file-loader",
-        "playlist"
+        "playlist",
+        "ui"
     ]
 }

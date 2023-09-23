@@ -1,24 +1,18 @@
 import { useState } from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
-
-import config from '~config';
-import { FileEntity } from '~lib/FileLoader';
-
-import { Button } from ':ui/button';
 import {
+  Button,
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from ':ui/card';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from ':ui/dropdown-menu';
+  Flex,
+} from '@radix-ui/themes';
+
+import config from '~config';
+import { FileEntity } from '~lib/FileLoader';
+
 import { NotImplementedDialog } from ':NotImplementedDialog';
 
 import { FileList } from './FileList';
@@ -47,13 +41,11 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
         open={showNotImplementedDialog}
         onOpenChange={setShowNotImplementedDialog}
       />
-      <CardHeader>
-        <CardTitle>Add Audio Files</CardTitle>
-        <CardDescription>
-          Drop files/folders here or click to browse.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+      <Flex>
+        <h3>Add Audio Files</h3>
+        <p>Drop files/folders here or click to browse.</p>
+      </Flex>
+      <Flex direction="column">
         <DropZone
           onFilesAccepted={(fs) => setFiles(files.concat(fs))}
           types={types}
@@ -61,22 +53,19 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
           <DropChoiceHelpAlert />
         </DropZone>
         <FileList data={files} />
-      </CardContent>
-      <CardFooter className="flex justify-end space-x-4">
+      </Flex>
+      <Flex justify="end">
         {/* Store in Provider -- someday */}
-        <Button variant="link" onClick={() => onPlayNow(files)}>
+        <Button variant="surface" onClick={() => onPlayNow(files)}>
           Play Now
         </Button>
-        <div className="flex">
-          <Button
-            className="rounded-r-none pr-2"
-            onClick={() => setShowNotImplementedDialog(true)}
-          >
+        <Flex>
+          <Button onClick={() => setShowNotImplementedDialog(true)}>
             Copy to Browser
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="rounded-l-none p-2">
+          <DropdownMenu.Root>
+            <DropdownMenuTrigger>
+              <Button variant="solid">
                 <ChevronDownIcon className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -87,12 +76,12 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
                 Store as Links
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+          </DropdownMenu.Root>
+        </Flex>
         <Button variant="outline" onClick={() => setFiles([])}>
           Clear
         </Button>
-      </CardFooter>
+      </Flex>
     </Card>
   );
 }

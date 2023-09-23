@@ -1,29 +1,28 @@
 import {
-  AlertDialog,
-  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
+  AlertDialogRoot,
   AlertDialogTitle,
-} from ':ui/alert-dialog';
+  Button,
+} from '@radix-ui/themes';
 
 export function NotImplementedDialog(
-  props: React.ComponentProps<typeof AlertDialog>,
+  props: React.ComponentProps<typeof AlertDialogRoot>,
 ) {
   return (
-    <AlertDialog {...props}>
+    <AlertDialogRoot {...props}>
       <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>😔</AlertDialogTitle>
-          <AlertDialogDescription>
-            This function is not implemented yet.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogAction>Okay</AlertDialogAction>
-        </AlertDialogFooter>
+        <AlertDialogTitle>😔</AlertDialogTitle>
+        <AlertDialogDescription>
+          This function is not implemented yet.
+        </AlertDialogDescription>
+        <AlertDialogCancel>
+          <Button variant="ghost" color="gray">
+            Okay
+          </Button>
+        </AlertDialogCancel>
       </AlertDialogContent>
-    </AlertDialog>
+    </AlertDialogRoot>
   );
 }

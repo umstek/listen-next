@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
+import { Button, Card, Flex } from '@radix-ui/themes';
 import {
-  PlayPause,
-  ClockCounterClockwise,
   ClockClockwise,
-  SkipForward,
+  ClockCounterClockwise,
+  PlayPause,
   SkipBack,
+  SkipForward,
 } from '@phosphor-icons/react';
 
 import usePlayer from '~hooks/usePlayer';
@@ -13,14 +14,6 @@ import { VolumeControl } from './VolumeControl';
 import { PanControl } from './PanControl';
 import { SeekBar } from './SeekBar';
 import { PlaybackRateControl } from './PlaybackRateControl';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from ':ui/card';
-import { Button } from ':ui/button';
 
 interface PlayerProps {
   url: string;
@@ -54,11 +47,11 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Listen</CardTitle>
-        <CardDescription></CardDescription>
-      </CardHeader>
-      <CardContent>
+      <Flex>
+        <h3>Listen</h3>
+        <p></p>
+      </Flex>
+      <Flex>
         <div className="flex flex-row w-full justify-evenly">
           <Button variant="ghost" onClick={onPrevious}>
             <SkipBack size={24} />
@@ -67,7 +60,7 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
             <ClockCounterClockwise size={24} />
           </Button>
           <Button
-            variant="secondary"
+            variant="solid"
             className="text-blue-600 hover:text-blue-400 active:text-blue-800"
             onClick={playPause}
           >
@@ -97,7 +90,7 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
             <SeekBar duration={duration} position={position} onChange={seek} />
           </div>
         </div>
-      </CardContent>
+      </Flex>
     </Card>
   );
 }
