@@ -8,6 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Flex,
+  Heading,
+  IconButton,
+  Text,
 } from '@radix-ui/themes';
 
 import config from '~config';
@@ -36,14 +39,16 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
     useState(false);
 
   return (
-    <Card>
+    <Card variant="ghost">
       <NotImplementedDialog
         open={showNotImplementedDialog}
         onOpenChange={setShowNotImplementedDialog}
       />
-      <Flex>
-        <h3>Add Audio Files</h3>
-        <p>Drop files/folders here or click to browse.</p>
+      <Flex direction="column" p="5">
+        <Heading as="h3" size="5">
+          Add Audio Files
+        </Heading>
+        <Text as="p">Drop files/folders here or click to browse.</Text>
       </Flex>
       <Flex direction="column">
         <DropZone
@@ -54,20 +59,23 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
         </DropZone>
         <FileList data={files} />
       </Flex>
-      <Flex justify="end">
+      <Flex justify="end" gap="3" align="center" pt="3">
         {/* Store in Provider -- someday */}
-        <Button variant="surface" onClick={() => onPlayNow(files)}>
+        <Button variant="outline" onClick={() => onPlayNow(files)}>
           Play Now
         </Button>
         <Flex>
-          <Button onClick={() => setShowNotImplementedDialog(true)}>
+          <Button
+            onClick={() => setShowNotImplementedDialog(true)}
+            className="rounded-r-none"
+          >
             Copy to Browser
           </Button>
           <DropdownMenu.Root>
             <DropdownMenuTrigger>
-              <Button variant="solid">
-                <ChevronDownIcon className="h-4 w-4" />
-              </Button>
+              <IconButton className="rounded-l-none">
+                <ChevronDownIcon />
+              </IconButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem
@@ -78,7 +86,7 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
             </DropdownMenuContent>
           </DropdownMenu.Root>
         </Flex>
-        <Button variant="outline" onClick={() => setFiles([])}>
+        <Button variant="outline" color="crimson" onClick={() => setFiles([])}>
           Clear
         </Button>
       </Flex>

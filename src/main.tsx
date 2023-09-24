@@ -15,7 +15,7 @@ root &&
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
       <Provider store={store}>
-        <Theme accentColor="lime" appearance="inherit" radius="medium">
+        <Theme accentColor="lime" appearance="inherit" radius="large">
           <App />
         </Theme>
       </Provider>

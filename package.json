@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "scripts": {
     "clean": "rimraf dist",
-    "dev": "vite --host --open",
+    "dev": "vite --host",
     "start": "pnpm build && vite preview",
     "build": "tsc && vite build",
     "serve": "vite preview",

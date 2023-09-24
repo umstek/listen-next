@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ArrowDownIcon } from '@radix-ui/react-icons';
-import { Button } from '@radix-ui/themes';
+import { Box, Button, Flex } from '@radix-ui/themes';
 
 import {
   FileEntity,
@@ -22,12 +22,9 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
   const [draggingOver, setDraggingOver] = useState(false);
 
   return (
-    <div className="h-96 w-full bg-secondary rounded-t-lg p-4">
-      <div
-        className={cn(
-          'flex flex-col h-full w-full rounded-lg justify-center items-center transition-colors duration-300 border border-dashed border-secondary-foreground',
-          draggingOver ? 'bg-primary/5' : '',
-        )}
+    <Flex direction="column" justify="center" align="center" p="9">
+      <Box
+        className={cn('w-[300px] h-[300px]', draggingOver ? 'bg-red-500' : '')}
         onDragEnter={() => setDraggingOver(true)}
         onDragLeave={() => setDraggingOver(false)}
         onDragOver={(e) => {
@@ -53,40 +50,42 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
           onFilesAccepted(files);
         }}
       >
-        {draggingOver ? (
-          <ArrowDownIcon className="h-8 w-8 animate-bounce pointer-events-none" />
-        ) : (
-          <div className="flex flex-col items-center space-y-8 p-8 max-w-md">
-            <div className="flex flex-row space-x-4">
-              <Button
-                variant="outline"
-                onClick={async () => {
-                  const { files } = (await openFiles({
-                    multiple: true,
-                    types,
-                    excludeAcceptAllOption: true,
-                  })) || { files: [], directories: [] };
-                  onFilesAccepted(files);
-                }}
-              >
-                Add Files
-              </Button>
-              <Button
-                onClick={async () => {
-                  const { files } = (await openDirectory({
-                    types,
-                  })) || { files: [], directories: [] };
+        <Flex height="100%" direction="column" align="center" justify="center">
+          {draggingOver ? (
+            <ArrowDownIcon className="pointer-events-none" />
+          ) : (
+            <Flex direction="column" gap="3">
+              <Flex justify="center" gap="3">
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    const { files } = (await openFiles({
+                      multiple: true,
+                      types,
+                      excludeAcceptAllOption: true,
+                    })) || { files: [], directories: [] };
+                    onFilesAccepted(files);
+                  }}
+                >
+                  Add Files
+                </Button>
+                <Button
+                  onClick={async () => {
+                    const { files } = (await openDirectory({
+                      types,
+                    })) || { files: [], directories: [] };
 
-                  onFilesAccepted(files);
-                }}
-              >
-                Add Folder
-              </Button>
-            </div>
-            {children}
-          </div>
-        )}
-      </div>
-    </div>
+                    onFilesAccepted(files);
+                  }}
+                >
+                  Add Folder
+                </Button>
+              </Flex>
+              {children}
+            </Flex>
+          )}
+        </Flex>
+      </Box>
+    </Flex>
   );
 }

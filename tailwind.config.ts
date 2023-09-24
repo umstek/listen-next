@@ -13,8 +13,10 @@ const config: Config = {
       },
     },
   },
-  // presets: [radixThemePreset],
   plugins: [animate],
+  corePlugins: {
+    preflight: false,
+  },
 };
 
 export default config;
