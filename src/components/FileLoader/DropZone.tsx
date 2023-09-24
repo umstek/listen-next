@@ -24,7 +24,11 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
   return (
     <Flex direction="column" justify="center" align="center" p="9">
       <Box
-        className={cn('w-[300px] h-[300px]', draggingOver ? 'bg-red-500' : '')}
+        p="4"
+        className={cn(
+          'w-[400px] h-[300px] shadow-sm bg-gray-50 text-lime-600 rounded-3xl',
+          draggingOver ? 'bg-lime-100 shadow-inner' : '',
+        )}
         onDragEnter={() => setDraggingOver(true)}
         onDragLeave={() => setDraggingOver(false)}
         onDragOver={(e) => {
@@ -50,13 +54,20 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
           onFilesAccepted(files);
         }}
       >
-        <Flex height="100%" direction="column" align="center" justify="center">
+        <Flex
+          height="100%"
+          direction="column"
+          align="center"
+          justify="center"
+          className="pointer-events-none"
+        >
           {draggingOver ? (
-            <ArrowDownIcon className="pointer-events-none" />
+            <ArrowDownIcon className="h-10 w-10 animate-bounce" />
           ) : (
             <Flex direction="column" gap="3">
               <Flex justify="center" gap="3">
                 <Button
+                  className="pointer-events-auto"
                   variant="outline"
                   onClick={async () => {
                     const { files } = (await openFiles({
@@ -70,6 +81,7 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
                   Add Files
                 </Button>
                 <Button
+                  className="pointer-events-auto"
                   onClick={async () => {
                     const { files } = (await openDirectory({
                       types,
