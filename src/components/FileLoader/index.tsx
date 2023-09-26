@@ -48,7 +48,7 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
         <Heading as="h3" size="5">
           Add Audio Files
         </Heading>
-        <Text as="p">Drop files/folders here or click to browse.</Text>
+        <Text as="p">Drop files/folders here or browse.</Text>
       </Flex>
       <Flex direction="column">
         <DropZone

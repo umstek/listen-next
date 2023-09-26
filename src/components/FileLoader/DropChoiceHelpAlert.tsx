@@ -1,4 +1,4 @@
-import { Callout, Heading, Text } from '@radix-ui/themes';
+import { Box, Callout, Heading } from '@radix-ui/themes';
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 
 export function DropChoiceHelpAlert() {
@@ -7,15 +7,15 @@ export function DropChoiceHelpAlert() {
       <Callout.Icon>
         <QuestionMarkCircledIcon />
       </Callout.Icon>
-      <Callout.Text>
+      <Box>
         <Heading as="h4" size="2">
           Files or Folders?
         </Heading>
-        <Text as="p">
+        <Callout.Text>
           Consider organizing your audio content under a single folder or a few
           folders on your operating system so you can easily add them here.
-        </Text>
-      </Callout.Text>
+        </Callout.Text>
+      </Box>
     </Callout.Root>
   );
 }

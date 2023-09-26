@@ -1,4 +1,4 @@
-import TooltipSlider from './Slider';
+import { Flex, Slider } from '@radix-ui/themes';
 
 export interface SeekBarProps {
   onChange: (value: number) => void;
@@ -8,19 +8,15 @@ export interface SeekBarProps {
 
 export function SeekBar({ onChange, duration, position }: SeekBarProps) {
   return (
-    <div className="flex flex-row flex-grow items-center">
-      <TooltipSlider
+    <Flex grow="1">
+      <Slider
+        size="1"
         min={0}
         max={duration}
-        tipFormatter={(value) => value}
-        tipProps={{
-          placement: 'top',
-          prefixCls: 'rc-slider-tooltip',
-          overlay: position,
-        }}
-        value={position}
-        onChange={(n) => onChange(n as number)}
+        value={[position]}
+        className="w-full"
+        onValueChange={([n]) => onChange(n as number)}
       />
-    </div>
+    </Flex>
   );
 }

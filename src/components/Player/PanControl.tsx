@@ -1,3 +1,4 @@
+import { Flex, IconButton, Slider } from '@radix-ui/themes';
 import {
   SpeakerSimpleHigh,
   SpeakerSimpleLow,
@@ -6,7 +7,6 @@ import {
 
 import { clamp } from '~util/math';
 
-import Slider from './Slider';
 import { VolumeControlProps } from './VolumeControl';
 
 const speakerSimpleIconSet = [
@@ -19,24 +19,32 @@ export function PanControl({ onChange, value }: VolumeControlProps) {
   const RightSpeaker = speakerSimpleIconSet[clamp(Math.ceil(value + 1), 0, 2)];
 
   return (
-    <div className="flex flex-row flex-grow items-center">
-      <LeftSpeaker mirrored size={24} weight="fill" className="text-blue-600" />
+    <Flex align="center" gap="1">
+      <IconButton
+        variant="ghost"
+        size="1"
+        onClick={() => onChange(clamp(value - 0.1, -1, 1))}
+      >
+        <LeftSpeaker mirrored size={16} weight="fill" />
+      </IconButton>
       <Slider
-        tipFormatter={(value) => value}
-        tipProps={{
-          placement: 'top',
-          prefixCls: 'rc-slider-tooltip',
-          overlay: value,
-        }}
-        defaultValue={0}
-        startPoint={0}
+        size="1"
+        variant='soft'
+        defaultValue={[0]}
         min={-1}
         max={1}
-        value={value}
+        value={[value]}
         step={0.01}
-        onChange={(v) => void onChange(v as number)}
+        className="w-24"
+        onValueChange={([v]) => onChange(v)}
       />
-      <RightSpeaker size={24} weight="fill" className="text-blue-600" />
-    </div>
+      <IconButton
+        variant="ghost"
+        size="1"
+        onClick={() => onChange(value + 0.1)}
+      >
+        <RightSpeaker size={16} weight="fill" />
+      </IconButton>
+    </Flex>
   );
 }
