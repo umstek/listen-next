@@ -1,4 +1,5 @@
-import TooltipSlider from './Slider';
+import { PersonSimpleRun } from '@phosphor-icons/react';
+import { Flex, Select } from '@radix-ui/themes';
 
 export interface PlaybackRateControlProps {
   onChange: (value: number) => void;
@@ -10,31 +11,32 @@ export function PlaybackRateControl({
   value,
 }: PlaybackRateControlProps) {
   return (
-    <div className="flex flex-row flex-grow items-center">
-      <TooltipSlider
-        min={0.25}
-        max={4}
-        step={0.05}
-        marks={{
-          0.25: '0.25x',
-          0.5: '0.5x',
-          0.8: '0.8x',
-          1: '1x',
-          1.25: '1.25x',
-          2: '2x',
-          4: '4x',
-        }}
-        defaultValue={1}
-        startPoint={1}
-        tipFormatter={(value) => value}
-        tipProps={{
-          placement: 'top',
-          prefixCls: 'rc-slider-tooltip',
-          overlay: value,
-        }}
-        value={value}
-        onChange={(n) => onChange(n as number)}
-      />
-    </div>
+    <Flex align="center" gap="2">
+      <Select.Root
+        size="1"
+        value={value.toFixed(2)}
+        onValueChange={(v) => onChange(Number.parseFloat(v))}
+      >
+        <PersonSimpleRun size={16} />
+        <Select.Trigger placeholder="Playback speed" />
+        <Select.Content>
+          <Select.Group>
+            <Select.Item value="0.25">25%</Select.Item>
+            <Select.Item value="0.50">50%</Select.Item>
+            <Select.Item value="0.80">80%</Select.Item>
+          </Select.Group>
+          <Select.Separator />
+          <Select.Group>
+            <Select.Item value="1.00">100%</Select.Item>
+          </Select.Group>
+          <Select.Separator />
+          <Select.Group>
+            <Select.Item value="1.25">125%</Select.Item>
+            <Select.Item value="2.00">200%</Select.Item>
+            <Select.Item value="4.00">400%</Select.Item>
+          </Select.Group>
+        </Select.Content>
+      </Select.Root>
+    </Flex>
   );
 }

@@ -2,8 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { clamp } from '~util/math';
 import {
-  setActiveIndex,
   selectPlaylistState,
+  setActiveIndex,
 } from '~modules/playlist/playlistSlice';
 
 import { Player } from ':Player';

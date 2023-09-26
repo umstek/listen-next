@@ -1,26 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  PlayPause,
-  ClockCounterClockwise,
+  Avatar,
+  Button,
+  Card,
+  Flex,
+  IconButton,
+  Text,
+  Tooltip,
+} from '@radix-ui/themes';
+import {
   ClockClockwise,
-  SkipForward,
+  ClockCounterClockwise,
   SkipBack,
+  SkipForward,
+  Play,
+  Pause,
+  BookOpen,
+  MusicNote,
 } from '@phosphor-icons/react';
 
-import usePlayer from '~hooks/usePlayer';
+import usePlayer, { PlayerState } from '~hooks/usePlayer';
 
 import { VolumeControl } from './VolumeControl';
 import { PanControl } from './PanControl';
 import { SeekBar } from './SeekBar';
 import { PlaybackRateControl } from './PlaybackRateControl';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from ':ui/card';
-import { Button } from ':ui/button';
 
 interface PlayerProps {
   url: string;
@@ -29,6 +33,8 @@ interface PlayerProps {
   settings: unknown | undefined;
   metadata: unknown | undefined;
 }
+
+const VPR = ['v', 'p', 'r'] as const;
 
 export function Player({ url, onPrevious, onNext }: PlayerProps) {
   const {
@@ -52,52 +58,95 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
     setSource(url);
   }, [setSource, url]);
 
+  const [vpr, setVpr] = useState<'v' | 'p' | 'r'>('v');
+  const [mb, setMb] = useState<'m' | 'b'>('m');
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Listen</CardTitle>
-        <CardDescription></CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-row w-full justify-evenly">
-          <Button variant="ghost" onClick={onPrevious}>
-            <SkipBack size={24} />
-          </Button>
-          <Button variant="ghost" onClick={() => rewind(10)}>
-            <ClockCounterClockwise size={24} />
-          </Button>
+    <Card variant="surface">
+      <Flex gap="4" align="center">
+        <Tooltip content="Volume / Pan / Playback Rate">
           <Button
-            variant="secondary"
-            className="text-blue-600 hover:text-blue-400 active:text-blue-800"
-            onClick={playPause}
+            variant="surface"
+            radius="full"
+            size="1"
+            onClick={() => {
+              setVpr(VPR[(VPR.indexOf(vpr) + 1) % VPR.length]);
+            }}
           >
-            <PlayPause size={24} weight="fill" />
+            {vpr.toUpperCase()}
           </Button>
-          <Button variant="ghost" onClick={() => forward(10)}>
-            <ClockClockwise size={24} />
-          </Button>
-          <Button variant="ghost" onClick={onNext}>
-            <SkipForward size={24} />
-          </Button>
-        </div>
-        <div className="px-2">
-          <div className="py-4">
-            <VolumeControl value={volume} onChange={setVolume} />
-          </div>
-          <div className="py-4">
-            <PanControl value={pan} onChange={setPan} />
-          </div>
-          <div className="py-4">
+        </Tooltip>
+
+        <Flex direction="column" grow="0" align="end" justify="center">
+          {vpr === 'v' && <VolumeControl value={volume} onChange={setVolume} />}
+          {vpr === 'p' && <PanControl value={pan} onChange={setPan} />}
+          {vpr === 'r' && (
             <PlaybackRateControl
               value={playbackRate}
               onChange={setPlaybackRate}
             />
-          </div>
-          <div className="py-4">
+          )}
+        </Flex>
+
+        <Flex gap="3" grow="1">
+          <Avatar variant="solid" fallback="LP" />
+          <Flex grow="1" direction="column">
+            <Text as="div" size="1" weight="medium">
+              In The End
+            </Text>
+            <Flex justify="between">
+              <Text as="div" size="1">
+                Linkin Park - Hybrid Theory
+              </Text>
+              <Text as="div" size="1">
+                {position.toFixed(0)} / {duration.toFixed(0)}
+              </Text>
+            </Flex>
             <SeekBar duration={duration} position={position} onChange={seek} />
-          </div>
-        </div>
-      </CardContent>
+          </Flex>
+        </Flex>
+
+        <Flex grow="0" align="center" justify="start" gap="3">
+          {mb === 'm' && (
+            <IconButton size="1" variant="ghost" onClick={onPrevious}>
+              <SkipBack size={20} />
+            </IconButton>
+          )}
+          {mb === 'b' && (
+            <IconButton size="1" variant="ghost" onClick={() => rewind(10)}>
+              <ClockCounterClockwise size={20} />
+            </IconButton>
+          )}
+          <IconButton variant="solid" radius="full" onClick={playPause}>
+            {state === PlayerState.PLAYING ? (
+              <Pause size={24} weight="fill" />
+            ) : (
+              <Play size={24} weight="fill" />
+            )}
+          </IconButton>
+          {mb === 'b' && (
+            <IconButton size="1" variant="ghost" onClick={() => forward(10)}>
+              <ClockClockwise size={20} />
+            </IconButton>
+          )}
+          {mb === 'm' && (
+            <IconButton size="1" variant="ghost" onClick={onNext}>
+              <SkipForward size={20} />
+            </IconButton>
+          )}
+        </Flex>
+
+        <Tooltip content="Music / Audio book">
+          <IconButton
+            variant="surface"
+            radius="full"
+            size="1"
+            onClick={() => setMb(mb === 'm' ? 'b' : 'm')}
+          >
+            {mb === 'm' ? <MusicNote size={16} /> : <BookOpen size={16} />}
+          </IconButton>
+        </Tooltip>
+      </Flex>
     </Card>
   );
 }

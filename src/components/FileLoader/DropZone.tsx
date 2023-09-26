@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowDownIcon } from '@radix-ui/react-icons';
+import { Box, Button, Flex } from '@radix-ui/themes';
 
 import {
   FileEntity,
@@ -11,8 +12,6 @@ import {
 
 import { cn } from '~util/styles';
 
-import { Button } from ':ui/button';
-
 export interface DropBoxProps {
   types?: FilePickerAcceptType[] | undefined;
   onFilesAccepted: (files: FileEntity[]) => void;
@@ -23,11 +22,12 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
   const [draggingOver, setDraggingOver] = useState(false);
 
   return (
-    <div className="h-96 w-full bg-secondary rounded-t-lg p-4">
-      <div
+    <Flex direction="column" justify="center" align="center" p="9">
+      <Box
+        p="4"
         className={cn(
-          'flex flex-col h-full w-full rounded-lg justify-center items-center transition-colors duration-300 border border-dashed border-secondary-foreground',
-          draggingOver ? 'bg-primary/5' : '',
+          'w-[400px] h-[300px] shadow-sm bg-gray-50 text-lime-600 rounded-3xl',
+          draggingOver ? 'bg-lime-100 shadow-inner' : '',
         )}
         onDragEnter={() => setDraggingOver(true)}
         onDragLeave={() => setDraggingOver(false)}
@@ -54,40 +54,50 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
           onFilesAccepted(files);
         }}
       >
-        {draggingOver ? (
-          <ArrowDownIcon className="h-8 w-8 animate-bounce pointer-events-none" />
-        ) : (
-          <div className="flex flex-col items-center space-y-8 p-8 max-w-md">
-            <div className="flex flex-row space-x-4">
-              <Button
-                variant="link"
-                onClick={async () => {
-                  const { files } = (await openFiles({
-                    multiple: true,
-                    types,
-                    excludeAcceptAllOption: true,
-                  })) || { files: [], directories: [] };
-                  onFilesAccepted(files);
-                }}
-              >
-                Add Files
-              </Button>
-              <Button
-                onClick={async () => {
-                  const { files } = (await openDirectory({
-                    types,
-                  })) || { files: [], directories: [] };
+        <Flex
+          height="100%"
+          direction="column"
+          align="center"
+          justify="center"
+          className="pointer-events-none"
+        >
+          {draggingOver ? (
+            <ArrowDownIcon className="h-10 w-10 animate-bounce" />
+          ) : (
+            <Flex direction="column" gap="3">
+              <Flex justify="center" gap="3">
+                <Button
+                  className="pointer-events-auto"
+                  variant="outline"
+                  onClick={async () => {
+                    const { files } = (await openFiles({
+                      multiple: true,
+                      types,
+                      excludeAcceptAllOption: true,
+                    })) || { files: [], directories: [] };
+                    onFilesAccepted(files);
+                  }}
+                >
+                  Add Files
+                </Button>
+                <Button
+                  className="pointer-events-auto"
+                  onClick={async () => {
+                    const { files } = (await openDirectory({
+                      types,
+                    })) || { files: [], directories: [] };
 
-                  onFilesAccepted(files);
-                }}
-              >
-                Add Folder
-              </Button>
-            </div>
-            {children}
-          </div>
-        )}
-      </div>
-    </div>
+                    onFilesAccepted(files);
+                  }}
+                >
+                  Add Folder
+                </Button>
+              </Flex>
+              {children}
+            </Flex>
+          )}
+        </Flex>
+      </Box>
+    </Flex>
   );
 }

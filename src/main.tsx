@@ -1,18 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+
+import '@radix-ui/themes/styles.css';
+import { Theme } from '@radix-ui/themes';
 import { Provider } from 'react-redux';
 
-import store from './store';
-import App from './App';
+import './main.css';
 
-import './index.css';
+import App from './App';
+import store from './store';
 
 const root = document.getElementById('root');
 root &&
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
       <Provider store={store}>
-        <App />
+        <Theme accentColor="lime" appearance="inherit" radius="large">
+          <App />
+        </Theme>
       </Provider>
     </React.StrictMode>,
   );

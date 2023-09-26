@@ -1,11 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Flex,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableColumnHeaderCell,
+  TableRow,
+} from '@radix-ui/themes';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   CellContext,
-  Row,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  Row,
   useReactTable,
 } from '@tanstack/react-table';
 import { Play } from '@phosphor-icons/react';
@@ -13,16 +23,6 @@ import { Play } from '@phosphor-icons/react';
 import { FileEntity, FileSystemEntity } from '~lib/FileLoader';
 
 import usePlayer from '~hooks/usePlayer';
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from ':ui/table';
-import { Button } from ':ui/button';
 
 function RowActions({
   row,
@@ -44,8 +44,8 @@ function RowActions({
   }, [row, playPause]);
 
   return (
-    <div className="flex gap-2 invisible group-hover:visible">
-      <Button
+    <Flex className="invisible group-hover:visible">
+      <IconButton
         variant="ghost"
         onClick={(e) => {
           e.stopPropagation();
@@ -55,9 +55,9 @@ function RowActions({
           }
         }}
       >
-        <Play className="h-4 w-4" />
-      </Button>
-    </div>
+        <Play />
+      </IconButton>
+    </Flex>
   );
 }
 
@@ -123,24 +123,21 @@ export function FileList({ data }: FileListProps) {
   });
 
   return (
-    <div
-      ref={tableContainerRef}
-      className="rounded-b-md border overflow-auto"
-    >
-      <Table>
+    <div ref={tableContainerRef}>
+      <Table.Root>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableColumnHeaderCell key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
-                  </TableHead>
+                  </TableColumnHeaderCell>
                 );
               })}
             </TableRow>
@@ -152,6 +149,7 @@ export function FileList({ data }: FileListProps) {
               const row = table.getRowModel().rows[virtualRow.index];
               return (
                 <TableRow
+                  align="center"
                   className="group"
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
@@ -171,7 +169,7 @@ export function FileList({ data }: FileListProps) {
             <EmptyTableContent length={columns.length} />
           )}
         </TableBody>
-      </Table>
+      </Table.Root>
     </div>
   );
 }
