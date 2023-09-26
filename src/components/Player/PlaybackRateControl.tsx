@@ -1,3 +1,4 @@
+import { PersonSimpleRun } from '@phosphor-icons/react';
 import { Flex, Select } from '@radix-ui/themes';
 
 export interface PlaybackRateControlProps {
@@ -10,11 +11,13 @@ export function PlaybackRateControl({
   value,
 }: PlaybackRateControlProps) {
   return (
-    <Flex>
+    <Flex align="center" gap="2">
       <Select.Root
+        size="1"
         value={value.toFixed(2)}
         onValueChange={(v) => onChange(Number.parseFloat(v))}
       >
+        <PersonSimpleRun size={16} />
         <Select.Trigger placeholder="Playback speed" />
         <Select.Content>
           <Select.Group>
