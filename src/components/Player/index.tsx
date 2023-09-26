@@ -99,7 +99,7 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
                 Linkin Park - Hybrid Theory
               </Text>
               <Text as="div" size="1">
-                00:54 / 04:30
+                {position.toFixed(0)} / {duration.toFixed(0)}
               </Text>
             </Flex>
             <SeekBar duration={duration} position={position} onChange={seek} />

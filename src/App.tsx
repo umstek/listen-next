@@ -10,7 +10,7 @@ function App() {
 
   return (
     <Container size="4" id="app">
-      {playlistState.playlist.length > -1 ? <PlayerView /> : <FileLoaderView />}
+      {playlistState.playlist.length > 0 ? <PlayerView /> : <FileLoaderView />}
     </Container>
   );
 }
