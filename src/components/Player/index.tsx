@@ -38,7 +38,7 @@ const VPR = ['v', 'p', 'r'] as const;
 
 export function Player({ url, onPrevious, onNext }: PlayerProps) {
   const {
-    setSource,
+    setAudioSource,
     playPause,
     rewind,
     forward,
@@ -55,8 +55,8 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
   } = usePlayer();
 
   useEffect(() => {
-    setSource(url);
-  }, [setSource, url]);
+    setAudioSource(url);
+  }, [setAudioSource, url]);
 
   const [vpr, setVpr] = useState<'v' | 'p' | 'r'>('v');
   const [mb, setMb] = useState<'m' | 'b'>('m');

@@ -24,13 +24,13 @@ import { FileEntity, FileSystemEntity } from '~lib/FileLoader';
 
 import usePlayer from '~hooks/usePlayer';
 
-function RowActions({
-  row,
-  playPause,
-}: {
+interface RowActionsProps {
   row: Row<FileSystemEntity>;
-  playPause: (url: string) => void;
-}) {
+  preview: (url: string) => void;
+  stopPreview: () => void;
+}
+
+function RowActions({ row, preview, stopPreview }: RowActionsProps) {
   const [url, setUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -41,18 +41,23 @@ function RowActions({
 
       return () => URL.revokeObjectURL(url);
     }
-  }, [row, playPause]);
+  }, [row.original]);
 
   return (
     <Flex className="invisible group-hover:visible">
       <IconButton
         variant="ghost"
-        onClick={(e) => {
+        onMouseEnter={(e) => {
           e.stopPropagation();
 
           if (row.original.kind === 'file' && url) {
-            playPause(url);
+            preview(url);
           }
+        }}
+        onMouseLeave={(e) => {
+          e.stopPropagation();
+
+          stopPreview();
         }}
       >
         <Play />
@@ -82,13 +87,17 @@ function EmptyTableContent(props: EmptyTableContentProps): JSX.Element {
 }
 
 export function FileList({ data }: FileListProps) {
-  const { setSource } = usePlayer({ autoPlay: true });
-  const playPause = useCallback(
+  const { play, stop } = usePlayer();
+
+  const preview = useCallback(
     (url: string) => {
-      setSource(url);
+      play({ url, seek: 10 });
     },
-    [setSource],
+    [play],
   );
+  const stopPreview = useCallback(() => {
+    stop();
+  }, [stop]);
 
   const columns = useMemo(
     () => [
@@ -101,11 +110,15 @@ export function FileList({ data }: FileListProps) {
       columnHelper.display({
         id: 'actions',
         cell: (props: CellContext<FileSystemEntity, unknown>) => (
-          <RowActions row={props.row} playPause={playPause} />
+          <RowActions
+            row={props.row}
+            preview={preview}
+            stopPreview={stopPreview}
+          />
         ),
       }),
     ],
-    [playPause],
+    [preview, stopPreview],
   );
 
   const table = useReactTable({
@@ -173,3 +186,4 @@ export function FileList({ data }: FileListProps) {
     </div>
   );
 }
+FileList.whyDidYouRender = true;

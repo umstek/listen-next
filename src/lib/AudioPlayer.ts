@@ -1,8 +1,8 @@
 import { EventEmitter, Listener } from 'events';
 
-function createAudioElement() {
+function createAudioElement(autoplay = false) {
   const audioElement = new Audio();
-  audioElement.autoplay = false;
+  audioElement.autoplay = autoplay;
   audioElement.src = '';
   audioElement.crossOrigin = 'anonymous';
   return audioElement;
@@ -10,7 +10,7 @@ function createAudioElement() {
 
 function createAnalyser(
   audioContext: AudioContext,
-  analyserOutputInterval: number,
+  analyserOutputInterval: number = 0,
   callback: (data: Uint8Array) => void,
 ) {
   if (analyserOutputInterval <= 0) {
@@ -32,9 +32,11 @@ function createAnalyser(
 
 interface AudioPlayerOptions {
   analyserOutputInterval?: number;
+  autoplay?: boolean;
 }
 
 type EventMap = {
+  ontrackset: [url: string];
   loadedmetadata: [
     arg: {
       duration: number;
@@ -60,12 +62,12 @@ export default class AudioPlayer {
   private pannerNode: StereoPannerNode;
   private gainNode: GainNode;
 
-  constructor({ analyserOutputInterval = 0 }: AudioPlayerOptions) {
+  constructor({ analyserOutputInterval, autoplay }: AudioPlayerOptions = {}) {
     this.eventEmitter = new EventEmitter();
 
     this.audioContext = new AudioContext();
 
-    this.audioElement = createAudioElement();
+    this.audioElement = createAudioElement(autoplay);
     this.audioElement.addEventListener('loadedmetadata', this.onLoadedMetadata);
     this.audioElement.addEventListener('play', this.onPlay);
     this.audioElement.addEventListener('pause', this.onPause);
@@ -125,6 +127,7 @@ export default class AudioPlayer {
 
   dispose = async () => {
     try {
+      this.stop();
       clearInterval(this.analyserTimer);
       this.eventEmitter.removeAllListeners();
       this.audioElement.removeEventListener(
@@ -139,7 +142,7 @@ export default class AudioPlayer {
       this.audioElement.remove();
       await this.audioContext.close();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -169,10 +172,18 @@ export default class AudioPlayer {
   };
 
   setAudioSource = (url: string) => {
-    this.audioElement.src = url;
+    if (this.audioElement.src !== url) {
+      this.audioElement.src = url;
+      this.audioElement.load();
+      this.eventEmitter.emit('trackset', url);
+    }
   };
 
-  play = () => {
+  play = ({ url, seek }: { url?: string; seek?: number } = {}) => {
+    if (url) {
+      this.setAudioSource(url);
+    }
+    this.audioElement.currentTime = seek ?? this.audioElement.currentTime;
     if (this.audioContext.state === 'suspended') {
       this.audioContext.resume();
     } else {
@@ -182,6 +193,19 @@ export default class AudioPlayer {
 
   pause = () => {
     this.audioElement.pause();
+  };
+
+  playPause = () => {
+    if (this.audioElement.paused) {
+      this.play();
+    } else {
+      this.pause();
+    }
+  };
+
+  stop = () => {
+    this.audioElement.pause();
+    this.audioElement.currentTime = 0;
   };
 
   setPlaybackRate = (rate: number) => {
@@ -198,5 +222,13 @@ export default class AudioPlayer {
 
   seek = (seconds: number) => {
     this.audioElement.currentTime = seconds;
+  };
+
+  rewind = (seconds: number) => {
+    this.audioElement.currentTime -= seconds;
+  };
+
+  forward = (seconds: number) => {
+    this.audioElement.currentTime += seconds;
   };
 }
