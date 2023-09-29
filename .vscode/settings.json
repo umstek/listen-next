@@ -5,6 +5,7 @@
         "dx",
         "file-loader",
         "playlist",
-        "ui"
+        "ui",
+        "release"
     ]
 }
