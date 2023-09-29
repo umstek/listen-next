@@ -1,10 +1,47 @@
 import { EventEmitter, Listener } from 'events';
 
-function createAudioElement(autoplay = false) {
+import createLogger from '../util/logging';
+
+const logger = createLogger('AudioPlayer');
+
+// Read https://medium.com/@nathan5x/event-lifecycle-of-html-video-element-part-2-d1c1dec60a98
+const AUDIO_ELEMENT_EVENTS = {
+  emptied: 'onEmptied',
+  loadstart: 'onLoadStart', // inconsistent
+  durationchange: 'onDurationChange',
+  loadedmetadata: 'onLoadedMetadata',
+  canplay: 'onCanPlay',
+  canplaythrough: 'onCanPlayThrough',
+  play: 'onPlay',
+  playing: 'onPlaying',
+  suspend: 'onSuspend', // inconsistent
+  timeupdate: 'onTimeUpdate',
+  waiting: 'onWaiting',
+  stalled: 'onStalled', // inconsistent
+  pause: 'onPause',
+  ended: 'onEnded',
+} as const;
+
+interface AudioOptions {
+  autoplay?: boolean;
+  preload?: HTMLMediaElement['preload'];
+  src?: string;
+  crossOrigin?: 'anonymous' | 'use-credentials' | null;
+}
+
+function createAudioElement(options: AudioOptions = {}) {
+  const {
+    autoplay = false,
+    preload = 'auto',
+    src = '',
+    crossOrigin = 'anonymous',
+  } = options;
+
   const audioElement = new Audio();
+  audioElement.preload = preload;
   audioElement.autoplay = autoplay;
-  audioElement.src = '';
-  audioElement.crossOrigin = 'anonymous';
+  audioElement.src = src;
+  audioElement.crossOrigin = crossOrigin;
   return audioElement;
 }
 
@@ -13,7 +50,7 @@ function createAnalyser(
   analyserOutputInterval: number = 0,
   callback: (data: Uint8Array) => void,
 ) {
-  if (analyserOutputInterval <= 0) {
+  if (analyserOutputInterval <= 0 || audioContext.state === 'suspended') {
     return { analyserNode: undefined, analyserTimer: 0 };
   }
 
@@ -36,7 +73,7 @@ interface AudioPlayerOptions {
 }
 
 type EventMap = {
-  ontrackset: [url: string];
+  trackset: [url: string];
   loadedmetadata: [
     arg: {
       duration: number;
@@ -67,12 +104,15 @@ export default class AudioPlayer {
 
     this.audioContext = new AudioContext();
 
-    this.audioElement = createAudioElement(autoplay);
-    this.audioElement.addEventListener('loadedmetadata', this.onLoadedMetadata);
-    this.audioElement.addEventListener('play', this.onPlay);
-    this.audioElement.addEventListener('pause', this.onPause);
-    this.audioElement.addEventListener('timeupdate', this.onTimeUpdate);
-    this.audioElement.addEventListener('ended', this.onEnded);
+    this.audioElement = createAudioElement({ autoplay });
+    for (const eventName in AUDIO_ELEMENT_EVENTS) {
+      this.audioElement.addEventListener(
+        eventName,
+        this[
+          AUDIO_ELEMENT_EVENTS[eventName as keyof typeof AUDIO_ELEMENT_EVENTS]
+        ],
+      );
+    }
     this.sourceNode = this.audioContext.createMediaElementSource(
       this.audioElement,
     );
@@ -130,14 +170,14 @@ export default class AudioPlayer {
       this.stop();
       clearInterval(this.analyserTimer);
       this.eventEmitter.removeAllListeners();
-      this.audioElement.removeEventListener(
-        'loadedmetadata',
-        this.onLoadedMetadata,
-      );
-      this.audioElement.removeEventListener('play', this.onPlay);
-      this.audioElement.removeEventListener('pause', this.onPause);
-      this.audioElement.removeEventListener('timeupdate', this.onTimeUpdate);
-      this.audioElement.removeEventListener('ended', this.onEnded);
+      for (const eventName in AUDIO_ELEMENT_EVENTS) {
+        this.audioElement.removeEventListener(
+          eventName,
+          this[
+            AUDIO_ELEMENT_EVENTS[eventName as keyof typeof AUDIO_ELEMENT_EVENTS]
+          ],
+        );
+      }
       this.audioElement.src = '';
       this.audioElement.remove();
       await this.audioContext.close();
@@ -146,7 +186,20 @@ export default class AudioPlayer {
     }
   };
 
+  private onEmptied = () => {
+    logger.debug({ event: 'emptied' });
+  };
+
+  private onLoadStart = () => {
+    logger.debug({ event: 'loadstart' });
+  };
+
+  private onDurationChange = () => {
+    logger.debug({ event: 'durationchange' });
+  };
+
   private onLoadedMetadata = () => {
+    logger.debug({ event: 'loadedmetadata' });
     this.eventEmitter.emit('loadedmetadata', {
       duration: this.audioElement.duration,
       seekable: this.audioElement.seekable,
@@ -155,28 +208,57 @@ export default class AudioPlayer {
     });
   };
 
+  private onCanPlay = () => {
+    logger.debug({ event: 'canplay' });
+  };
+
+  private onCanPlayThrough = () => {
+    logger.debug({ event: 'canplaythrough' });
+  };
+
   private onPlay = () => {
+    logger.debug({ event: 'play' });
     this.eventEmitter.emit('play');
   };
 
-  private onPause = () => {
-    this.eventEmitter.emit('pause');
+  private onPlaying = () => {
+    logger.debug({ event: 'playing' });
+  };
+
+  private onSuspend = () => {
+    logger.debug({ event: 'suspend' });
   };
 
   private onTimeUpdate = () => {
+    logger.debug({ event: 'timeupdate' });
     this.eventEmitter.emit('timeupdate', this.audioElement.currentTime);
   };
 
+  private onWaiting = () => {
+    logger.debug({ event: 'waiting' });
+  };
+
+  private onStalled = () => {
+    logger.debug({ event: 'stalled' });
+  };
+
+  private onPause = () => {
+    logger.debug({ event: 'pause' });
+    this.eventEmitter.emit('pause');
+  };
+
   private onEnded = () => {
+    logger.debug({ event: 'ended' });
     this.eventEmitter.emit('ended');
   };
 
   setAudioSource = (url: string) => {
-    if (this.audioElement.src !== url) {
-      this.audioElement.src = url;
-      this.audioElement.load();
-      this.eventEmitter.emit('trackset', url);
+    if (!url || this.audioElement.src === url) {
+      return;
     }
+    this.audioElement.src = url;
+    this.audioElement.load();
+    this.eventEmitter.emit('trackset', url);
   };
 
   play = ({ url, seek }: { url?: string; seek?: number } = {}) => {
@@ -213,10 +295,16 @@ export default class AudioPlayer {
   };
 
   setVolume = (volume: number) => {
+    if (volume < 0 || volume > 2) {
+      return;
+    }
     this.gainNode.gain.value = volume;
   };
 
   setPan = (pan: number) => {
+    if (pan < -1 || pan > 1) {
+      return;
+    }
     this.pannerNode.pan.value = pan;
   };
 

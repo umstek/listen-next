@@ -27,8 +27,16 @@ function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
     };
   }, [autoplay]);
 
-  const { setAudioSource, play, pause, stop, seek, rewind, forward } =
-    getPlayer();
+  const {
+    setAudioSource,
+    play,
+    pause,
+    playPause,
+    stop,
+    seek,
+    rewind,
+    forward,
+  } = getPlayer();
 
   // Outputs from AudioPlayer
   const [url, setUrl] = useState('');
@@ -45,7 +53,7 @@ function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
     console.log('player', playerRef.current);
 
     // Collect outputs from AudioPlayer
-    getPlayer().on('ontrackset', (url) => {
+    getPlayer().on('trackset', (url) => {
       setUrl(url);
     });
     getPlayer().on('loadedmetadata', ({ duration, seekable, tracks }) => {
@@ -75,14 +83,6 @@ function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
   useEffect(() => {
     getPlayer().setPlaybackRate(playbackRate);
   }, [getPlayer, playbackRate]);
-
-  const playPause = useCallback(() => {
-    if (state === PlayerState.PLAYING) {
-      pause();
-    } else {
-      play();
-    }
-  }, [pause, play, state]);
 
   return {
     url,
