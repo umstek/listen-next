@@ -50,8 +50,6 @@ function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
   const [playbackRate, setPlaybackRate] = useState(1);
 
   useEffect(() => {
-    console.log('player', playerRef.current);
-
     // Collect outputs from AudioPlayer
     getPlayer().on('trackset', (url) => {
       setUrl(url);
@@ -69,6 +67,9 @@ function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
       setPosition(time);
     });
     getPlayer().on('ended', () => {
+      setState(PlayerState.STOPPED);
+    });
+    getPlayer().on('emptied', () => {
       setState(PlayerState.STOPPED);
     });
   }, [autoplay, getPlayer, play]);

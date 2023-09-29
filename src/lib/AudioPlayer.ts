@@ -85,6 +85,7 @@ type EventMap = {
   pause: [];
   timeupdate: [currentTime: number];
   ended: [];
+  emptied: [];
 };
 
 export default class AudioPlayer {
@@ -188,6 +189,7 @@ export default class AudioPlayer {
 
   private onEmptied = () => {
     logger.debug({ event: 'emptied' });
+    this.eventEmitter.emit('emptied');
   };
 
   private onLoadStart = () => {
