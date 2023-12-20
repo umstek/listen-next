@@ -26,7 +26,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.2",
-    "tailwind-merge": "^1.14.0",
+    "tailwind-merge": "^2.0.0",
     "tailwind-variants": "^0.1.14",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.2"
