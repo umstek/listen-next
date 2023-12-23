@@ -99,7 +99,7 @@ async function getFilesAndFolders(
 
 function filePickerAcceptTypeExtToRegex(types: FilePickerAcceptType[]) {
   const extensions = types
-    .flatMap((t) => Object.values(t.accept))
+    .flatMap((t) => Object.values(t.accept || {}))
     .flat()
     .map((a) => a.slice(1));
   return extensions.length > 0
