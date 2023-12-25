@@ -6,6 +6,7 @@
         "file-loader",
         "playlist",
         "ui",
-        "release"
+        "release",
+        "vfs"
     ]
 }
