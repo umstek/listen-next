@@ -10,7 +10,7 @@ export function SeekBar({ onChange, duration, position }: SeekBarProps) {
   return (
     <Flex grow="1">
       <Slider
-        variant="soft"
+        variant="surface"
         size="1"
         min={0}
         max={duration}

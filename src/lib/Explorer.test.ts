@@ -61,9 +61,8 @@ describe('Explorer', () => {
 
   test('writeContent should write content to a file', async () => {
     const fileName = 'fileToWrite.txt';
-    const fileContent = new Blob(['content'], { type: 'text/plain' });
-
-    await explorer.writeContent(fileName, fileContent);
-    // TODO
+    const content = 'hello';
+    const file = new File([content], fileName);
+    await explorer.put(file);
   });
 });

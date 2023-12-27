@@ -14,7 +14,7 @@ import {
 } from '@radix-ui/themes';
 
 import config from '~config';
-import { FileEntity } from '~lib/FileLoader';
+import { DirectoryEntity, FileEntity } from '~lib/FileLoader';
 
 import { NotImplementedDialog } from ':NotImplementedDialog';
 
@@ -25,16 +25,25 @@ import { DropChoiceHelpAlert } from './DropChoiceHelpAlert';
 const types = [
   {
     description: 'All Audio Files',
-    accept: { 'audio/*': config.supportedExtensions },
+    accept: { 'audio/*': config.supportedExtensions as `.${string}`[] },
   },
 ];
 
 interface FileLoaderProps {
   onPlayNow: (files: FileEntity[]) => void;
+  onCopy: (arg: {
+    files: FileEntity[];
+    directories: DirectoryEntity[];
+  }) => void;
+  onLink: (arg: {
+    files: FileEntity[];
+    directories: DirectoryEntity[];
+  }) => void;
 }
 
-export function FileLoader({ onPlayNow }: FileLoaderProps) {
+export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
   const [files, setFiles] = useState<FileEntity[]>([]);
+  const [directories, setDirectories] = useState<DirectoryEntity[]>([]);
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
     useState(false);
 
@@ -52,7 +61,10 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
       </Flex>
       <Flex direction="column">
         <DropZone
-          onFilesAccepted={(fs) => setFiles(files.concat(fs))}
+          onAccepted={({ files: fs, directories: ds }) => {
+            setFiles(files.concat(fs));
+            setDirectories(directories.concat(ds));
+          }}
           types={types}
         >
           <DropChoiceHelpAlert />
@@ -66,7 +78,7 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
         </Button>
         <Flex>
           <Button
-            onClick={() => setShowNotImplementedDialog(true)}
+            onClick={() => onCopy({ files, directories })}
             className="rounded-r-none"
           >
             Copy to Browser
@@ -78,9 +90,7 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
               </IconButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem
-                onClick={() => setShowNotImplementedDialog(true)}
-              >
+              <DropdownMenuItem onClick={() => onLink({ files, directories })}>
                 Store as Links
               </DropdownMenuItem>
             </DropdownMenuContent>

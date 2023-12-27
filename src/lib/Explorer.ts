@@ -119,12 +119,26 @@ export class Explorer {
    * @param content The content to write to the file.
    * @return A promise that resolves when the content has been written.
    */
-  async writeContent(name: string, content: Blob) {
-    const handle = this.path[this.path.length - 1];
-    const newHandle = await handle.getFileHandle(name, {
+  async put(file: File) {
+    const folderHandle = this.path[this.path.length - 1];
+    const fileHandle = await folderHandle.getFileHandle(file.name, {
       create: true,
     });
-    const w = await newHandle.createWritable();
-    await w.write(content);
+    const writable = await fileHandle.createWritable();
+    await writable.write(file);
+    await writable.close();
+  }
+
+  /**
+   * Retrieves the specified file.
+   *
+   * @param fileName The name of the file to retrieve.
+   * @return A Promise that resolves to the retrieved file.
+   */
+  async retrieve(fileName: string) {
+    const handle = this.path[this.path.length - 1];
+    const fileHandle = await handle.getFileHandle(fileName);
+    const file = await fileHandle.getFile();
+    return file;
   }
 }
