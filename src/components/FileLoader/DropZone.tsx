@@ -30,7 +30,7 @@ export function DropZone({ onAccepted, types, children }: DropBoxProps) {
       <Box
         p="4"
         className={cn(
-          'w-[400px] h-[300px] shadow-sm bg-gray-50 text-lime-600 rounded-3xl',
+          'h-[300px] w-[400px] rounded-3xl bg-gray-50 text-lime-600 shadow-sm',
           draggingOver ? 'bg-lime-100 shadow-inner' : '',
         )}
         onDragEnter={() => setDraggingOver(true)}

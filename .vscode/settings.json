@@ -1,12 +1,13 @@
 {
-    "conventionalCommits.scopes": [
-        "deps",
-        "player",
-        "dx",
-        "file-loader",
-        "playlist",
-        "ui",
-        "release",
-        "vfs"
-    ]
+  "conventionalCommits.scopes": [
+    "deps",
+    "player",
+    "dx",
+    "file-loader",
+    "playlist",
+    "ui",
+    "release",
+    "vfs",
+    "explorer"
+  ]
 }

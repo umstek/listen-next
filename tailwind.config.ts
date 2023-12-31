@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
-import colors from 'tailwindcss/colors';
+import { radixThemePreset } from 'radix-themes-tw';
 
 const config: Config = {
   darkMode: ['class'],
@@ -8,15 +8,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        p: colors.sky,
-        s: colors.indigo,
+        current: 'currentColor',
+        white: '#ffffff',
+        black: '#000000',
       },
     },
   },
+  presets: [radixThemePreset],
   plugins: [animate],
-  corePlugins: {
-    preflight: false,
-  },
 };
 
 export default config;
