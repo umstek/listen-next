@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Explorer } from '~lib/Explorer';
+import { setItems } from '~modules/playlist/playlistSlice';
 
 import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
 import { TileView } from ':TileView';
@@ -12,6 +14,8 @@ import { Thumbnail } from ':ExplorerTileBody';
  * @return {JSX.Element} The rendered Explorer view.
  */
 export function ExplorerView() {
+  const dispatch = useDispatch();
+
   const explorerRef = useRef<Explorer | null>(null);
   const pathDirContentsRef = useRef<
     Map<FileSystemDirectoryHandle, FileSystemHandleUnion[]>
@@ -85,7 +89,7 @@ export function ExplorerView() {
             await explorerRef.current?.changeDirectory(item.name);
             await refresh();
           } else if (item.kind === 'file') {
-            console.log(item);
+            dispatch(setItems([URL.createObjectURL(await item.getFile())]));
           }
         }}
       />
