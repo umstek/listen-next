@@ -9,8 +9,6 @@ import './main.css';
 
 import App from './App';
 import store from './store';
-import TileView from ':TileView/TileView';
-import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
 import { ExplorerView } from '~modules/explorer/ExplorerView';
 
 const root = document.getElementById('root');
