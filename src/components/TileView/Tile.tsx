@@ -4,12 +4,15 @@ import { LegacyRef, forwardRef } from 'react';
 import { cn } from '~util/styles';
 
 /**
- * Renders a folder card component.
+ * Tile component that renders a button with a checkmark icon, background styling,
+ * and hover states. Can be used to represent a selectable tile in a grid/list.
  *
- * @param title The title of the folder.
- * @param icon The icon symbol for the folder.
- * @param highlighted Whether the folder is highlighted or not.
- * @returns The rendered folder card component.
+ * Forwards refs to the root div element.
+ *
+ * @param props.selected Whether tile is selected (shows checkmark)
+ * @param props.onCheckClick Click handler for checkmark icon
+ * @param props.className Additional classNames to apply
+ * @param props button props (e.g. onClick)
  */
 export const Tile = forwardRef(function Tile(
   {

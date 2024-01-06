@@ -3,8 +3,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Explorer } from '~lib/Explorer';
 
 import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
-import TileView from ':TileView/TileView';
+import { TileView } from ':TileView';
+import { Thumbnail } from ':ExplorerTileBody';
 
+/**
+ * Renders the Explorer view component.
+ *
+ * @return {JSX.Element} The rendered Explorer view.
+ */
 export function ExplorerView() {
   const explorerRef = useRef<Explorer | null>(null);
   const pathDirContentsRef = useRef<
@@ -71,15 +77,16 @@ export function ExplorerView() {
         })}
       </Breadcrumbs>
       <TileView
-        tiles={(pathDirContentsRef.current.get(pathDirs.at(-1)!) || []).map(
-          (c) => ({
-            kind: c.kind,
-            title: c.name,
-          }),
-        )}
-        onOpen={async (title) => {
-          await explorerRef.current?.changeDirectory(title);
-          await refresh();
+        items={pathDirContentsRef.current.get(pathDirs.at(-1)!) || []}
+        extractKey={(item) => item.name}
+        renderItem={(item) => <Thumbnail kind={item.kind} title={item.name} />}
+        onOpen={async (item) => {
+          if (item.kind === 'directory') {
+            await explorerRef.current?.changeDirectory(item.name);
+            await refresh();
+          } else if (item.kind === 'file') {
+            console.log(item);
+          }
         }}
       />
     </div>

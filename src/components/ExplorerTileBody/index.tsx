@@ -46,28 +46,3 @@ export function Thumbnail({ title, kind }: TileBodyProps): JSX.Element {
     </>
   );
 }
-
-export function HTile({ title }: TileBodyProps): JSX.Element {
-  return (
-    <>
-      <div className="flex gap-2">
-        <div className="hidden group-hover/tile:block">
-          <IconButton radius="full" variant="ghost">
-            <DotsThree size={24} weight="bold" />
-          </IconButton>
-        </div>
-        {/* <FileAudio className="fill-current" size={64} weight="thin" /> */}
-        <FolderSimple
-          className="fill-current group-hover/tile:hidden"
-          size={24}
-        />
-        <p className="select-none">{title}</p>
-      </div>
-      <div className="flex w-full justify-end gap-1">
-        <Browser className="fill-current" size={16} alt="browser sandbox" />
-        <Planet className="fill-current" size={16} alt="online" />
-        <HardDrive className="fill-current" size={16} alt="local file system" />
-      </div>
-    </>
-  );
-}
