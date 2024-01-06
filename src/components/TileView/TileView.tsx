@@ -2,12 +2,8 @@ import { useLayoutEffect, useRef, useState } from 'react';
 
 import { cn } from '~util/styles';
 import { Thumbnail } from ':TileView';
-import { SelectionMode } from './util';
-
 import { Tile } from './Tile';
-import { overlaps } from './util';
-
-const UNKNOWN_CORRECTION = -8;
+import { overlaps, SelectionMode } from './util';
 
 export interface TileViewProps {
   onOpen: (title: string) => void;
@@ -48,81 +44,94 @@ export default function TileView({ tiles, onOpen }: TileViewProps) {
     setSelecting(new Set(overlappingItems));
   }, [refresh, mode]);
 
+  const onRectangleStart = (e: React.PointerEvent) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+
+    const { left, top } = e.currentTarget.getBoundingClientRect();
+    selectionBoundsRef.current = {
+      sx: e.clientX - left,
+      sy: e.clientY - top,
+      cx: e.clientX - left,
+      cy: e.clientY - top,
+    };
+
+    if (e.shiftKey) {
+      setMode(SelectionMode.OR);
+    } else if (e.ctrlKey) {
+      setMode(SelectionMode.XOR);
+    } else {
+      setSelected(new Set());
+      setMode(SelectionMode.SELECT);
+    }
+  };
+
+  const onRectangleDrag = (e: React.PointerEvent) => {
+    if (mode) {
+      const { left, top } = e.currentTarget.getBoundingClientRect();
+
+      selectionBoundsRef.current = {
+        sx,
+        sy,
+        cx: e.clientX - left,
+        cy: e.clientY - top,
+      };
+
+      if (e.shiftKey) {
+        setMode(SelectionMode.OR);
+      } else if (e.ctrlKey) {
+        setMode(SelectionMode.XOR);
+      } else {
+        setSelected(new Set());
+        setMode(SelectionMode.SELECT);
+      }
+
+      setRefresh(refresh + 1);
+    }
+  };
+
+  const onRectangleEnd = () => {
+    setMode(SelectionMode.NONE);
+
+    // Just setting the selection box to invisible may create a scroll bar.
+    selectionBoundsRef.current = { sx: 0, sy: 0, cx: 0, cy: 0 };
+
+    // Commit the selection.
+    switch (mode) {
+      case SelectionMode.SELECT:
+        setSelected(selecting);
+        setSelecting(new Set());
+        break;
+      case SelectionMode.OR:
+        setSelected(new Set([...selected, ...selecting]));
+        break;
+      case SelectionMode.XOR:
+        setSelected(
+          new Set(
+            [...selected, ...selecting].filter(
+              (key) => !(selected.has(key) && selecting.has(key)),
+            ),
+          ),
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
+  const rectangleStyle = {
+    height: Math.abs(cy - sy),
+    width: Math.abs(cx - sx),
+    left: cx - sx >= 0 ? sx : cx,
+    top: cy - sy >= 0 ? sy : cy,
+  };
+
   return (
     <div
       ref={hostRef}
-      className="bg-white p-10"
-      onPointerDown={(e) => {
-        e.currentTarget.setPointerCapture(e.pointerId);
-
-        const { left, top } = e.currentTarget.getBoundingClientRect();
-        selectionBoundsRef.current = {
-          sx: e.clientX - left,
-          sy: e.clientY - top,
-          cx: e.clientX - left,
-          cy: e.clientY - top,
-        };
-
-        if (e.shiftKey) {
-          setMode(SelectionMode.OR);
-        } else if (e.ctrlKey) {
-          setMode(SelectionMode.XOR);
-        } else {
-          setSelected(new Set());
-          setMode(SelectionMode.SELECT);
-        }
-      }}
-      onPointerUp={() => {
-        setMode(SelectionMode.NONE);
-
-        // Just setting the selection box to invisible may create a scroll bar.
-        selectionBoundsRef.current = { sx: 0, sy: 0, cx: 0, cy: 0 };
-
-        // Commit the selection.
-        switch (mode) {
-          case SelectionMode.SELECT:
-            setSelected(selecting);
-            setSelecting(new Set());
-            break;
-          case SelectionMode.OR:
-            setSelected(new Set([...selected, ...selecting]));
-            break;
-          case SelectionMode.XOR:
-            setSelected(
-              new Set(
-                [...selected, ...selecting].filter(
-                  (key) => !(selected.has(key) && selecting.has(key)),
-                ),
-              ),
-            );
-            break;
-          default:
-            break;
-        }
-      }}
-      onPointerMove={(e) => {
-        if (mode) {
-          const { left, top } = e.currentTarget.getBoundingClientRect();
-
-          selectionBoundsRef.current = {
-            sx,
-            sy,
-            cx: e.clientX - left,
-            cy: e.clientY - top,
-          };
-
-          if (e.shiftKey) {
-            setMode(SelectionMode.OR);
-          } else if (e.ctrlKey) {
-            setMode(SelectionMode.XOR);
-          } else {
-            setSelected(new Set());
-            setMode(SelectionMode.SELECT);
-          }
-
-          setRefresh(refresh + 1);
-        }
-      }}
+      className="relative bg-white p-10"
+      onPointerDown={onRectangleStart}
+      onPointerUp={onRectangleEnd}
+      onPointerMove={onRectangleDrag}
     >
       <div
         ref={selectionBoxRef}
@@ -130,20 +139,7 @@ export default function TileView({ tiles, onOpen }: TileViewProps) {
           'pointer-events-none invisible absolute z-10 rounded-1 bg-accentA-2 ring-1 ring-accent-4',
           mode && 'visible',
         )}
-        style={{
-          height: Math.abs(cy - sy),
-          width: Math.abs(cx - sx),
-          left:
-            (cx - sx >= 0 ? sx : cx) +
-            (hostRef.current?.getBoundingClientRect().left || 0) +
-            document.documentElement.scrollLeft +
-            UNKNOWN_CORRECTION,
-          top:
-            (cy - sy >= 0 ? sy : cy) +
-            (hostRef.current?.getBoundingClientRect().top || 0) +
-            document.documentElement.scrollTop +
-            UNKNOWN_CORRECTION,
-        }}
+        style={rectangleStyle}
       />
       <div className="flex flex-wrap gap-8">
         {tiles.map(({ title, kind }) => (
@@ -155,8 +151,27 @@ export default function TileView({ tiles, onOpen }: TileViewProps) {
             onDoubleClick={() => {
               onOpen(title);
             }}
-            onClick={() => {
-              console.log('clicked', title);
+            onClick={(e) => {
+              if (e.shiftKey) {
+                setSelected(new Set([...selected, title]));
+              } else if (e.ctrlKey) {
+                setSelected(
+                  selected.has(title)
+                    ? new Set([...selected].filter((key) => key !== title))
+                    : new Set([...selected, title]),
+                );
+              } else {
+                setSelected(new Set([title]));
+              }
+            }}
+            onCheckClick={() => {
+              if (selected.has(title)) {
+                setSelected(
+                  new Set([...selected].filter((key) => key !== title)),
+                );
+              } else {
+                setSelected(new Set([...selected, title]));
+              }
             }}
             selected={
               [
