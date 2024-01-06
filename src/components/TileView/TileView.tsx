@@ -7,7 +7,7 @@ import { SelectionMode } from './util';
 import { Tile } from './Tile';
 import { overlaps } from './util';
 
-// TODO Automatic scrolling when dragging.
+const UNKNOWN_CORRECTION = -8;
 
 export interface TileViewProps {
   onOpen: (title: string) => void;
@@ -19,6 +19,7 @@ export interface TileViewProps {
  *
  */
 export default function TileView({ tiles, onOpen }: TileViewProps) {
+  const hostRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLElement>>({});
   const selectionBoxRef = useRef<HTMLDivElement>(null);
   const selectionBoundsRef = useRef({ sx: 0, sy: 0, cx: 0, cy: 0 });
@@ -49,6 +50,7 @@ export default function TileView({ tiles, onOpen }: TileViewProps) {
 
   return (
     <div
+      ref={hostRef}
       className="bg-white p-10"
       onPointerDown={(e) => {
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -125,14 +127,22 @@ export default function TileView({ tiles, onOpen }: TileViewProps) {
       <div
         ref={selectionBoxRef}
         className={cn(
-          'z-10 pointer-events-none invisible absolute rounded-1 bg-accentA-2 ring-1 ring-accent-4',
+          'pointer-events-none invisible absolute z-10 rounded-1 bg-accentA-2 ring-1 ring-accent-4',
           mode && 'visible',
         )}
         style={{
-          height: cy - sy >= 0 ? cy - sy : sy - cy,
-          width: cx - sx >= 0 ? cx - sx : sx - cx,
-          left: cx - sx >= 0 ? sx : cx,
-          top: cy - sy >= 0 ? sy : cy,
+          height: Math.abs(cy - sy),
+          width: Math.abs(cx - sx),
+          left:
+            (cx - sx >= 0 ? sx : cx) +
+            (hostRef.current?.getBoundingClientRect().left || 0) +
+            document.documentElement.scrollLeft +
+            UNKNOWN_CORRECTION,
+          top:
+            (cy - sy >= 0 ? sy : cy) +
+            (hostRef.current?.getBoundingClientRect().top || 0) +
+            document.documentElement.scrollTop +
+            UNKNOWN_CORRECTION,
         }}
       />
       <div className="flex flex-wrap gap-8">
