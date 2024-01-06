@@ -5,6 +5,14 @@ import {
 
 import rootDirHandle from './vfs';
 
+export async function listItems(handle: FileSystemDirectoryHandle) {
+  const entries: FileSystemHandle[] = [];
+  for await (const entry of handle.values()) {
+    entries.push(entry);
+  }
+  return entries;
+}
+
 /**
  * The Explorer class provides methods for exploring and navigating a virtual file system.
  */
@@ -27,9 +35,18 @@ export class Explorer {
   /**
    * Returns the current working directory.
    *
+   * @returns The current working directory.
+   */
+  async getCurrentDirectory() {
+    return this.path[this.path.length - 1];
+  }
+
+  /**
+   * Returns the current working directory.
+   *
    * @return The current working directory path.
    */
-  async pwd() {
+  async getPathAsString() {
     if (this.path.length <= 1) {
       return '/';
     }
@@ -37,26 +54,20 @@ export class Explorer {
   }
 
   /**
+   * Retrieves the path as an array of FileSystemDirectoryHandle objects.
+   *
+   * @return The path as an array of FileSystemDirectoryHandle objects.
+   */
+  async getPath() {
+    return this.path;
+  }
+
+  /**
    * Changes the current working directory to the specified path.
    *
    * @param path The path to change the current directory to.
    */
-  async cd(path: string) {
-    if (path === '.') {
-      // Do nothing
-      return;
-    }
-
-    if (path === '..') {
-      // Go up
-      if (this.path.length <= 1) {
-        return;
-      }
-
-      this.path.pop();
-      return;
-    }
-
+  async changeDirectory(path: string) {
     let pathSegments = path.split('/');
     if (path.startsWith('/')) {
       // Absolute path
@@ -66,6 +77,21 @@ export class Explorer {
     pathSegments = pathSegments.filter(Boolean);
 
     for (const segment of pathSegments) {
+      if (segment === '.') {
+        // Do nothing
+        continue;
+      }
+
+      if (segment === '..') {
+        // Go up
+        if (this.path.length <= 1) {
+          return;
+        }
+
+        this.path.pop();
+        continue;
+      }
+
       const handle = this.path[this.path.length - 1];
       const childHandle = await handle.getDirectoryHandle(segment);
       this.path.push(childHandle);
@@ -77,14 +103,10 @@ export class Explorer {
    *
    * @return An array of FileSystemHandles representing the entries in the current directory.
    */
-  async ls() {
+  async listItems() {
     const handle = this.path[this.path.length - 1];
 
-    const entries: FileSystemHandle[] = [];
-    for await (const entry of handle.values()) {
-      entries.push(entry);
-    }
-    return entries;
+    return listItems(handle);
   }
 
   /**
@@ -93,7 +115,7 @@ export class Explorer {
    * @param name The name of the directory to create.
    * @return A promise that resolves to the new DirectoryHandle.
    */
-  async mkdir(name: string) {
+  async createDirectory(name: string) {
     const handle = this.path[this.path.length - 1];
     const newHandle = await handle.getDirectoryHandle(name, {
       create: true,
@@ -107,7 +129,7 @@ export class Explorer {
    * @param name The name of the file or directory to be removed.
    * @return A promise that resolves when the file or directory is successfully removed.
    */
-  async rm(name: string) {
+  async remove(name: string) {
     const handle = this.path[this.path.length - 1];
     await handle.removeEntry(name);
   }
@@ -119,7 +141,7 @@ export class Explorer {
    * @param content The content to write to the file.
    * @return A promise that resolves when the content has been written.
    */
-  async put(file: File) {
+  async putFile(file: File) {
     const folderHandle = this.path[this.path.length - 1];
     const fileHandle = await folderHandle.getFileHandle(file.name, {
       create: true,
@@ -135,7 +157,7 @@ export class Explorer {
    * @param fileName The name of the file to retrieve.
    * @return A Promise that resolves to the retrieved file.
    */
-  async retrieve(fileName: string) {
+  async getFile(fileName: string) {
     const handle = this.path[this.path.length - 1];
     const fileHandle = await handle.getFileHandle(fileName);
     const file = await fileHandle.getFile();

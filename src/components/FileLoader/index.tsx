@@ -79,13 +79,13 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
         <Flex>
           <Button
             onClick={() => onCopy({ files, directories })}
-            className="rounded-r-none"
+            className="rounded-r-[0]"
           >
             Copy to Browser
           </Button>
           <DropdownMenu.Root>
             <DropdownMenuTrigger>
-              <IconButton className="rounded-l-none">
+              <IconButton className="rounded-l-[0]">
                 <ChevronDownIcon />
               </IconButton>
             </DropdownMenuTrigger>

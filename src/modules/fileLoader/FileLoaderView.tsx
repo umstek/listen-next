@@ -20,20 +20,20 @@ export function FileLoaderView() {
       }}
       onCopy={async ({ files, directories }) => {
         for (const d of directories) {
-          if (d.parent && d.parent !== (await explorerRef.current.pwd())) {
-            await explorerRef.current.cd(`/${d.parent}`);
+          if (d.parent && d.parent !== (await explorerRef.current.getPathAsString())) {
+            await explorerRef.current.changeDirectory(`/${d.parent}`);
           }
-          await explorerRef.current.mkdir(d.name);
+          await explorerRef.current.createDirectory(d.name);
         }
 
         for (const f of files) {
-          if (f.parent && f.parent !== (await explorerRef.current.pwd())) {
-            await explorerRef.current.cd(`/${f.parent}`);
+          if (f.parent && f.parent !== (await explorerRef.current.getPathAsString())) {
+            await explorerRef.current.changeDirectory(`/${f.parent}`);
           }
-          await explorerRef.current.put(f.file);
+          await explorerRef.current.putFile(f.file);
         }
 
-        await explorerRef.current.cd('/');
+        await explorerRef.current.changeDirectory('/');
       }}
       onLink={async ({ files, directories }) => {}}
     />

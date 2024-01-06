@@ -26,26 +26,26 @@ describe('Explorer', () => {
   });
 
   test('pwd should return the current working directory', async () => {
-    const cwd = await explorer.pwd();
+    const cwd = await explorer.getPathAsString();
     expect(cwd).toBe('/'); // Assuming the root directory is named '/'
   });
 
   test('mkdir should create a new directory', async () => {
     const newDirName = 'test';
-    const newHandle = await explorer.mkdir(newDirName);
+    const newHandle = await explorer.createDirectory(newDirName);
     expect(newHandle.name).toBe(newDirName);
   });
 
   test('cd should change the current working directory', async () => {
-    await explorer.cd('test');
-    const cwd = await explorer.pwd();
+    await explorer.changeDirectory('test');
+    const cwd = await explorer.getPathAsString();
     expect(cwd).toBe('/test');
   });
 
   test('ls should list the entries in the current directory', async () => {
-    await explorer.cd('..');
-    await explorer.mkdir('test2');
-    const entries = await explorer.ls();
+    await explorer.changeDirectory('..');
+    await explorer.createDirectory('test2');
+    const entries = await explorer.listItems();
     expect(entries.length).toBe(2);
     expect(entries[0].name).toBe('test');
     expect(entries[1].name).toBe('test2');
@@ -53,8 +53,8 @@ describe('Explorer', () => {
 
   test('rm should remove a file or directory', async () => {
     const entryName = 'test';
-    await explorer.rm(entryName);
-    const entries = await explorer.ls();
+    await explorer.remove(entryName);
+    const entries = await explorer.listItems();
     expect(entries.length).toBe(1);
     expect(entries[0].name).toBe('test2');
   });
@@ -63,6 +63,6 @@ describe('Explorer', () => {
     const fileName = 'fileToWrite.txt';
     const content = 'hello';
     const file = new File([content], fileName);
-    await explorer.put(file);
+    await explorer.putFile(file);
   });
 });

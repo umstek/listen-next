@@ -1,108 +1,27 @@
-import {
-  Browser,
-  DotsThree,
-  FolderSimple,
-  HardDrive,
-  Planet,
-} from '@phosphor-icons/react';
-import { IconButton } from '@radix-ui/themes';
-import {
-  LegacyRef,
-  ReactNode,
-  forwardRef,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
+
 import { cn } from '~util/styles';
+import { Thumbnail } from ':TileView';
+import { SelectionMode } from './util';
+
+import { Tile } from './Tile';
+import { overlaps } from './util';
+
+// TODO Automatic scrolling when dragging.
+
+export interface TileViewProps {
+  onOpen: (title: string) => void;
+  tiles: { title: string; kind: 'file' | 'directory' }[];
+}
 
 /**
- * Renders a folder card component.
+ * Renders the Explorer component.
  *
- * @param title The title of the folder.
- * @param icon The icon symbol for the folder.
- * @param highlighted Whether the folder is highlighted or not.
- * @returns The rendered folder card component.
  */
-const Tile = forwardRef(function Tile(
-  {
-    selected,
-    children,
-  }: {
-    children: ReactNode;
-    selected?: boolean;
-  },
-  ref: LegacyRef<HTMLDivElement> | undefined,
-): JSX.Element {
-  return (
-    <div
-      ref={ref}
-      role="button"
-      className={cn(
-        'group/tile flex h-48 w-48 flex-col items-center justify-between rounded-4  p-4 transition-all duration-100 hover:ring-4 hover:ring-gray-4',
-        selected
-          ? 'bg-accent-2 text-accent-10 ring-4 ring-accent-4'
-          : 'bg-gray-2 text-gray-10 ring-0',
-      )}
-    >
-      {children}
-    </div>
-  );
-});
-
-function TileBody({ title }: { title: string }): JSX.Element {
-  return (
-    <>
-      <div className="invisible flex w-full justify-end group-hover/tile:visible">
-        <IconButton
-          radius="full"
-          variant="ghost"
-          onPointerDown={(e) => e.stopPropagation()}
-        >
-          <DotsThree size={24} weight="bold" />
-        </IconButton>
-      </div>
-      <div className="mb-4 flex flex-col items-center gap-1">
-        {/* <FileAudio className="fill-current" size={64} weight="thin" /> */}
-        <FolderSimple className="fill-current" size={64} weight="thin" />
-        <p className="text-sm select-none">{title}</p>
-      </div>
-      <div className="flex w-full justify-center gap-1">
-        <Browser className="fill-current" size={16} alt="browser sandbox" />
-        <Planet className="fill-current" size={16} alt="online" />
-        <HardDrive className="fill-current" size={16} alt="local file system" />
-      </div>
-    </>
-  );
-}
-
-const tiles = [
-  { title: 'Documents' },
-  { title: 'Downloads' },
-  { title: 'Music' },
-  { title: 'Pictures' },
-  { title: 'Videos' },
-  { title: 'Other' },
-  { title: 'Shared' },
-  { title: 'Team Drives' },
-];
-
-enum SelectionMode {
-  NONE,
-  SELECT,
-  OR, // Shift
-  XOR, // Control
-}
-
-export default function Explorer() {
-  const itemRefs = useRef<Record<string, HTMLDivElement>>({});
+export default function TileView({ tiles, onOpen }: TileViewProps) {
+  const itemRefs = useRef<Record<string, HTMLElement>>({});
   const selectionBoxRef = useRef<HTMLDivElement>(null);
-  const selectionBoundsRef = useRef({
-    sx: 0,
-    sy: 0,
-    cx: 0,
-    cy: 0,
-  });
+  const selectionBoundsRef = useRef({ sx: 0, sy: 0, cx: 0, cy: 0 });
   const { sx, sy, cx, cy } = selectionBoundsRef.current;
 
   const [mode, setMode] = useState<SelectionMode>(SelectionMode.NONE);
@@ -155,12 +74,7 @@ export default function Explorer() {
         setMode(SelectionMode.NONE);
 
         // Just setting the selection box to invisible may create a scroll bar.
-        selectionBoundsRef.current = {
-          sx: 0,
-          sy: 0,
-          cx: 0,
-          cy: 0,
-        };
+        selectionBoundsRef.current = { sx: 0, sy: 0, cx: 0, cy: 0 };
 
         // Commit the selection.
         switch (mode) {
@@ -189,8 +103,8 @@ export default function Explorer() {
           const { left, top } = e.currentTarget.getBoundingClientRect();
 
           selectionBoundsRef.current = {
-            sx: selectionBoundsRef.current.sx,
-            sy: selectionBoundsRef.current.sy,
+            sx,
+            sy,
             cx: e.clientX - left,
             cy: e.clientY - top,
           };
@@ -211,7 +125,7 @@ export default function Explorer() {
       <div
         ref={selectionBoxRef}
         className={cn(
-          'pointer-events-none invisible absolute rounded-1 bg-accentA-2 ring-1 ring-accent-4',
+          'z-10 pointer-events-none invisible absolute rounded-1 bg-accentA-2 ring-1 ring-accent-4',
           mode && 'visible',
         )}
         style={{
@@ -222,11 +136,17 @@ export default function Explorer() {
         }}
       />
       <div className="flex flex-wrap gap-8">
-        {tiles.map(({ title }) => (
+        {tiles.map(({ title, kind }) => (
           <Tile
             key={title}
             ref={(ref) => {
               if (ref) itemRefs.current[title] = ref;
+            }}
+            onDoubleClick={() => {
+              onOpen(title);
+            }}
+            onClick={() => {
+              console.log('clicked', title);
             }}
             selected={
               [
@@ -237,23 +157,11 @@ export default function Explorer() {
               ][mode]
             }
           >
-            <TileBody title={title} />
+            <Thumbnail title={title} kind={kind} />
+            {/* <HTile title={title} /> */}
           </Tile>
         ))}
       </div>
-      <div className="flex justify-center text-accent-10">
-        {mode > 1 ? (
-          <kbd className="rounded-2 px-2 py-1 text-4 shadow-2">
-            {['', '', 'Shift', 'Ctrl'][mode]}
-          </kbd>
-        ) : undefined}
-      </div>
     </div>
-  );
-}
-
-function overlaps(a: DOMRect, b: DOMRect) {
-  return (
-    a.right > b.left && a.left < b.right && a.bottom > b.top && a.top < b.bottom
   );
 }

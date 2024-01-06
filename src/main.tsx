@@ -9,7 +9,9 @@ import './main.css';
 
 import App from './App';
 import store from './store';
-import Explorer from ':Explorer';
+import TileView from ':TileView/TileView';
+import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
+import { ExplorerView } from '~modules/explorer/ExplorerView';
 
 const root = document.getElementById('root');
 root &&
@@ -17,7 +19,8 @@ root &&
     <React.StrictMode>
       <Provider store={store}>
         <Theme accentColor="indigo" appearance="inherit" radius="large">
-          <Explorer />
+          <App />
+          <ExplorerView />
         </Theme>
       </Provider>
     </React.StrictMode>,
