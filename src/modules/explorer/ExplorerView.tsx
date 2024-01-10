@@ -2,11 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Explorer } from '~lib/Explorer';
+import { db } from '~lib/db';
 import { setItems } from '~modules/playlist/playlistSlice';
 
 import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
-import { TileView } from ':TileView';
 import { Thumbnail } from ':ExplorerTileBody';
+import { TileView } from ':TileView';
 
 /**
  * Renders the Explorer view component.
@@ -83,16 +84,83 @@ export function ExplorerView() {
       <TileView
         items={pathDirContentsRef.current.get(pathDirs.at(-1)!) || []}
         extractKey={(item) => item.name}
-        renderItem={(item) => <Thumbnail kind={item.kind} title={item.name} />}
+        renderItem={(item) => (
+          <Thumbnail
+            kind={item.kind}
+            title={item.name}
+            source={
+              item.name.endsWith('.local.link')
+                ? 'local'
+                : item.name.endsWith('.remote.link')
+                  ? 'remote'
+                  : 'sandbox'
+            }
+          />
+        )}
         onOpen={async (item) => {
           if (item.kind === 'directory') {
             await explorerRef.current?.changeDirectory(item.name);
             await refresh();
           } else if (item.kind === 'file') {
+            /**
+             * This isn't a real file, but a link
+             */
+            const linkTarget = await tryGetLinkTarget(item);
+            if (linkTarget) {
+              if (
+                (await linkTarget.queryPermission({ mode: 'read' })) ===
+                  'granted' ||
+                (await linkTarget.requestPermission({ mode: 'read' })) ===
+                  'granted'
+              ) {
+                if (linkTarget.kind === 'directory') {
+                  // @ts-expect-error Polyfill conflict
+                  explorerRef.current = new Explorer(linkTarget);
+                  await refresh();
+                } else if (linkTarget.kind === 'file') {
+                  dispatch(
+                    setItems([URL.createObjectURL(await linkTarget.getFile())]),
+                  );
+                }
+              }
+
+              return;
+            }
+
             dispatch(setItems([URL.createObjectURL(await item.getFile())]));
           }
         }}
       />
     </div>
   );
+}
+
+async function tryGetLinkTarget(
+  item: FileSystemFileHandle,
+): Promise<FileSystemHandleUnion | undefined> {
+  if (!item.name.startsWith('@link')) return;
+
+  const [link, source, kind] = (item.name.split(':', 1)[0] || '').split('-');
+
+  if (
+    ![
+      link === '@link',
+      ['local', 'remote', 'sandbox'].includes(source),
+      ['directory', 'file'].includes(kind),
+    ].every(Boolean)
+  ) {
+    return;
+  }
+
+  const json = await item.getFile();
+  try {
+    const data = JSON.parse(await json.text()) as { id: string };
+    const dbo = await db.fs.get(data.id);
+    const handle = dbo?.locator as FileSystemHandleUnion;
+
+    if (handle.kind !== kind) return;
+    return handle;
+  } catch (error) {
+    return;
+  }
 }

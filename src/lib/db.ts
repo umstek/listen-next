@@ -1,9 +1,9 @@
 import Dexie, { Table } from 'dexie';
 
-import { FileSystemEntity } from '~models/FileSystemEntity';
+import { FileSystemEntityMetadata } from '~models/FileMetadata';
 
 export class Db extends Dexie {
-  fs!: Table<FileSystemEntity>;
+  fs!: Table<FileSystemEntityMetadata>;
 
   constructor() {
     super('main');

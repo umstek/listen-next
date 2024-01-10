@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
+import {
+  ChevronDownIcon,
+  QuestionMarkCircledIcon,
+} from '@radix-ui/react-icons';
 import {
   Button,
   Card,
@@ -11,16 +13,19 @@ import {
   Heading,
   IconButton,
   Text,
+  Tooltip,
 } from '@radix-ui/themes';
+import { useState } from 'react';
 
 import config from '~config';
 import { DirectoryEntity, FileEntity } from '~lib/FileLoader';
 
 import { NotImplementedDialog } from ':NotImplementedDialog';
 
-import { FileList } from './FileList';
-import { DropZone } from './DropZone';
 import { DropChoiceHelpAlert } from './DropChoiceHelpAlert';
+import { DropZone } from './DropZone';
+import { FileList } from './FileList';
+import { StoreChoiceHelpAlert } from './StoreChoiceHelpAlert';
 
 const types = [
   {
@@ -96,6 +101,9 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
             </DropdownMenuContent>
           </DropdownMenu.Root>
         </Flex>
+        <Tooltip content={<StoreChoiceHelpAlert />}>
+          <QuestionMarkCircledIcon />
+        </Tooltip>
         <Button variant="outline" color="crimson" onClick={() => setFiles([])}>
           Clear
         </Button>

@@ -10,6 +10,9 @@ export const playlistSlice = createSlice({
     setItems: (state, action) => {
       state.playlist = action.payload;
     },
+    appendItems: (state, action) => {
+      state.playlist = [...state.playlist, ...action.payload];
+    },
     clearItems: (state) => {
       state.playlist = [];
     },
@@ -19,7 +22,8 @@ export const playlistSlice = createSlice({
   },
 });
 
-export const { setItems, clearItems, setActiveIndex } = playlistSlice.actions;
+export const { setItems, appendItems, clearItems, setActiveIndex } =
+  playlistSlice.actions;
 
 export const selectPlaylistState = (state: any) => state.playlist;
 
