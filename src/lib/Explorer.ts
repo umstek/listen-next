@@ -13,6 +13,12 @@ export async function listItems(handle: FileSystemDirectoryHandle) {
   return entries;
 }
 
+export function filterByExtensions(extensions: Set<string>) {
+  return (handle: FileSystemHandle) => {
+    return extensions.has(handle.name.slice(handle.name.lastIndexOf('.')));
+  };
+}
+
 /**
  * The Explorer class provides methods for exploring and navigating a virtual file system.
  */

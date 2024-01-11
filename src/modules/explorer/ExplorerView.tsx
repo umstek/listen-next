@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { Explorer } from '~lib/Explorer';
+import env from '~config';
+import { Explorer, filterByExtensions } from '~lib/Explorer';
 import { db } from '~lib/db';
 import { setItems } from '~modules/playlist/playlistSlice';
 
 import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
 import { Thumbnail } from ':ExplorerTileBody';
 import { TileView } from ':TileView';
+
+const audioFilesFilter = filterByExtensions(new Set(env.supportedExtensions));
 
 /**
  * Renders the Explorer view component.
@@ -26,7 +29,12 @@ export function ExplorerView() {
   const refresh = useCallback(async () => {
     const folder = await explorerRef?.current?.getCurrentDirectory();
     const pathDirs = await explorerRef?.current?.getPath();
-    const content = await explorerRef?.current?.listItems();
+    const content = (await explorerRef?.current?.listItems())?.filter(
+      (i) =>
+        i.kind === 'directory' ||
+        i.name.startsWith('@link') ||
+        audioFilesFilter(i),
+    );
 
     if (pathDirs && folder && content) {
       // @ts-expect-error XXX Polyfill conflict
