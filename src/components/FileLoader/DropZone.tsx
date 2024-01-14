@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { ArrowDownIcon } from '@radix-ui/react-icons';
 import { Box, Button, Flex } from '@radix-ui/themes';
+import { useState } from 'react';
 
 import {
   DirectoryEntity,
@@ -9,8 +9,7 @@ import {
   handleDroppedFilesAndFolders,
   openDirectory,
   openFiles,
-} from '~lib/FileLoader';
-
+} from '~lib/fileLoader';
 import { cn } from '~util/styles';
 
 export interface DropBoxProps {

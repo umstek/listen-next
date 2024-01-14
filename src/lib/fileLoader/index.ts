@@ -5,9 +5,9 @@
  * directories. Options will only work if the new directory picker API is
  * supported. Some output fields will also be undefined with the older picker.
  *
- * @param options.id - A unique identifier for the directory picker.
- * @param options.mode - The permission mode for the directory picker.
- * @param options.startIn - The directory to start the picker in.
+ * @param options.id A unique identifier for the directory picker.
+ * @param options.mode The permission mode for the directory picker.
+ * @param options.startIn The directory to start the picker in.
  * @returns An object containing arrays of files and directories.
  */
 export async function openDirectory(
@@ -19,14 +19,6 @@ export async function openDirectory(
 
   return openDirectoryWithOldPicker();
 }
-
-type WellKnownDirectoryNames =
-  | 'desktop'
-  | 'documents'
-  | 'downloads'
-  | 'music'
-  | 'pictures'
-  | 'videos';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker
@@ -50,6 +42,14 @@ export declare interface DirectoryPickerOptions {
    */
   startIn?: FileSystemHandle | WellKnownDirectoryNames;
 }
+
+type WellKnownDirectoryNames =
+  | 'desktop'
+  | 'documents'
+  | 'downloads'
+  | 'music'
+  | 'pictures'
+  | 'videos';
 
 function supportsDirectoryPicker() {
   try {
