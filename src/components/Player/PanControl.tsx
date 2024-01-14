@@ -29,7 +29,7 @@ export function PanControl({ onChange, value }: VolumeControlProps) {
       </IconButton>
       <Slider
         size="1"
-        variant='soft'
+        variant="soft"
         defaultValue={[0]}
         min={-1}
         max={1}

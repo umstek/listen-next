@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { PlayerView } from '~modules/player/PlayerView';
-import { FileLoaderView } from '~modules/fileLoader/fileLoaderView';
+import { FileLoaderView } from '~modules/fileLoader/FileLoaderView';
 import { selectPlaylistState } from '~modules/playlist/playlistSlice';
 import { Container } from '@radix-ui/themes';
 

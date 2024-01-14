@@ -1,24 +1,27 @@
-import { useState } from 'react';
 import { ArrowDownIcon } from '@radix-ui/react-icons';
 import { Box, Button, Flex } from '@radix-ui/themes';
+import { useState } from 'react';
 
 import {
+  DirectoryEntity,
   FileEntity,
   handleDragOverItems,
   handleDroppedFilesAndFolders,
   openDirectory,
   openFiles,
-} from '~lib/FileLoader';
-
+} from '~lib/fileLoader';
 import { cn } from '~util/styles';
 
 export interface DropBoxProps {
   types?: FilePickerAcceptType[] | undefined;
-  onFilesAccepted: (files: FileEntity[]) => void;
+  onAccepted: (arg: {
+    files: FileEntity[];
+    directories: DirectoryEntity[];
+  }) => void;
   children?: React.ReactNode;
 }
 
-export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
+export function DropZone({ onAccepted, types, children }: DropBoxProps) {
   const [draggingOver, setDraggingOver] = useState(false);
 
   return (
@@ -26,7 +29,7 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
       <Box
         p="4"
         className={cn(
-          'w-[400px] h-[300px] shadow-sm bg-gray-50 text-lime-600 rounded-3xl',
+          'h-[300px] w-[400px] rounded-3xl bg-gray-50 text-lime-600 shadow-sm',
           draggingOver ? 'bg-lime-100 shadow-inner' : '',
         )}
         onDragEnter={() => setDraggingOver(true)}
@@ -44,14 +47,14 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
             return;
           }
 
-          const { files } = (await handleDroppedFilesAndFolders(
+          const { files, directories } = (await handleDroppedFilesAndFolders(
             e.dataTransfer,
             {
               types,
             },
           )) || { files: [], directories: [] };
 
-          onFilesAccepted(files);
+          onAccepted({ files, directories });
         }}
       >
         <Flex
@@ -70,12 +73,12 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
                   className="pointer-events-auto"
                   variant="outline"
                   onClick={async () => {
-                    const { files } = (await openFiles({
+                    const { files, directories } = (await openFiles({
                       multiple: true,
                       types,
                       excludeAcceptAllOption: true,
                     })) || { files: [], directories: [] };
-                    onFilesAccepted(files);
+                    onAccepted({ files, directories });
                   }}
                 >
                   Add Files
@@ -83,11 +86,11 @@ export function DropZone({ onFilesAccepted, types, children }: DropBoxProps) {
                 <Button
                   className="pointer-events-auto"
                   onClick={async () => {
-                    const { files } = (await openDirectory({
+                    const { files, directories } = (await openDirectory({
                       types,
                     })) || { files: [], directories: [] };
 
-                    onFilesAccepted(files);
+                    onAccepted({ files, directories });
                   }}
                 >
                   Add Folder

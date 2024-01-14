@@ -1,28 +1,27 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Play } from '@phosphor-icons/react';
 import {
   Flex,
   IconButton,
   Table,
   TableBody,
   TableCell,
-  TableHeader,
   TableColumnHeaderCell,
+  TableHeader,
   TableRow,
 } from '@radix-ui/themes';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   CellContext,
+  Row,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  Row,
   useReactTable,
 } from '@tanstack/react-table';
-import { Play } from '@phosphor-icons/react';
-
-import { FileEntity, FileSystemEntity } from '~lib/FileLoader';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import usePlayer from '~hooks/usePlayer';
+import { FileEntity, FileSystemEntity } from '~lib/fileLoader';
 
 interface RowActionsProps {
   row: Row<FileSystemEntity>;

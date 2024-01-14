@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
+import {
+  ChevronDownIcon,
+  QuestionMarkCircledIcon,
+} from '@radix-ui/react-icons';
 import {
   Button,
   Card,
@@ -11,30 +13,42 @@ import {
   Heading,
   IconButton,
   Text,
+  Tooltip,
 } from '@radix-ui/themes';
+import { useState } from 'react';
 
 import config from '~config';
-import { FileEntity } from '~lib/FileLoader';
+import { DirectoryEntity, FileEntity } from '~lib/fileLoader';
 
 import { NotImplementedDialog } from ':NotImplementedDialog';
 
-import { FileList } from './FileList';
-import { DropZone } from './DropZone';
 import { DropChoiceHelpAlert } from './DropChoiceHelpAlert';
+import { DropZone } from './DropZone';
+import { FileList } from './FileList';
+import { StoreChoiceHelpAlert } from './StoreChoiceHelpAlert';
 
 const types = [
   {
     description: 'All Audio Files',
-    accept: { 'audio/*': config.supportedExtensions },
+    accept: { 'audio/*': config.supportedExtensions as `.${string}`[] },
   },
 ];
 
 interface FileLoaderProps {
   onPlayNow: (files: FileEntity[]) => void;
+  onCopy: (arg: {
+    files: FileEntity[];
+    directories: DirectoryEntity[];
+  }) => void;
+  onLink: (arg: {
+    files: FileEntity[];
+    directories: DirectoryEntity[];
+  }) => void;
 }
 
-export function FileLoader({ onPlayNow }: FileLoaderProps) {
+export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
   const [files, setFiles] = useState<FileEntity[]>([]);
+  const [directories, setDirectories] = useState<DirectoryEntity[]>([]);
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
     useState(false);
 
@@ -52,7 +66,10 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
       </Flex>
       <Flex direction="column">
         <DropZone
-          onFilesAccepted={(fs) => setFiles(files.concat(fs))}
+          onAccepted={({ files: fs, directories: ds }) => {
+            setFiles(files.concat(fs));
+            setDirectories(directories.concat(ds));
+          }}
           types={types}
         >
           <DropChoiceHelpAlert />
@@ -66,26 +83,27 @@ export function FileLoader({ onPlayNow }: FileLoaderProps) {
         </Button>
         <Flex>
           <Button
-            onClick={() => setShowNotImplementedDialog(true)}
-            className="rounded-r-none"
+            onClick={() => onCopy({ files, directories })}
+            className="rounded-r-[0]"
           >
             Copy to Browser
           </Button>
           <DropdownMenu.Root>
             <DropdownMenuTrigger>
-              <IconButton className="rounded-l-none">
+              <IconButton className="rounded-l-[0]">
                 <ChevronDownIcon />
               </IconButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem
-                onClick={() => setShowNotImplementedDialog(true)}
-              >
+              <DropdownMenuItem onClick={() => onLink({ files, directories })}>
                 Store as Links
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu.Root>
         </Flex>
+        <Tooltip content={<StoreChoiceHelpAlert />}>
+          <QuestionMarkCircledIcon />
+        </Tooltip>
         <Button variant="outline" color="crimson" onClick={() => setFiles([])}>
           Clear
         </Button>
