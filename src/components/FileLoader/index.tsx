@@ -20,7 +20,7 @@ import { useState } from 'react';
 import config from '~config';
 import { DirectoryEntity, FileEntity } from '~lib/fileLoader';
 
-import { NotImplementedDialog } from ':NotImplementedDialog';
+import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert';
 
 import { DropChoiceHelpAlert } from './DropChoiceHelpAlert';
 import { DropZone } from './DropZone';

@@ -9,7 +9,7 @@ import {
 import { DropdownMenu, IconButton, Tooltip } from '@radix-ui/themes';
 import { useState } from 'react';
 
-import { NotImplementedDialog } from ':NotImplementedDialog';
+import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert';
 
 interface TileBodyProps {
   title: string;
@@ -90,6 +90,11 @@ export function Thumbnail({ title, kind, source }: TileBodyProps): JSX.Element {
               onClick={() => setShowNotImplementedDialog(true)}
             >
               Hide
+            </DropdownMenu.Item>
+            <DropdownMenu.Item
+              onClick={() => setShowNotImplementedDialog(true)}
+            >
+              Re-index
             </DropdownMenu.Item>
             <DropdownMenu.Item
               shortcut="⌘ ⌫"

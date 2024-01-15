@@ -1,15 +1,16 @@
+import { Theme } from '@radix-ui/themes';
+import '@radix-ui/themes/styles.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-
-import '@radix-ui/themes/styles.css';
-import { Theme } from '@radix-ui/themes';
 import { Provider } from 'react-redux';
 
-import './main.css';
+import { ExplorerView } from '~modules/explorer/ExplorerView';
+
+import { IndexPrompt } from ':Dialogs/IndexPrompt';
 
 import App from './App';
+import './main.css';
 import store from './store';
-import { ExplorerView } from '~modules/explorer/ExplorerView';
 
 const root = document.getElementById('root');
 root &&
