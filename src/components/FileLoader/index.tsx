@@ -78,16 +78,20 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
       </Flex>
       <Flex justify="end" gap="3" align="center" pt="3">
         {/* Store in Provider -- someday */}
-        <Button variant="outline" onClick={() => onPlayNow(files)}>
-          Play Now
-        </Button>
-        <Flex>
-          <Button
-            onClick={() => onCopy({ files, directories })}
-            className="rounded-r-[0]"
-          >
-            Copy to Browser
+        <Tooltip content="Play the selected files without indexing.">
+          <Button variant="outline" onClick={() => onPlayNow(files)}>
+            Play Now
           </Button>
+        </Tooltip>
+        <Flex>
+          <Tooltip content="Create a sandboxed copy of the selected files inside your browser.">
+            <Button
+              onClick={() => onCopy({ files, directories })}
+              className="rounded-r-[0]"
+            >
+              Copy to Browser
+            </Button>
+          </Tooltip>
           <DropdownMenu.Root>
             <DropdownMenuTrigger>
               <IconButton className="rounded-l-[0]">
@@ -95,9 +99,13 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
               </IconButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => onLink({ files, directories })}>
-                Store as Links
-              </DropdownMenuItem>
+              <Tooltip content="Store links to the original files/folders you dropped. You'll be asked for permission each time you open them and, the changes to the original files will be reflected here.">
+                <DropdownMenuItem
+                  onClick={() => onLink({ files, directories })}
+                >
+                  Store as Links
+                </DropdownMenuItem>
+              </Tooltip>
             </DropdownMenuContent>
           </DropdownMenu.Root>
         </Flex>
