@@ -163,7 +163,7 @@ async function tryGetLinkTarget(
   const json = await item.getFile();
   try {
     const data = JSON.parse(await json.text()) as { id: string };
-    const dbo = await db.fs.get(data.id);
+    const dbo = await db.linkedFSEs.get(data.id);
     const handle = dbo?.locator as FileSystemHandleUnion;
 
     if (handle.kind !== kind) return;

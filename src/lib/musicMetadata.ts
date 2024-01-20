@@ -1,12 +1,14 @@
 import { IAudioMetadata } from 'music-metadata-browser';
 
-export interface BasicAudioMetadata {
+interface BasicAudioMetadata {
   genre: string[];
   artists: string[];
-  album: string;
-  title: string;
-  trackNumber: number;
+  album?: string;
+  title?: string;
+  trackNumber?: number;
+  trackCount?: number;
   duration: number;
+  year?: number;
 }
 
 export async function getAudioMetadata(
@@ -17,13 +19,15 @@ export async function getAudioMetadata(
     duration: true,
     includeChapters: true,
   });
+
   const {
     common: {
       genre = [],
       artists = [],
       album = '',
       title = '',
-      track: { no },
+      track: { no, of },
+      year,
     },
     format: { duration = 0 },
   } = metadata;
@@ -33,15 +37,12 @@ export async function getAudioMetadata(
       genre,
       artists,
       album,
-      trackNumber: no || 0,
+      trackNumber: no || undefined,
+      trackCount: of || undefined,
       title,
       duration,
+      year,
     },
     metadata,
   ];
 }
-
-
-// TODO: Dialog
-// Index now, in background, when playing
-// Browser power save

@@ -1,14 +1,18 @@
 import Dexie, { Table } from 'dexie';
 
+import { AudioMetadata } from '~models/AudioMetadata';
 import { FileSystemEntityMetadata } from '~models/FileMetadata';
 
 export class Db extends Dexie {
-  fs!: Table<FileSystemEntityMetadata>;
+  linkedFSEs!: Table<FileSystemEntityMetadata>;
+  audioMetadata!: Table<AudioMetadata>;
 
   constructor() {
     super('main');
     this.version(1).stores({
-      fs: 'id, name, kind, parentId',
+      linkedFSEs: 'id, name, kind, parentId',
+      audioMetadata:
+        'id, name, source, extension, mime, *genre, *artists, album, title, trackNumber, trackCount, duration, year',
     });
   }
 }

@@ -17,7 +17,19 @@ function App() {
     <Container size="4" id="app">
       <Button variant="solid" onClick={() => onShow(!show)} />
       <IndexPrompt open={show} onOpenChange={() => onShow(!show)} />
-      <Task progress={Math.floor(Math.random() * 100)} />
+      <Task
+        id="1"
+        display="Copying and indexing files..."
+        partsCount={10}
+        partsDone={3}
+        status="paused"
+        onPause={() => {
+          console.log('paused');
+        }}
+        onAbort={() => {
+          console.log('aborted');
+        }}
+      />
       {playlistState.playlist.length > 0 ? <PlayerView /> : <FileLoaderView />}
     </Container>
   );

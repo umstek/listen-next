@@ -3,6 +3,9 @@ import { AlertDialog, Button, Checkbox, Flex, Text } from '@radix-ui/themes';
 export function IndexPrompt(
   props: React.ComponentProps<typeof AlertDialog.Root>,
 ) {
+  // TODO Check battery level and charging status and decide default option and
+  // also show a info box.
+
   return (
     <AlertDialog.Root {...props}>
       <AlertDialog.Content>

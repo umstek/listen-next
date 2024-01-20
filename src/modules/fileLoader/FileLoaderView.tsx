@@ -64,7 +64,7 @@ export function FileLoaderView() {
           });
         });
 
-        await db.fs.bulkPut(dbos);
+        await db.linkedFSEs.bulkPut(dbos);
 
         explorerRef.current.changeDirectory('/');
         for (const dbo of dbos) {
