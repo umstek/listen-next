@@ -1,1 +1,1 @@
-export function Tasks() {}
+export { Task } from './Task';

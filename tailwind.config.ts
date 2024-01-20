@@ -1,6 +1,6 @@
+import { radixThemePreset } from 'radix-themes-tw';
 import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
-import { radixThemePreset } from 'radix-themes-tw';
 
 const config: Config = {
   darkMode: ['class'],

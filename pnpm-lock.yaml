@@ -41,6 +41,9 @@ dependencies:
   dexie:
     specifier: ^3.2.4
     version: 3.2.4
+  dockview:
+    specifier: ^1.9.0
+    version: 1.9.0
   events:
     specifier: ^3.3.0
     version: 3.3.0
@@ -2964,6 +2967,16 @@ packages:
 
   /dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
+
+  /dockview-core@1.9.0:
+    resolution: {integrity: sha512-1ctgCXtZ5s5Okd19TPqz2wn0G7bZNLXvIEz0Fh3ZEeMc8U4G2za381fmgWS0SvoVrtbbOcDs/3CQZMVLo3/e0w==}
+    dev: false
+
+  /dockview@1.9.0:
+    resolution: {integrity: sha512-q0fViWS5017wGKo35rTNiRCQuF4ogxDMbEw1Ph24uJY03s2xngZQQ7RKFxlj5zH1ACV2kfTCAv7jm/pr/jXssQ==}
+    dependencies:
+      dockview-core: 1.9.0
+    dev: false
 
   /doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}

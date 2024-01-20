@@ -26,6 +26,7 @@
     "clsx": "^2.1.0",
     "date-fns": "^3.2.0",
     "dexie": "^3.2.4",
+    "dockview": "^1.9.0",
     "events": "^3.3.0",
     "music-metadata-browser": "^2.5.10",
     "nanoid": "^5.0.4",
