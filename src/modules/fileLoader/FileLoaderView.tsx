@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { Explorer } from '~lib/Explorer';
 import { db } from '~lib/db';
+import IndexAndCopyWorker from '~lib/workers/indexAndCopyTask?worker';
 import {
   directoryMetadataSchema,
   fileMetadataSchema,
@@ -10,6 +11,8 @@ import {
 import { setItems } from '~modules/playlist/playlistSlice';
 
 import { FileLoader } from ':FileLoader';
+
+const worker = new IndexAndCopyWorker();
 
 /**
  * Renders the FileLoaderView component.
@@ -25,27 +28,10 @@ export function FileLoaderView() {
         dispatch(setItems(urls));
       }}
       onCopy={async ({ files, directories }) => {
-        for (const d of directories) {
-          if (
-            d.parent &&
-            d.parent !== (await explorerRef.current.getPathAsString())
-          ) {
-            await explorerRef.current.changeDirectory(`/${d.parent}`);
-          }
-          await explorerRef.current.createDirectory(d.name);
-        }
-
-        for (const f of files) {
-          if (
-            f.parent &&
-            f.parent !== (await explorerRef.current.getPathAsString())
-          ) {
-            await explorerRef.current.changeDirectory(`/${f.parent}`);
-          }
-          await explorerRef.current.putFile(f.file);
-        }
-
-        await explorerRef.current.changeDirectory('/');
+        worker.onmessage = ({ data }) => {
+          console.log(data);
+        };
+        worker.postMessage({ files, directories });
       }}
       onLink={async ({ files, directories }) => {
         const orphans = [

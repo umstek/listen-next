@@ -14,7 +14,7 @@ export const audioMetadataSchema = z.object({
   title: z.string().optional(),
   trackNumber: z.number().int().optional(),
   trackCount: z.number().int().optional(),
-  duration: z.number().int().optional(),
+  duration: z.number().optional(),
   year: z.number().int().optional(),
 });
 

@@ -135,7 +135,7 @@ export function FileList({ data }: FileListProps) {
   });
 
   return (
-    <div ref={tableContainerRef}>
+    <div ref={tableContainerRef} className="overflow-auto h-[300px]">
       <Table.Root>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

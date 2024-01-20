@@ -10,13 +10,12 @@ const event = (action: string, data: Record<string, unknown> = {}) => ({
   task: 'indexAndCopy',
 });
 
-export const onmessage = async (
-  id: string,
-  {
-    files,
-    directories,
-  }: { files: FileEntity[]; directories: DirectoryEntity[] },
+onmessage = async (
+  ev: MessageEvent<{ files: FileEntity[]; directories: DirectoryEntity[] }>,
 ) => {
+  const { files, directories } = ev.data;
+  console.log(files, directories);
+
   const explorer = new Explorer();
 
   postMessage(

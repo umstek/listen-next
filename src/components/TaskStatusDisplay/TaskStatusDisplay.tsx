@@ -20,17 +20,20 @@ const statusToColor: Record<(typeof statuses)[number], BadgeProps['color']> = {
   success: 'green',
 };
 
-interface TaskProps {
+export interface TaskStatusDefinition {
   id: string;
   display: ReactNode;
   partsCount: number;
   partsDone: number;
   status: (typeof statuses)[number];
+}
+
+interface TaskStatusDisplayProps extends TaskStatusDefinition {
   onPause?: () => void;
   onAbort?: () => void;
 }
 
-export function Task({
+export function TaskStatusDisplay({
   id,
   display,
   partsCount,
@@ -38,11 +41,14 @@ export function Task({
   status,
   onPause,
   onAbort,
-}: TaskProps) {
+}: TaskStatusDisplayProps) {
   const progress = Math.floor((partsDone / partsCount) * 100);
 
   return (
-    <Tooltip content={`${display}: ${status} (${progress}%)`}>
+    <Tooltip
+      id={`task-status-display-${id}`}
+      content={`${display}: ${status} (${progress}%)`}
+    >
       <Box width="max-content">
         <Flex direction="column" gap="2">
           <Flex gap="1">

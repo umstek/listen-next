@@ -3,18 +3,18 @@ import { createSlice } from '@reduxjs/toolkit';
 export const playlistSlice = createSlice({
   name: 'playlist',
   initialState: {
-    playlist: [] as string[],
+    items: [] as string[],
     activeIndex: 0,
   },
   reducers: {
     setItems: (state, action) => {
-      state.playlist = action.payload;
+      state.items = action.payload;
     },
     appendItems: (state, action) => {
-      state.playlist = [...state.playlist, ...action.payload];
+      state.items = [...state.items, ...action.payload];
     },
     clearItems: (state) => {
-      state.playlist = [];
+      state.items = [];
     },
     setActiveIndex: (state, action) => {
       state.activeIndex = action.payload;
