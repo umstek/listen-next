@@ -4,18 +4,21 @@ import { DirectoryEntity, FileEntity } from '~lib/fileLoader';
 import { getAudioMetadata } from '~lib/musicMetadata';
 import { audioMetadataSchema } from '~models/AudioMetadata';
 
-const event = (action: string, data: Record<string, unknown> = {}) => ({
-  ...data,
-  action,
-  task: 'indexAndCopy',
-});
-
 onmessage = async (
-  ev: MessageEvent<{ files: FileEntity[]; directories: DirectoryEntity[] }>,
+  ev: MessageEvent<{
+    id: string;
+    files: FileEntity[];
+    directories: DirectoryEntity[];
+  }>,
 ) => {
-  const { files, directories } = ev.data;
-  console.log(files, directories);
+  const event = (action: string, data: Record<string, unknown> = {}) => ({
+    task: 'indexAndCopy',
+    id,
+    action,
+    ...data,
+  });
 
+  const { id, files, directories } = ev.data;
   const explorer = new Explorer();
 
   postMessage(

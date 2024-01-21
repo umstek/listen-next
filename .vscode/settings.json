@@ -9,6 +9,7 @@
     "release",
     "vfs",
     "explorer",
-    "metadata"
+    "metadata",
+    "workers"
   ]
 }

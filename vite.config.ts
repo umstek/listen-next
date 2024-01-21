@@ -17,6 +17,7 @@ export default defineConfig({
   },
   plugins: [tsconfigPaths(), react(), nodePolyfills()],
   worker: {
+    plugins: () => [tsconfigPaths(), nodePolyfills()],
     format: 'es',
   },
 });

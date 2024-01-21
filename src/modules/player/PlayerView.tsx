@@ -1,40 +1,30 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { setActiveIndex } from '~modules/playlist/playlistSlice';
+import { RootState } from '~store';
 import { clamp } from '~util/math';
-import {
-  selectPlaylistState,
-  setActiveIndex,
-} from '~modules/playlist/playlistSlice';
 
 import { Player } from ':Player';
 
 export function PlayerView() {
-  const playlistState = useSelector(selectPlaylistState);
+  const { activeIndex, items } = useSelector(
+    (state: RootState) => state.playlist,
+  );
   const dispatch = useDispatch();
 
-  const url = playlistState.playlist?.[playlistState.activeIndex] || '';
-
   const handleNext = () => {
-    const newIndex = clamp(
-      playlistState.activeIndex + 1,
-      0,
-      (playlistState.playlist?.length ?? 1) - 1,
-    );
+    const newIndex = clamp(activeIndex + 1, 0, (items.length ?? 1) - 1);
     dispatch(setActiveIndex(newIndex));
   };
 
   const handlePrevious = () => {
-    const newIndex = clamp(
-      playlistState.activeIndex - 1,
-      0,
-      (playlistState.playlist?.length ?? 1) - 1,
-    );
+    const newIndex = clamp(activeIndex - 1, 0, (items.length ?? 1) - 1);
     dispatch(setActiveIndex(newIndex));
   };
 
   return (
     <Player
-      url={url}
+      url={items[activeIndex] ?? ''}
       onNext={handleNext}
       onPrevious={handlePrevious}
       settings

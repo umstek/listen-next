@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -9,6 +10,7 @@ import {
   fileMetadataSchema,
 } from '~models/FileMetadata';
 import { setItems } from '~modules/playlist/playlistSlice';
+import { addTask, updateTask } from '~modules/tasks/tasksSlice';
 
 import { FileLoader } from ':FileLoader';
 
@@ -28,10 +30,48 @@ export function FileLoaderView() {
         dispatch(setItems(urls));
       }}
       onCopy={async ({ files, directories }) => {
-        worker.onmessage = ({ data }) => {
-          console.log(data);
+        const id = nanoid();
+        worker.onmessage = (
+          message: MessageEvent<{
+            task: string;
+            id: string;
+            action: string;
+            [key: string]: unknown;
+          }>,
+        ) => {
+          switch (message.data.action) {
+            case 'start':
+              dispatch(
+                addTask({
+                  display: 'Copying and indexing',
+                  id,
+                  partsCount: message.data.filesTotal as number,
+                  partsDone: 0,
+                  status: 'pending',
+                }),
+              );
+              break;
+            case 'progress':
+              dispatch(
+                updateTask({
+                  id,
+                  partsDone: message.data.filesDone as number,
+                  status: 'in-progress',
+                }),
+              );
+              break;
+            case 'done':
+              dispatch(
+                updateTask({
+                  id,
+                  partsDone: message.data.filesDone as number,
+                  status: 'success',
+                }),
+              );
+              break;
+          }
         };
-        worker.postMessage({ files, directories });
+        worker.postMessage({ id: nanoid(), files, directories });
       }}
       onLink={async ({ files, directories }) => {
         const orphans = [

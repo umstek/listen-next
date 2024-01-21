@@ -8,25 +8,21 @@ export const tasksSlice = createSlice({
     items: [] as TaskStatusDefinition[],
   },
   reducers: {
-    addTask: (state, action) => {
-      state.items = [...state.items, action.payload];
+    addTask: (state, action: { payload: TaskStatusDefinition }) => {
+      state.items.push(action.payload);
     },
-    removeTask: (state, action) => {
+    removeTask: (state, action: { payload: string }) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
     },
-    updateTask: (state, action) => {
-      state.items = state.items.map((item) => {
-        if (item.id === action.payload.id) {
-          return { ...item, ...action.payload };
-        }
-        return item;
-      });
+    updateTask: (state, action: { payload: Partial<TaskStatusDefinition> }) => {
+      const task = state.items.find((item) => item.id === action.payload.id);
+      if (task) {
+        Object.assign(task, action.payload);
+      }
     },
   },
 });
 
-export const { addTask, removeTask } = tasksSlice.actions;
-
-export const selectPlaylistState = (state: any) => state.playlist;
+export const { addTask, updateTask, removeTask } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

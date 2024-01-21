@@ -11,7 +11,7 @@ export const playlistSlice = createSlice({
       state.items = action.payload;
     },
     appendItems: (state, action) => {
-      state.items = [...state.items, ...action.payload];
+      state.items.push(...action.payload);
     },
     clearItems: (state) => {
       state.items = [];
@@ -20,11 +20,15 @@ export const playlistSlice = createSlice({
       state.activeIndex = action.payload;
     },
   },
+  // Redux is dumb. Types aren't right when code is right and vice versa.
+  // selectors: {
+  //   playlist: (state) => state.playlist.items || [],
+  //   activeIndex: (state) => state.playlist.activeIndex || 0,
+  //   activeItem: (state) => state.playlist.items[state.activeIndex] || '',
+  // },
 });
 
 export const { setItems, appendItems, clearItems, setActiveIndex } =
   playlistSlice.actions;
-
-export const selectPlaylistState = (state: any) => state.playlist;
 
 export default playlistSlice.reducer;
