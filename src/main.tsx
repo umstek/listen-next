@@ -1,3 +1,4 @@
+import { Temporal, toTemporalInstant } from '@js-temporal/polyfill';
 import { Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import React from 'react';
@@ -8,12 +9,25 @@ import App from './App';
 import './main.css';
 import store from './store';
 
+declare global {
+  interface Date {
+    toTemporalInstant(): Temporal.Instant;
+  }
+}
+
+Date.prototype.toTemporalInstant = toTemporalInstant;
+
 const root = document.getElementById('root');
 root &&
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
       <Provider store={store}>
-        <Theme className='w-full h-full' accentColor="indigo" appearance="inherit" radius="large">
+        <Theme
+          className="w-full h-full"
+          accentColor="indigo"
+          appearance="inherit"
+          radius="large"
+        >
           <App />
         </Theme>
       </Provider>

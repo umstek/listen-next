@@ -1,6 +1,6 @@
 import { IAudioMetadata } from 'music-metadata-browser';
 
-interface BasicAudioMetadata {
+export interface BasicAudioMetadata {
   genre: string[];
   artists: string[];
   album?: string;
@@ -12,13 +12,22 @@ interface BasicAudioMetadata {
 }
 
 export async function getAudioMetadata(
-  file: File,
+  fileOrUrl: File | string,
 ): Promise<[BasicAudioMetadata, IAudioMetadata]> {
   const mmb = await import('music-metadata-browser');
-  const metadata = await mmb.parseBlob(file, {
-    duration: true,
-    includeChapters: true,
-  });
+
+  let metadata: IAudioMetadata;
+  if (typeof fileOrUrl === 'string') {
+    metadata = await mmb.fetchFromUrl(fileOrUrl, {
+      duration: true,
+      includeChapters: true,
+    });
+  } else {
+    metadata = await mmb.parseBlob(fileOrUrl, {
+      duration: true,
+      includeChapters: true,
+    });
+  }
 
   const {
     common: {
