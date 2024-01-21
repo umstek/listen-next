@@ -1,4 +1,13 @@
-import { useEffect, useState } from 'react';
+import {
+  BookOpen,
+  ClockClockwise,
+  ClockCounterClockwise,
+  MusicNote,
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+} from '@phosphor-icons/react';
 import {
   Avatar,
   Button,
@@ -8,23 +17,16 @@ import {
   Text,
   Tooltip,
 } from '@radix-ui/themes';
-import {
-  ClockClockwise,
-  ClockCounterClockwise,
-  SkipBack,
-  SkipForward,
-  Play,
-  Pause,
-  BookOpen,
-  MusicNote,
-} from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
 
 import usePlayer, { PlayerState } from '~hooks/usePlayer';
+import { BasicAudioMetadata, getAudioMetadata } from '~lib/musicMetadata';
+import { toHmmss } from '~util/time';
 
-import { VolumeControl } from './VolumeControl';
 import { PanControl } from './PanControl';
-import { SeekBar } from './SeekBar';
 import { PlaybackRateControl } from './PlaybackRateControl';
+import { SeekBar } from './SeekBar';
+import { VolumeControl } from './VolumeControl';
 
 interface PlayerProps {
   url: string;
@@ -52,7 +54,20 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
     duration,
     position,
     state,
-  } = usePlayer();
+  } = usePlayer({
+    autoplay: true,
+  });
+
+  const [metadata, setMetadata] = useState<BasicAudioMetadata | undefined>(
+    undefined,
+  );
+
+  // TODO use db/move to store
+  useEffect(() => {
+    if (url) {
+      getAudioMetadata(url).then(([metadata]) => setMetadata(metadata));
+    }
+  }, [url]);
 
   useEffect(() => {
     setAudioSource(url);
@@ -92,14 +107,14 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
           <Avatar variant="solid" fallback="LP" />
           <Flex grow="1" direction="column">
             <Text as="div" size="1" weight="medium">
-              In The End
+              {metadata?.title}
             </Text>
             <Flex justify="between">
               <Text as="div" size="1">
-                Linkin Park - Hybrid Theory
+                {metadata?.artists.join(' / ')} - {metadata?.album}
               </Text>
               <Text as="div" size="1">
-                {position.toFixed(0)} / {duration.toFixed(0)}
+                {toHmmss(position)} / {toHmmss(duration)}
               </Text>
             </Flex>
             <SeekBar duration={duration} position={position} onChange={seek} />

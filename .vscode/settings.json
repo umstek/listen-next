@@ -8,6 +8,8 @@
     "ui",
     "release",
     "vfs",
-    "explorer"
+    "explorer",
+    "metadata",
+    "workers"
   ]
 }

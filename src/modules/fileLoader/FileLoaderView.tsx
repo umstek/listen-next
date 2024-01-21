@@ -1,15 +1,20 @@
+import { nanoid } from 'nanoid';
 import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Explorer } from '~lib/Explorer';
 import { db } from '~lib/db';
+import IndexAndCopyWorker from '~lib/workers/indexAndCopyTask?worker';
 import {
   directoryMetadataSchema,
   fileMetadataSchema,
 } from '~models/FileMetadata';
 import { setItems } from '~modules/playlist/playlistSlice';
+import { addTask, updateTask } from '~modules/tasks/tasksSlice';
 
 import { FileLoader } from ':FileLoader';
+
+const worker = new IndexAndCopyWorker();
 
 /**
  * Renders the FileLoaderView component.
@@ -25,27 +30,48 @@ export function FileLoaderView() {
         dispatch(setItems(urls));
       }}
       onCopy={async ({ files, directories }) => {
-        for (const d of directories) {
-          if (
-            d.parent &&
-            d.parent !== (await explorerRef.current.getPathAsString())
-          ) {
-            await explorerRef.current.changeDirectory(`/${d.parent}`);
+        const id = nanoid();
+        worker.onmessage = (
+          message: MessageEvent<{
+            task: string;
+            id: string;
+            action: string;
+            [key: string]: unknown;
+          }>,
+        ) => {
+          switch (message.data.action) {
+            case 'start':
+              dispatch(
+                addTask({
+                  display: 'Copying and indexing',
+                  id,
+                  partsCount: message.data.filesTotal as number,
+                  partsDone: 0,
+                  status: 'pending',
+                }),
+              );
+              break;
+            case 'progress':
+              dispatch(
+                updateTask({
+                  id,
+                  partsDone: message.data.filesDone as number,
+                  status: 'in-progress',
+                }),
+              );
+              break;
+            case 'done':
+              dispatch(
+                updateTask({
+                  id,
+                  partsDone: message.data.filesDone as number,
+                  status: 'success',
+                }),
+              );
+              break;
           }
-          await explorerRef.current.createDirectory(d.name);
-        }
-
-        for (const f of files) {
-          if (
-            f.parent &&
-            f.parent !== (await explorerRef.current.getPathAsString())
-          ) {
-            await explorerRef.current.changeDirectory(`/${f.parent}`);
-          }
-          await explorerRef.current.putFile(f.file);
-        }
-
-        await explorerRef.current.changeDirectory('/');
+        };
+        worker.postMessage({ id: nanoid(), files, directories });
       }}
       onLink={async ({ files, directories }) => {
         const orphans = [
@@ -64,7 +90,7 @@ export function FileLoaderView() {
           });
         });
 
-        await db.fs.bulkPut(dbos);
+        await db.linkedFSEs.bulkPut(dbos);
 
         explorerRef.current.changeDirectory('/');
         for (const dbo of dbos) {

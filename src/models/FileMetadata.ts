@@ -1,15 +1,13 @@
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
+import { fseKinds, nanoidRegex, sources } from './constants';
+
 export const fileSystemEntityMetadataSchema = z.object({
-  id: z
-    .string()
-    .regex(/[A-Za-z0-9_-]{21}/)
-    .optional()
-    .default(nanoid),
+  id: z.string().regex(nanoidRegex).optional().default(nanoid),
   name: z.string(),
-  kind: z.enum(['file', 'directory']),
-  source: z.enum(['sandbox', 'local', 'remote']),
+  kind: z.enum(fseKinds),
+  source: z.enum(sources),
   locator: z.unknown(),
 });
 
