@@ -7,6 +7,7 @@ import {
 import { ExplorerView } from '~modules/explorer/ExplorerView';
 import { FileLoaderView } from '~modules/fileLoader/FileLoaderView';
 import { PlayerView } from '~modules/player/PlayerView';
+import { PlaylistView } from '~modules/playlist/PlaylistView';
 import { TasksView } from '~modules/tasks/TasksView';
 
 const components = {
@@ -21,6 +22,9 @@ const components = {
   },
   tasks: (props: IDockviewPanelProps<{ title: string }>) => {
     return <TasksView />;
+  },
+  playlist: (props: IDockviewPanelProps<{ title: string }>) => {
+    return <PlaylistView />;
   },
   empty: (props: IDockviewPanelProps<{ title: string }>) => {
     return <div className="w-full h-full">Empty</div>;
@@ -39,27 +43,34 @@ function App() {
       id: 'fileLoader',
       component: 'fileLoader',
       title: 'File Loader',
-      position: { referencePanel: 'explorer' },
+      position: { referencePanel: explorerPanel },
     });
 
     const _emptyPanel = event.api.addPanel({
       id: 'empty',
       component: 'empty',
       title: 'Empty',
-      position: { referencePanel: 'explorer' },
+      position: { referencePanel: explorerPanel },
     });
 
     const _playerPanel = event.api.addPanel({
       id: 'player',
       component: 'player',
       title: 'Player',
-      position: { referencePanel: 'explorer' },
+      position: { referencePanel: explorerPanel, direction: 'above' },
     });
 
     const _tasksPanel = event.api.addPanel({
       id: 'tasks',
       component: 'tasks',
       title: 'Tasks',
+      position: { referencePanel: explorerPanel, direction: 'below' },
+    });
+
+    const _playlistPanel = event.api.addPanel({
+      id: 'playlist',
+      component: 'playlist',
+      title: 'Playlist',
       position: { referencePanel: explorerPanel, direction: 'right' },
     });
 

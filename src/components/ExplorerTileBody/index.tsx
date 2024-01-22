@@ -44,10 +44,16 @@ export function Thumbnail({ title, kind, source }: TileBodyProps): JSX.Element {
               Play
             </DropdownMenu.Item>
             <DropdownMenu.Item
+              shortcut="⌘ P"
+              onClick={() => setShowNotImplementedDialog(true)}
+            >
+              Play next
+            </DropdownMenu.Item>
+            <DropdownMenu.Item
               shortcut="⌘ A"
               onClick={() => setShowNotImplementedDialog(true)}
             >
-              Add to current playlist
+              Append to current playlist
             </DropdownMenu.Item>
             <DropdownMenu.Separator />
             <DropdownMenu.Item
