@@ -1,12 +1,16 @@
+import { DotsThree } from '@phosphor-icons/react';
+import { DropdownMenu, IconButton } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import env from '~config';
 import { Explorer, filterByExtensions } from '~lib/Explorer';
 import { db } from '~lib/db';
+import { playlistItemSchema } from '~models/Playlist';
 import { setItems } from '~modules/playlist/playlistSlice';
 
 import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
+import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert';
 import { Thumbnail } from ':ExplorerTileBody';
 import { TileView } from ':TileView';
 
@@ -25,6 +29,9 @@ export function ExplorerView() {
     Map<FileSystemDirectoryHandle, FileSystemHandleUnion[]>
   >(new Map());
   const [pathDirs, setPathDirs] = useState<FileSystemDirectoryHandle[]>([]);
+
+  const [showNotImplementedDialog, setShowNotImplementedDialog] =
+    useState(false);
 
   const refresh = useCallback(async () => {
     const folder = await explorerRef?.current?.getCurrentDirectory();
@@ -103,6 +110,101 @@ export function ExplorerView() {
                   ? 'remote'
                   : 'sandbox'
             }
+            addOn={
+              <>
+                <NotImplementedDialog
+                  open={showNotImplementedDialog}
+                  onOpenChange={setShowNotImplementedDialog}
+                />
+                <div className="invisible absolute right-4 top-4 group-hover/tile:visible">
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                      <IconButton radius="full" variant="ghost">
+                        <DotsThree size={24} weight="bold" />
+                      </IconButton>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content>
+                      <DropdownMenu.Item
+                        shortcut="⌘ P"
+                        onClick={() =>
+                          dispatch(setItems([playlistItemSchema.parse({})]))
+                        }
+                      >
+                        Play
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        shortcut="⌘ N"
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Play next
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        shortcut="⌘ A"
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Append to current playlist
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Separator />
+                      <DropdownMenu.Item
+                        shortcut="⌘ F"
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Favorite
+                      </DropdownMenu.Item>
+
+                      <DropdownMenu.Sub>
+                        <DropdownMenu.SubTrigger>
+                          Add to playlist
+                        </DropdownMenu.SubTrigger>
+                        <DropdownMenu.SubContent>
+                          <DropdownMenu.Item
+                            onClick={() => setShowNotImplementedDialog(true)}
+                          >
+                            Playlist 1
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Item
+                            onClick={() => setShowNotImplementedDialog(true)}
+                          >
+                            Playlist 2
+                          </DropdownMenu.Item>
+
+                          <DropdownMenu.Separator />
+                          <DropdownMenu.Item
+                            onClick={() => setShowNotImplementedDialog(true)}
+                          >
+                            More playlists...
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Item
+                            onClick={() => setShowNotImplementedDialog(true)}
+                          >
+                            Create playlist...
+                          </DropdownMenu.Item>
+                        </DropdownMenu.SubContent>
+                      </DropdownMenu.Sub>
+
+                      <DropdownMenu.Separator />
+                      <DropdownMenu.Item
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Hide
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Re-index
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        shortcut="⌘ ⌫"
+                        color="red"
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Delete
+                      </DropdownMenu.Item>
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Root>
+                </div>
+              </>
+            }
           />
         )}
         onOpen={async (item) => {
@@ -142,6 +244,16 @@ export function ExplorerView() {
     </div>
   );
 }
+
+const fileSystemHandleUnionsToPlaylistItems = (
+  items: FileSystemFileHandle[],
+  explorer: Explorer,
+) => {};
+
+const fileSystemHandleUnionToPlaylistItems = (
+  item: FileSystemFileHandle,
+  explorer: Explorer,
+) => {};
 
 async function tryGetLinkTarget(
   item: FileSystemFileHandle,

@@ -28,7 +28,7 @@ export function Playlist() {
   );
 
   return (
-    <Flex direction="column" gap="2">
+    <Flex direction="column" gap="3" p="3">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}

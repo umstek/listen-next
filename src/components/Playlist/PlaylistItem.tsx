@@ -20,20 +20,20 @@ export function PlaylistItem({ id, active }: PlaylistItemProps) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Flex
-        direction="row"
-        justify="between"
-        align="stretch"
-        gap="3"
-        className={cn(
-          active
-            ? 'bg-accent-10 text-accent-1'
-            : 'text-gray-11 hover:text-accent-11',
-          'group/playlist-item',
-        )}
-      >
-        <Flex direction="row" gap="1" align="center">
+    <div
+      className={cn(
+        'select-none rounded-3 group/playlist-item transition-shadow duration-200 hover:ring-offset-1 hover:ring-2',
+        active
+          ? 'bg-accent-2 text-accent-11 ring-accent-5'
+          : 'bg-gray-2 text-gray-11 ring-gray-5',
+      )}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
+      <Flex direction="row" justify="between" align="stretch">
+        <Flex direction="row" gap="3" align="center">
           <Flex
             role="button"
             direction="column"
@@ -48,7 +48,7 @@ export function PlaylistItem({ id, active }: PlaylistItemProps) {
           <Flex direction="column">
             <PlayCircle className="fill-current" weight="thin" size={48} />
           </Flex>
-          <Flex direction="column">
+          <Flex direction="column" gap="1" p="2">
             <h4>Lonely Day</h4>
             <h5>System of a Down</h5>
             <Flex direction="row">
@@ -62,6 +62,7 @@ export function PlaylistItem({ id, active }: PlaylistItemProps) {
           className="invisible group-hover/playlist-item:visible"
         >
           <Button
+            mr="4"
             variant="ghost"
             onClick={(e) => {
               e.stopPropagation();
