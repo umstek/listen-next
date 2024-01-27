@@ -50,8 +50,7 @@ export function ExplorerView() {
       // @ts-expect-error XXX Polyfill conflict
       pathDirContentsRef.current.set(folder, content);
       // @ts-expect-error XXX Polyfill conflict
-      setPathDirs([...pathDirs]);
-      // XXX        ^ Explorer mutates the path, so have to make a copy.
+      setPathDirs(pathDirs);
     }
   }, []);
 
