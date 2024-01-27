@@ -10,6 +10,7 @@
     "vfs",
     "explorer",
     "metadata",
-    "workers"
+    "workers",
+    "types"
   ]
 }

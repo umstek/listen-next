@@ -2,8 +2,8 @@ import { nanoid } from 'nanoid';
 import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { Explorer } from '~lib/Explorer';
 import { db } from '~lib/db';
+import { Explorer } from '~lib/explorer';
 import IndexAndCopyWorker from '~lib/workers/indexAndCopyTask?worker';
 import {
   directoryMetadataSchema,
