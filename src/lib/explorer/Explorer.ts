@@ -20,9 +20,10 @@ export function filterByExtensions(extensions: Set<string>) {
 }
 
 /**
- * The Explorer class provides methods for exploring and navigating a virtual file system.
+ * The Explorer class provides methods for exploring and navigating a virtual
+ * file system.
  */
-export class Explorer {
+export default class Explorer {
   private path: FileSystemDirectoryHandle[] = [];
 
   /**
@@ -43,20 +44,8 @@ export class Explorer {
    *
    * @returns The current working directory.
    */
-  async getCurrentDirectory() {
-    return this.path[this.path.length - 1];
-  }
-
-  /**
-   * Returns the current working directory.
-   *
-   * @return The current working directory path.
-   */
-  async getPathAsString() {
-    if (this.path.length <= 1) {
-      return '/';
-    }
-    return this.path.map((handle) => handle.name).join('/');
+  getCurrentDirectory() {
+    return this.path.at(-1)!;
   }
 
   /**
@@ -64,8 +53,20 @@ export class Explorer {
    *
    * @return The path as an array of FileSystemDirectoryHandle objects.
    */
-  async getPath() {
-    return this.path;
+  getPath() {
+    return [...this.path];
+  }
+
+  /**
+   * Returns the current working directory.
+   *
+   * @return The current working directory path.
+   */
+  getPathAsString() {
+    if (this.path.length <= 1) {
+      return '/';
+    }
+    return this.path.map((handle) => handle.name).join('/');
   }
 
   /**
@@ -98,7 +99,7 @@ export class Explorer {
         continue;
       }
 
-      const handle = this.path[this.path.length - 1];
+      const handle = this.path.at(-1)!;
       const childHandle = await handle.getDirectoryHandle(segment);
       this.path.push(childHandle);
     }
@@ -110,9 +111,9 @@ export class Explorer {
    * @return An array of FileSystemHandles representing the entries in the current directory.
    */
   async listItems() {
-    const handle = this.path[this.path.length - 1];
+    const handle = this.path.at(-1);
 
-    return listItems(handle);
+    return listItems(handle!);
   }
 
   /**
@@ -122,7 +123,7 @@ export class Explorer {
    * @return A promise that resolves to the new DirectoryHandle.
    */
   async createDirectory(name: string) {
-    const handle = this.path[this.path.length - 1];
+    const handle = this.path.at(-1)!;
     const newHandle = await handle.getDirectoryHandle(name, {
       create: true,
     });
@@ -136,8 +137,8 @@ export class Explorer {
    * @return A promise that resolves when the file or directory is successfully removed.
    */
   async remove(name: string) {
-    const handle = this.path[this.path.length - 1];
-    await handle.removeEntry(name);
+    const handle = this.path.at(-1)!;
+    await handle.removeEntry(name, { recursive: true });
   }
 
   /**
@@ -148,7 +149,7 @@ export class Explorer {
    * @return A promise that resolves when the content has been written.
    */
   async putFile(file: File) {
-    const folderHandle = this.path[this.path.length - 1];
+    const folderHandle = this.path.at(-1)!;
     const fileHandle = await folderHandle.getFileHandle(file.name, {
       create: true,
     });
@@ -158,14 +159,25 @@ export class Explorer {
   }
 
   /**
+   * Asynchronously gets the file handle for the given file name.
+   *
+   * @param fileName the name of the file
+   * @return the file handle for the given file name
+   */
+  async getFileHandle(fileName: string) {
+    const handle = this.path.at(-1)!;
+    const fileHandle = await handle.getFileHandle(fileName);
+    return fileHandle;
+  }
+
+  /**
    * Retrieves the specified file.
    *
    * @param fileName The name of the file to retrieve.
    * @return A Promise that resolves to the retrieved file.
    */
   async getFile(fileName: string) {
-    const handle = this.path[this.path.length - 1];
-    const fileHandle = await handle.getFileHandle(fileName);
+    const fileHandle = await this.getFileHandle(fileName);
     const file = await fileHandle.getFile();
     return file;
   }

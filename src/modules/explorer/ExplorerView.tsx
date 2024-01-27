@@ -4,8 +4,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import env from '~config';
-import { Explorer, filterByExtensions } from '~lib/Explorer';
-import { db } from '~lib/db';
+import {
+  MountingExplorer,
+  filterByExtensions,
+  localLinkStrategy,
+} from '~lib/explorer';
 import { playlistItemSchema } from '~models/Playlist';
 import { setItems } from '~modules/playlist/playlistSlice';
 
@@ -19,12 +22,12 @@ const audioFilesFilter = filterByExtensions(new Set(env.supportedExtensions));
 /**
  * Renders the Explorer view component.
  *
- * @return {JSX.Element} The rendered Explorer view.
+ * @return The rendered Explorer view.
  */
 export function ExplorerView() {
   const dispatch = useDispatch();
 
-  const explorerRef = useRef<Explorer | null>(null);
+  const explorerRef = useRef<MountingExplorer | null>(null);
   const pathDirContentsRef = useRef<
     Map<FileSystemDirectoryHandle, FileSystemHandleUnion[]>
   >(new Map());
@@ -34,8 +37,8 @@ export function ExplorerView() {
     useState(false);
 
   const refresh = useCallback(async () => {
-    const folder = await explorerRef?.current?.getCurrentDirectory();
-    const pathDirs = await explorerRef?.current?.getPath();
+    const folder = explorerRef?.current?.getCurrentDirectory();
+    const pathDirs = explorerRef?.current?.getPath();
     const content = (await explorerRef?.current?.listItems())?.filter(
       (i) =>
         i.kind === 'directory' ||
@@ -53,7 +56,7 @@ export function ExplorerView() {
   }, []);
 
   useEffect(() => {
-    explorerRef.current = new Explorer();
+    explorerRef.current = new MountingExplorer([localLinkStrategy]);
 
     refresh();
   }, [refresh]);
@@ -212,75 +215,20 @@ export function ExplorerView() {
             await explorerRef.current?.changeDirectory(item.name);
             await refresh();
           } else if (item.kind === 'file') {
-            /**
-             * This isn't a real file, but a link
-             */
-            const linkTarget = await tryGetLinkTarget(item);
-            if (linkTarget) {
-              if (
-                (await linkTarget.queryPermission({ mode: 'read' })) ===
-                  'granted' ||
-                (await linkTarget.requestPermission({ mode: 'read' })) ===
-                  'granted'
-              ) {
-                if (linkTarget.kind === 'directory') {
-                  // @ts-expect-error Polyfill conflict
-                  explorerRef.current = new Explorer(linkTarget);
-                  await refresh();
-                } else if (linkTarget.kind === 'file') {
-                  dispatch(
-                    setItems([URL.createObjectURL(await linkTarget.getFile())]),
-                  );
-                }
-              }
+            const mountStrategy = await explorerRef.current?.getMountStrategy(
+              item.name,
+            );
 
-              return;
+            const file = mountStrategy
+              ? await (await explorerRef.current?.mount(item.name))?.getFile()
+              : await item.getFile();
+
+            if (file) {
+              dispatch(setItems([URL.createObjectURL(file)]));
             }
-
-            dispatch(setItems([URL.createObjectURL(await item.getFile())]));
           }
         }}
       />
     </div>
   );
-}
-
-const fileSystemHandleUnionsToPlaylistItems = (
-  items: FileSystemFileHandle[],
-  explorer: Explorer,
-) => {};
-
-const fileSystemHandleUnionToPlaylistItems = (
-  item: FileSystemFileHandle,
-  explorer: Explorer,
-) => {};
-
-async function tryGetLinkTarget(
-  item: FileSystemFileHandle,
-): Promise<FileSystemHandleUnion | undefined> {
-  if (!item.name.startsWith('@link')) return;
-
-  const [link, source, kind] = (item.name.split(':', 1)[0] || '').split('-');
-
-  if (
-    ![
-      link === '@link',
-      ['local', 'remote', 'sandbox'].includes(source),
-      ['directory', 'file'].includes(kind),
-    ].every(Boolean)
-  ) {
-    return;
-  }
-
-  const json = await item.getFile();
-  try {
-    const data = JSON.parse(await json.text()) as { id: string };
-    const dbo = await db.linkedFSEs.get(data.id);
-    const handle = dbo?.locator as FileSystemHandleUnion;
-
-    if (handle.kind !== kind) return;
-    return handle;
-  } catch (error) {
-    return;
-  }
 }
