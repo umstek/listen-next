@@ -12,7 +12,7 @@ export class Db extends Dexie {
     this.version(1).stores({
       linkedFSEs: 'id, name, kind, parentId',
       audioMetadata:
-        'id, name, source, extension, mime, *genre, *artists, album, title, trackNumber, trackCount, duration, year',
+        'id, name, path, source, extension, mime, *genre, *artists, album, title, trackNumber, trackCount, duration, year',
     });
   }
 }

@@ -53,7 +53,16 @@ export default class MountingExplorer {
   }
 
   async changeDirectory(path: string) {
-    await this.mountStack.at(-1)!.changeDirectory(path);
+    // Extract separate mount points if any. Double slash `//` was chosen since
+    // there cannot be empty file/folder names other than the OPFS root folder
+    // itself, and because `/` is the only prohibited file name character in
+    // some systems.
+    const paths = path.split('//');
+    for (const path of paths) {
+      if (path) {
+        await this.mountStack.at(-1)!.changeDirectory(path);
+      }
+    }
   }
 
   async listItems() {
@@ -123,5 +132,20 @@ export default class MountingExplorer {
       });
     }
     this.mountStack.pop();
+  }
+
+  async spawn(folderName: string) {
+    if (folderName) {
+      await this.changeDirectory(folderName);
+    }
+    const newExplorer = new MountingExplorer(
+      this.strategies,
+      this.getCurrentDirectory(),
+    );
+    if (folderName) {
+      await this.changeDirectory('..');
+    }
+
+    return newExplorer;
   }
 }

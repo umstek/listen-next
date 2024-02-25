@@ -3,6 +3,7 @@ import {
   DragEndEvent,
   KeyboardSensor,
   PointerSensor,
+  UniqueIdentifier,
   closestCenter,
   useSensor,
   useSensors,
@@ -19,7 +20,7 @@ import { useState } from 'react';
 import { PlaylistItem } from './PlaylistItem';
 
 export function Playlist() {
-  const [items, setItems] = useState(['1', '2', '3', '4']);
+  const [items, setItems] = useState<UniqueIdentifier[]>(['1', '2', '3', '4']);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -28,26 +29,32 @@ export function Playlist() {
   );
 
   return (
-    <Flex direction="column" gap="3" p="3">
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          {items.map((id) => (
-            <PlaylistItem key={id} id={id} />
-          ))}
-        </SortableContext>
-      </DndContext>
-    </Flex>
+    <div className="w-full h-full overflow-y-auto overflow-x-hidden">
+      <Flex direction="column" gap="3" p="3">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={items} strategy={verticalListSortingStrategy}>
+            {items.map((id) => (
+              <PlaylistItem key={id} id={id} />
+            ))}
+          </SortableContext>
+        </DndContext>
+      </Flex>
+    </div>
   );
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
+    if (active.id !== over?.id) {
       setItems((items) => {
+        if (!over?.id) {
+          return items;
+        }
+
         const oldIndex = items.indexOf(active.id);
         const newIndex = items.indexOf(over.id);
 

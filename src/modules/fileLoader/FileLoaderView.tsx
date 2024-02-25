@@ -27,6 +27,7 @@ export function FileLoaderView() {
     <FileLoader
       onPlayNow={(files) => {
         const urls = files.map((f) => URL.createObjectURL(f.file));
+        // TODO use playlist items instead
         dispatch(setItems(urls));
       }}
       onCopy={async ({ files, directories }) => {
@@ -52,19 +53,24 @@ export function FileLoaderView() {
               );
               break;
             case 'progress':
-              dispatch(
-                updateTask({
-                  id,
-                  partsDone: message.data.filesDone as number,
-                  status: 'in-progress',
-                }),
-              );
+              message.data.filesDone &&
+                dispatch(
+                  updateTask({
+                    id,
+                    partsDone: message.data.filesDone as number,
+                    status: 'in-progress',
+                  }),
+                );
               break;
             case 'done':
               dispatch(
                 updateTask({
                   id,
-                  partsDone: message.data.filesDone as number,
+                  ...(message.data.filesDone
+                    ? {
+                        partsDone: message.data.filesDone as number,
+                      }
+                    : undefined),
                   status: 'success',
                 }),
               );

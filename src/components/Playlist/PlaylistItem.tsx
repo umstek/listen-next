@@ -6,7 +6,7 @@ import { Button, Flex } from '@radix-ui/themes';
 import { cn } from '~util/styles';
 
 interface PlaylistItemProps {
-  id: string;
+  id: string | number;
   active?: boolean;
 }
 

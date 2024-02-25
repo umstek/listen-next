@@ -17,10 +17,14 @@ import {
   Text,
   Tooltip,
 } from '@radix-ui/themes';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import usePlayer, { PlayerState } from '~hooks/usePlayer';
+import { db } from '~lib/db';
+import { MountingExplorer, localLinkStrategy } from '~lib/explorer';
 import { BasicAudioMetadata, getAudioMetadata } from '~lib/musicMetadata';
+import { AudioMetadata } from '~models/AudioMetadata';
+import { PlaylistItem } from '~models/Playlist';
 import { toHmmss } from '~util/time';
 
 import { PanControl } from './PanControl';
@@ -29,7 +33,7 @@ import { SeekBar } from './SeekBar';
 import { VolumeControl } from './VolumeControl';
 
 interface PlayerProps {
-  url: string;
+  item: PlaylistItem;
   onPrevious: () => void;
   onNext: () => void;
   settings: unknown | undefined;
@@ -38,7 +42,7 @@ interface PlayerProps {
 
 const VPR = ['v', 'p', 'r'] as const;
 
-export function Player({ url, onPrevious, onNext }: PlayerProps) {
+export function Player({ item, onPrevious, onNext }: PlayerProps) {
   const {
     setAudioSource,
     playPause,
@@ -58,20 +62,29 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
     autoplay: true,
   });
 
-  const [metadata, setMetadata] = useState<BasicAudioMetadata | undefined>(
-    undefined,
-  );
-
-  // TODO use db/move to store
+  const [metadata, setMetadata] = useState<BasicAudioMetadata>();
   useEffect(() => {
-    if (url) {
-      getAudioMetadata(url).then(([metadata]) => setMetadata(metadata));
+    if (!item) {
+      return;
     }
-  }, [url]);
 
-  useEffect(() => {
-    setAudioSource(url);
-  }, [setAudioSource, url]);
+    let url: string = '';
+    const playFile = async () => {
+      setMetadata(await db.audioMetadata.get(item.fileId!));
+      const explorer = new MountingExplorer([localLinkStrategy]);
+      await explorer.changeDirectory(
+        item.path.split('/').slice(0, -1).join('/'),
+      );
+      const file = await explorer.getFile(item.path.split('/').pop()!);
+      url = URL.createObjectURL(file);
+      setAudioSource(url);
+    };
+
+    playFile();
+    return () => {
+      url && URL.revokeObjectURL(url);
+    };
+  }, [item, setAudioSource]);
 
   const [vpr, setVpr] = useState<'v' | 'p' | 'r'>('v');
   const [mb, setMb] = useState<'m' | 'b'>('m');

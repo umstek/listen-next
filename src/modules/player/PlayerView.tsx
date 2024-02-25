@@ -24,7 +24,7 @@ export function PlayerView() {
 
   return (
     <Player
-      url={items[activeIndex] ?? ''}
+      item={items[activeIndex] ?? ''}
       onNext={handleNext}
       onPrevious={handlePrevious}
       settings

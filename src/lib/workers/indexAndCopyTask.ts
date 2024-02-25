@@ -52,7 +52,7 @@ onmessage = async (
     }
     await explorer.putFile(f.file);
 
-    const fileInfo = { name: f.name, path: f.path, source: 'local' };
+    const fileInfo = { name: f.name, path: `/${f.path}`, source: 'local' };
     const [basicMetadata, _extendedMetadata] = await getAudioMetadata(f.file);
     await db.audioMetadata.add(
       audioMetadataSchema.parse({ ...basicMetadata, ...fileInfo }),

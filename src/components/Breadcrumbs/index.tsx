@@ -1,9 +1,4 @@
-import {
-  ChevronRightIcon,
-  ArrowUpIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
-} from '@radix-ui/react-icons';
+import { ChevronRightIcon } from '@radix-ui/react-icons';
 import {
   Button,
   DropdownMenu,
@@ -16,34 +11,13 @@ import {
 import React from 'react';
 
 interface BreadcrumbsProps {
-  onUp?: () => void;
-  onBack?: () => void;
-  onForward?: () => void;
   children:
     | React.ReactElement<BreadcrumbProps>[]
     | React.ReactElement<BreadcrumbProps>;
 }
 
-export function Breadcrumbs({
-  onUp = () => {},
-  onBack = () => {},
-  onForward = () => {},
-  children,
-}: BreadcrumbsProps) {
-  return (
-    <Flex>
-      <IconButton variant="soft" className="rounded-r-[0]" onClick={onUp}>
-        <ArrowUpIcon />
-      </IconButton>
-      <IconButton variant="soft" className="rounded-[0]" onClick={onBack}>
-        <ArrowLeftIcon />
-      </IconButton>
-      <IconButton variant="soft" className="rounded-l-[0]" onClick={onForward}>
-        <ArrowRightIcon />
-      </IconButton>
-      <Flex className="group/breadcrumbs ml-2 *:rounded-[0]">{children}</Flex>
-    </Flex>
-  );
+export function Breadcrumbs(props: BreadcrumbsProps) {
+  return <Flex {...props} className="group/breadcrumbs ml-2 *:rounded-[0]" />;
 }
 
 interface BreadcrumbProps {

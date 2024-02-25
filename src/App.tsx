@@ -27,7 +27,7 @@ const components = {
     return <PlaylistView />;
   },
   empty: (props: IDockviewPanelProps<{ title: string }>) => {
-    return <div className="w-full h-full">Empty</div>;
+    return <div className="w-full h-full bg-accent-3">Empty</div>;
   },
 };
 

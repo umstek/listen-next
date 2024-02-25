@@ -1,16 +1,23 @@
 import { DotsThree } from '@phosphor-icons/react';
-import { DropdownMenu, IconButton } from '@radix-ui/themes';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
+} from '@radix-ui/react-icons';
+import { DropdownMenu, Flex, IconButton } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import env from '~config';
+import { db } from '~lib/db';
 import {
   MountingExplorer,
   filterByExtensions,
   localLinkStrategy,
 } from '~lib/explorer';
-import { playlistItemSchema } from '~models/Playlist';
-import { setItems } from '~modules/playlist/playlistSlice';
+import { AudioMetadata } from '~models/AudioMetadata';
+import { PlaylistItem, playlistItemSchema } from '~models/Playlist';
+import { createFromItems } from '~modules/playlist/playlistSlice';
 
 import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
 import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert';
@@ -18,6 +25,38 @@ import { Thumbnail } from ':ExplorerTileBody';
 import { TileView } from ':TileView';
 
 const audioFilesFilter = filterByExtensions(new Set(env.supportedExtensions));
+
+interface BreadcrumbsControlsProps {
+  onBack?: () => void;
+  onForward?: () => void;
+  onUp?: () => void;
+}
+
+function BreadcrumbsControls({
+  onBack,
+  onForward,
+  onUp,
+}: BreadcrumbsControlsProps) {
+  return (
+    <Flex>
+      <Flex className="group/breadcrumbs-controls">
+        <IconButton variant="soft" className="rounded-r-[0]" onClick={onUp}>
+          <ArrowUpIcon />
+        </IconButton>
+        <IconButton variant="soft" className="rounded-[0]" onClick={onBack}>
+          <ArrowLeftIcon />
+        </IconButton>
+        <IconButton
+          variant="soft"
+          className="rounded-l-[0]"
+          onClick={onForward}
+        >
+          <ArrowRightIcon />
+        </IconButton>
+      </Flex>
+    </Flex>
+  );
+}
 
 /**
  * Renders the Explorer view component.
@@ -61,13 +100,14 @@ export function ExplorerView() {
   }, [refresh]);
 
   return (
-    <div>
-      <Breadcrumbs
+    <div className="h-full w-full overflow-auto">
+      <BreadcrumbsControls
         onUp={async () => {
           await explorerRef.current?.changeDirectory('..');
           await refresh();
         }}
-      >
+      />
+      <Breadcrumbs>
         {pathDirs.map((folder, i) => {
           const dirPath = pathDirs
             .slice(i + 1)
@@ -106,11 +146,10 @@ export function ExplorerView() {
             kind={item.kind}
             title={item.name}
             source={
-              item.name.endsWith('.local.link')
+              // @ts-expect-error XXX Polyfill conflict
+              item.kind === 'file' && localLinkStrategy.test(item)
                 ? 'local'
-                : item.name.endsWith('.remote.link')
-                  ? 'remote'
-                  : 'sandbox'
+                : 'sandbox'
             }
             addOn={
               <>
@@ -128,9 +167,41 @@ export function ExplorerView() {
                     <DropdownMenu.Content>
                       <DropdownMenu.Item
                         shortcut="⌘ P"
-                        onClick={() =>
-                          dispatch(setItems([playlistItemSchema.parse({})]))
-                        }
+                        onClick={async () => {
+                          if (item.kind === 'directory') {
+                            const ex = await explorerRef.current?.spawn(
+                              item.name,
+                            );
+                            if (!ex) return;
+
+                            const items = await ex.listItems();
+                            // TODO Recursively get files and queue them.
+                            // TODO Optimization: queue 5 and start, then queue
+                            // the rest with a worker.
+                          } else if (item.kind === 'file') {
+                            const mountStrategy =
+                              await explorerRef.current?.getMountStrategy(
+                                item.name,
+                              );
+
+                            // TODO Delete this and add mount and recurse logic
+                            const file = mountStrategy
+                              ? await (
+                                  await explorerRef.current?.mount(item.name)
+                                )?.getFile()
+                              : await item.getFile();
+
+                            if (file) {
+                              dispatch(
+                                createFromItems([
+                                  playlistItemSchema.parse({
+                                    path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                  }),
+                                ]),
+                              );
+                            }
+                          }
+                        }}
                       >
                         Play
                       </DropdownMenu.Item>
@@ -223,11 +294,35 @@ export function ExplorerView() {
               : await item.getFile();
 
             if (file) {
-              dispatch(setItems([URL.createObjectURL(file)]));
+              const audioMetadata = await db.audioMetadata.get({
+                path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
+              });
+
+              console.log(
+                `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                audioMetadata,
+              );
+
+              audioMetadata &&
+                dispatch(
+                  createFromItems([metadataToPlaylistItem(audioMetadata)]),
+                );
             }
           }
         }}
       />
     </div>
   );
+}
+
+function metadataToPlaylistItem(metadata: AudioMetadata): PlaylistItem {
+  return {
+    album: metadata.album || '',
+    artist: metadata.artists?.join(', ') || '',
+    title: metadata.title || '',
+    duration: Math.floor((metadata.duration || 0) * 1000),
+    createdAt: Date.now(),
+    fileId: metadata.id,
+    path: metadata.path,
+  };
 }

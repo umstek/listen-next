@@ -1,35 +1,38 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { playlistSchema } from '~models/Playlist';
+import { PlaylistItem, playlistSchema } from '~models/Playlist';
 
 export const playlistSlice = createSlice({
   name: 'playlist',
   initialState: playlistSchema.parse({}),
   reducers: {
-    createFromItems: (state, action) => {
+    createFromItems: (state, action: { payload: PlaylistItem[] }) => {
       state = playlistSchema.parse({ items: action.payload });
       return state;
     },
-    setName: (state, action) => {
+    setName: (state, action: { payload: string }) => {
       state.name = action.payload;
     },
-    setItems: (state, action) => {
+    setItems: (state, action: { payload: PlaylistItem[] }) => {
       state.items = action.payload;
     },
-    insertItemsAt: (state, action) => {
+    insertItemsAt: (
+      state,
+      action: { payload: { index?: number; items: PlaylistItem[] } },
+    ) => {
       state.items.splice(
         action.payload.index || state.activeIndex + 1,
         0,
         ...action.payload.items,
       );
     },
-    appendItems: (state, action) => {
+    appendItems: (state, action: { payload: PlaylistItem[] }) => {
       state.items.push(...action.payload);
     },
     clearItems: (state) => {
       state.items = [];
     },
-    setActiveIndex: (state, action) => {
+    setActiveIndex: (state, action: { payload: number }) => {
       state.activeIndex = action.payload;
     },
   },

@@ -4,13 +4,17 @@ import { z } from 'zod';
 import { nanoidRegex } from './constants';
 
 export const playlistItemSchema = z.object({
-  fileId: z.string().regex(nanoidRegex).describe('To fetch the metadata'),
+  fileId: z
+    .string()
+    .regex(nanoidRegex)
+    .optional()
+    .describe('To fetch the metadata'),
   path: z.string().describe('To fetch the file'),
   duration: z.number().int().default(0),
   title: z.string().default(''),
   artist: z.string().default(''),
   album: z.string().default(''),
-  createdAt: z.date().default(new Date()),
+  createdAt: z.number().int().default(Date.now()),
 });
 
 export const playlistSchema = z.object({
@@ -18,8 +22,8 @@ export const playlistSchema = z.object({
   name: z.string().default(''),
   items: z.array(playlistItemSchema).default([]),
   activeIndex: z.number().int().default(0),
-  createdAt: z.date().default(new Date()),
-  accessedAt: z.date().default(new Date()),
+  createdAt: z.number().int().default(Date.now()),
+  accessedAt: z.number().int().default(Date.now()),
 });
 
 export type PlaylistItem = z.infer<typeof playlistItemSchema>;
