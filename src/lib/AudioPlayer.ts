@@ -1,4 +1,4 @@
-import { EventEmitter, Listener } from 'events';
+import { EventEmitter } from 'events';
 
 import createLogger from '../util/logging';
 
@@ -96,7 +96,7 @@ export default class AudioPlayer {
   private audioElement: HTMLAudioElement;
   private sourceNode: MediaElementAudioSourceNode;
   private analyserNode: AnalyserNode | undefined;
-  private analyserTimer: number;
+  private analyserTimer: number | NodeJS.Timeout;
   private pannerNode: StereoPannerNode;
   private gainNode: GainNode;
 
@@ -144,25 +144,25 @@ export default class AudioPlayer {
 
   on = <K extends keyof EventMap>(
     type: K,
-    listener: (...arg: EventMap[K]) => void,
+    listener: (...arg: any[]) => void,
   ): this => {
-    this.eventEmitter.on(type, listener as Listener);
+    this.eventEmitter.on(type, listener);
     return this;
   };
 
   once = <K extends keyof EventMap>(
     type: K,
-    listener: (...arg: EventMap[K]) => void,
+    listener: (...arg: any[]) => void,
   ): this => {
-    this.eventEmitter.once(type, listener as Listener);
+    this.eventEmitter.once(type, listener);
     return this;
   };
 
   off = <K extends keyof EventMap>(
     type: K,
-    listener: (...arg: EventMap[K]) => void,
+    listener: (...arg: any[]) => void,
   ): this => {
-    this.eventEmitter.off(type, listener as Listener);
+    this.eventEmitter.off(type, listener);
     return this;
   };
 

@@ -28,7 +28,7 @@ export function FileLoaderView() {
       onPlayNow={(files) => {
         const urls = files.map((f) => URL.createObjectURL(f.file));
         // TODO use playlist items instead
-        dispatch(setItems(urls));
+        // dispatch(setItems(urls));
       }}
       onCopy={async ({ files, directories }) => {
         const id = nanoid();
