@@ -17,13 +17,12 @@ import {
   Text,
   Tooltip,
 } from '@radix-ui/themes';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import usePlayer, { PlayerState } from '~hooks/usePlayer';
 import { db } from '~lib/db';
 import { MountingExplorer, localLinkStrategy } from '~lib/explorer';
-import { BasicAudioMetadata, getAudioMetadata } from '~lib/musicMetadata';
-import { AudioMetadata } from '~models/AudioMetadata';
+import { BasicAudioMetadata } from '~lib/musicMetadata';
 import { PlaylistItem } from '~models/Playlist';
 import { toHmmss } from '~util/time';
 
@@ -120,7 +119,7 @@ export function Player({ item, onPrevious, onNext }: PlayerProps) {
           <Avatar variant="solid" fallback="LP" />
           <Flex grow="1" direction="column">
             <Text as="div" size="1" weight="medium">
-              {metadata?.title}
+              {metadata?.title || item.path?.split('/').pop()}
             </Text>
             <Flex justify="between">
               <Text as="div" size="1">

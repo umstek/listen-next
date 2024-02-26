@@ -3,14 +3,16 @@ import { CSS } from '@dnd-kit/utilities';
 import { DotsSixVertical, DotsThree, PlayCircle } from '@phosphor-icons/react';
 import { Button, Flex } from '@radix-ui/themes';
 
+import { PlaylistItem as PlaylistItemModel } from '~models/Playlist';
 import { cn } from '~util/styles';
 
 interface PlaylistItemProps {
   id: string | number;
   active?: boolean;
+  item: PlaylistItemModel;
 }
 
-export function PlaylistItem({ id, active }: PlaylistItemProps) {
+export function PlaylistItem({ id, active, item }: PlaylistItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
@@ -23,9 +25,7 @@ export function PlaylistItem({ id, active }: PlaylistItemProps) {
     <div
       className={cn(
         'select-none rounded-3 group/playlist-item transition-shadow duration-200 hover:ring-offset-1 hover:ring-2',
-        active
-          ? 'bg-accent-2 text-accent-11 ring-accent-5'
-          : 'bg-gray-2 text-gray-11 ring-gray-5',
+        active ? 'text-accent-11 ring-accent-5' : 'text-gray-11 ring-gray-5',
       )}
       ref={setNodeRef}
       style={style}
@@ -48,11 +48,15 @@ export function PlaylistItem({ id, active }: PlaylistItemProps) {
           <Flex direction="column">
             <PlayCircle className="fill-current" weight="thin" size={48} />
           </Flex>
-          <Flex direction="column" gap="1" p="2">
-            <h4>Lonely Day</h4>
-            <h5>System of a Down</h5>
+          <Flex direction="column" p="2">
+            <div className="text-2 text-gray-12">
+              {item.title || item.path?.split('/').pop()}
+            </div>
+            <div className="text-1 text-gray-12">
+              {item.artist} - {item.album}
+            </div>
             <Flex direction="row">
-              <h6>/asd/fgh</h6>
+              <div className="text-1 text-gray-9">{item.path}</div>
             </Flex>
           </Flex>
         </Flex>

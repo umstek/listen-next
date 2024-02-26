@@ -15,18 +15,31 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { Flex } from '@radix-ui/themes';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { PlaylistItem } from './PlaylistItem';
+import { PlaylistItem } from '~models/Playlist';
 
-export function Playlist() {
-  const [items, setItems] = useState<UniqueIdentifier[]>(['1', '2', '3', '4']);
+import { PlaylistItem as Item } from './PlaylistItem';
+
+export interface PlaylistProps {
+  items: PlaylistItem[];
+}
+
+export function Playlist(props: PlaylistProps) {
+  const [items, setItems] = useState<UniqueIdentifier[]>([]);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
+
+  useEffect(() => {
+    if (!props.items) {
+      return;
+    }
+    setItems(props.items.map((item) => item.fileId!));
+  }, [props.items]);
 
   return (
     <div className="w-full h-full overflow-y-auto overflow-x-hidden">
@@ -37,9 +50,10 @@ export function Playlist() {
           onDragEnd={handleDragEnd}
         >
           <SortableContext items={items} strategy={verticalListSortingStrategy}>
-            {items.map((id) => (
-              <PlaylistItem key={id} id={id} />
-            ))}
+            {items.map((id) => {
+              const i = props.items.find((i) => i.fileId === id);
+              return i ? <Item key={id} id={id} item={i} /> : undefined;
+            })}
           </SortableContext>
         </DndContext>
       </Flex>
