@@ -16,8 +16,12 @@ import {
   localLinkStrategy,
 } from '~lib/explorer';
 import { AudioMetadata } from '~models/AudioMetadata';
-import { PlaylistItem, playlistItemSchema } from '~models/Playlist';
-import { createFromItems } from '~modules/playlist/playlistSlice';
+import { PlaylistItem } from '~models/Playlist';
+import {
+  appendItems,
+  createFromItems,
+  insertItemsAt,
+} from '~modules/playlist/playlistSlice';
 
 import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
 import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert';
@@ -184,7 +188,6 @@ export function ExplorerView() {
                                 item.name,
                               );
 
-                            // TODO Delete this and add mount and recurse logic
                             const file = mountStrategy
                               ? await (
                                   await explorerRef.current?.mount(item.name)
@@ -192,13 +195,21 @@ export function ExplorerView() {
                               : await item.getFile();
 
                             if (file) {
-                              dispatch(
-                                createFromItems([
-                                  playlistItemSchema.parse({
-                                    path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
-                                  }),
-                                ]),
+                              const audioMetadata = await db.audioMetadata.get({
+                                path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                              });
+
+                              console.log(
+                                `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                audioMetadata,
                               );
+
+                              audioMetadata &&
+                                dispatch(
+                                  createFromItems([
+                                    metadataToPlaylistItem(audioMetadata),
+                                  ]),
+                                );
                             }
                           }
                         }}
@@ -207,13 +218,97 @@ export function ExplorerView() {
                       </DropdownMenu.Item>
                       <DropdownMenu.Item
                         shortcut="⌘ N"
-                        onClick={() => setShowNotImplementedDialog(true)}
+                        onClick={async () => {
+                          if (item.kind === 'directory') {
+                            const ex = await explorerRef.current?.spawn(
+                              item.name,
+                            );
+                            if (!ex) return;
+
+                            const items = await ex.listItems();
+                            // TODO Recursively get files and queue them.
+                            // TODO Optimization: queue 5 and start, then queue
+                            // the rest with a worker.
+                          } else if (item.kind === 'file') {
+                            const mountStrategy =
+                              await explorerRef.current?.getMountStrategy(
+                                item.name,
+                              );
+
+                            const file = mountStrategy
+                              ? await (
+                                  await explorerRef.current?.mount(item.name)
+                                )?.getFile()
+                              : await item.getFile();
+
+                            if (file) {
+                              const audioMetadata = await db.audioMetadata.get({
+                                path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                              });
+
+                              console.log(
+                                `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                audioMetadata,
+                              );
+
+                              audioMetadata &&
+                                dispatch(
+                                  insertItemsAt({
+                                    items: [
+                                      metadataToPlaylistItem(audioMetadata),
+                                    ],
+                                  }),
+                                );
+                            }
+                          }
+                        }}
                       >
                         Play next
                       </DropdownMenu.Item>
                       <DropdownMenu.Item
                         shortcut="⌘ A"
-                        onClick={() => setShowNotImplementedDialog(true)}
+                        onClick={async () => {
+                          if (item.kind === 'directory') {
+                            const ex = await explorerRef.current?.spawn(
+                              item.name,
+                            );
+                            if (!ex) return;
+
+                            const items = await ex.listItems();
+                            // TODO Recursively get files and queue them.
+                            // TODO Optimization: queue 5 and start, then queue
+                            // the rest with a worker.
+                          } else if (item.kind === 'file') {
+                            const mountStrategy =
+                              await explorerRef.current?.getMountStrategy(
+                                item.name,
+                              );
+
+                            const file = mountStrategy
+                              ? await (
+                                  await explorerRef.current?.mount(item.name)
+                                )?.getFile()
+                              : await item.getFile();
+
+                            if (file) {
+                              const audioMetadata = await db.audioMetadata.get({
+                                path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                              });
+
+                              console.log(
+                                `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                audioMetadata,
+                              );
+
+                              audioMetadata &&
+                                dispatch(
+                                  appendItems([
+                                    metadataToPlaylistItem(audioMetadata),
+                                  ]),
+                                );
+                            }
+                          }
+                        }}
                       >
                         Append to current playlist
                       </DropdownMenu.Item>
