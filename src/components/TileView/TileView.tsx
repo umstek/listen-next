@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '~util/styles';
 
 import { Tile } from './Tile';
-import { overlaps, SelectionMode } from './util';
+import { SelectionMode, overlaps } from './util';
 
 /**
  * Interface for props for the TileView component.
@@ -206,7 +206,7 @@ export function TileView<T>({
                 } else if (e.ctrlKey) {
                   setSelected(
                     selected.has(key)
-                      ? new Set([...selected].filter((key) => key !== key))
+                      ? new Set([...selected].filter((k) => key !== k))
                       : new Set([...selected, key]),
                   );
                 } else {
@@ -215,9 +215,7 @@ export function TileView<T>({
               }}
               onCheckClick={() => {
                 if (selected.has(key)) {
-                  setSelected(
-                    new Set([...selected].filter((key) => key !== key)),
-                  );
+                  setSelected(new Set([...selected].filter((k) => key !== k)));
                 } else {
                   setSelected(new Set([...selected, key]));
                 }

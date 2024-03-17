@@ -10,8 +10,8 @@ import {
   TableRow,
 } from '@radix-ui/themes';
 import {
-  CellContext,
-  Row,
+  type CellContext,
+  type Row,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
@@ -21,7 +21,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import usePlayer from '~hooks/usePlayer';
-import { FileEntity, FileSystemEntity } from '~lib/fileLoader';
+import type { FileEntity, FileSystemEntity } from '~lib/fileLoader';
 
 interface RowActionsProps {
   row: Row<FileSystemEntity>;

@@ -1,4 +1,4 @@
-import { IAudioMetadata } from 'music-metadata-browser';
+import type { IAudioMetadata } from 'music-metadata-browser';
 
 export interface BasicAudioMetadata {
   genre: string[];

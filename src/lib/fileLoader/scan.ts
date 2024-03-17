@@ -1,5 +1,5 @@
-import { DirectoryEntity } from './entity';
-import { FileEntity } from './entity';
+import type { DirectoryEntity } from './entity';
+import type { FileEntity } from './entity';
 import { isADirectory, isAFile } from './util';
 
 /**

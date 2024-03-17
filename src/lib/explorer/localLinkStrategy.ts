@@ -1,4 +1,4 @@
-import {
+import type {
   FileSystemFileHandle,
   FileSystemHandle,
 } from 'native-file-system-adapter';
@@ -6,7 +6,7 @@ import {
 import { db } from '../db';
 
 import Explorer from './Explorer';
-import { MountingStrategy } from './MountingExplorer';
+import type { MountingStrategy } from './MountingExplorer';
 
 /**
  * Configuration for mounting local directory links.
@@ -64,7 +64,7 @@ async function indirectLocalLink(item: FileSystemFileHandle) {
   const handle = dbo?.locator as FileSystemHandleUnion;
 
   if (handle.kind !== kind) {
-    throw new Error('Not a ' + kind);
+    throw new Error(`Not a ${kind}`);
   }
   return handle;
 }

@@ -3,7 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { DotsSixVertical, DotsThree, PlayCircle } from '@phosphor-icons/react';
 import { Button, Flex } from '@radix-ui/themes';
 
-import { PlaylistItem as PlaylistItemModel } from '~models/Playlist';
+import type { PlaylistItem as PlaylistItemModel } from '~models/Playlist';
 import { cn } from '~util/styles';
 
 interface PlaylistItemProps {

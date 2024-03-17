@@ -1,9 +1,9 @@
 import {
   DndContext,
-  DragEndEvent,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
-  UniqueIdentifier,
+  type UniqueIdentifier,
   closestCenter,
   useSensor,
   useSensors,
@@ -17,7 +17,7 @@ import {
 import { Flex } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 
-import { PlaylistItem } from '~models/Playlist';
+import type { PlaylistItem } from '~models/Playlist';
 
 import { PlaylistItem as Item } from './PlaylistItem';
 

@@ -22,8 +22,8 @@ import { useEffect, useState } from 'react';
 import usePlayer, { PlayerState } from '~hooks/usePlayer';
 import { db } from '~lib/db';
 import { MountingExplorer, localLinkStrategy } from '~lib/explorer';
-import { BasicAudioMetadata } from '~lib/musicMetadata';
-import { PlaylistItem } from '~models/Playlist';
+import type { BasicAudioMetadata } from '~lib/musicMetadata';
+import type { PlaylistItem } from '~models/Playlist';
 import { toHmmss } from '~util/time';
 
 import { PanControl } from './PanControl';
@@ -67,7 +67,7 @@ export function Player({ item, onPrevious, onNext }: PlayerProps) {
       return;
     }
 
-    let url: string = '';
+    let url = '';
     const playFile = async () => {
       setMetadata(await db.audioMetadata.get(item.fileId!));
       const explorer = new MountingExplorer([localLinkStrategy]);

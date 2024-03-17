@@ -1,7 +1,7 @@
 import {
   DockviewReact,
-  DockviewReadyEvent,
-  IDockviewPanelProps,
+  type DockviewReadyEvent,
+  type IDockviewPanelProps,
 } from 'dockview';
 
 import { ExplorerView } from '~modules/explorer/ExplorerView';

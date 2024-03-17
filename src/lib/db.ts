@@ -1,7 +1,7 @@
-import Dexie, { Table } from 'dexie';
+import Dexie, { type Table } from 'dexie';
 
-import { AudioMetadata } from '~models/AudioMetadata';
-import { FileSystemEntityMetadata } from '~models/FileMetadata';
+import type { AudioMetadata } from '~models/AudioMetadata';
+import type { FileSystemEntityMetadata } from '~models/FileMetadata';
 
 export class Db extends Dexie {
   linkedFSEs!: Table<FileSystemEntityMetadata>;

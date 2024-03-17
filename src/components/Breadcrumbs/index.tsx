@@ -8,7 +8,7 @@ import {
   Flex,
   IconButton,
 } from '@radix-ui/themes';
-import React from 'react';
+import type React from 'react';
 
 interface BreadcrumbsProps {
   children:

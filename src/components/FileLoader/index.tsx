@@ -17,7 +17,7 @@ import {
 import { useState } from 'react';
 
 import config from '~config';
-import { DirectoryEntity, FileEntity } from '~lib/fileLoader';
+import type { DirectoryEntity, FileEntity } from '~lib/fileLoader';
 
 import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert';
 

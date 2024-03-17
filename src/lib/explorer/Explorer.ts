@@ -1,4 +1,4 @@
-import {
+import type {
   FileSystemDirectoryHandle,
   FileSystemHandle,
 } from 'native-file-system-adapter';
@@ -158,6 +158,25 @@ export default class Explorer {
     await writable.close();
   }
 
+  private async withTempPath<O>(fileName: string, func: () => Promise<O>) {
+    const cwd = this.getPathAsString();
+
+    if (fileName.includes('/')) {
+      const directoryPath = fileName.slice(0, fileName.lastIndexOf('/'));
+      await this.changeDirectory(directoryPath);
+      fileName = fileName.slice(directoryPath.length + 1);
+    }
+
+    const handle = this.path.at(-1)!;
+    const result = await func();
+
+    if (fileName.includes('/')) {
+      await this.changeDirectory(cwd);
+    }
+
+    return result;
+  }
+
   /**
    * Asynchronously gets the file handle for the given file name.
    *
@@ -165,8 +184,21 @@ export default class Explorer {
    * @return the file handle for the given file name
    */
   async getFileHandle(fileName: string) {
+    const cwd = this.getPathAsString();
+
+    if (fileName.includes('/')) {
+      const directoryPath = fileName.slice(0, fileName.lastIndexOf('/'));
+      await this.changeDirectory(directoryPath);
+      fileName = fileName.slice(directoryPath.length + 1);
+    }
+
     const handle = this.path.at(-1)!;
     const fileHandle = await handle.getFileHandle(fileName);
+
+    if (fileName.includes('/')) {
+      await this.changeDirectory(cwd);
+    }
+
     return fileHandle;
   }
 

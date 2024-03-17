@@ -1,6 +1,6 @@
 import {
+  type FileSystemDirectoryHandle,
   getOriginPrivateDirectory,
-  FileSystemDirectoryHandle,
 } from 'native-file-system-adapter';
 
 let rootDirHandle: FileSystemDirectoryHandle | undefined;

@@ -1,5 +1,5 @@
 import {
-  FileSystemDirectoryHandle,
+  type FileSystemDirectoryHandle,
   getOriginPrivateDirectory,
 } from 'native-file-system-adapter';
 import { beforeAll, beforeEach, describe, expect, test } from 'vitest';

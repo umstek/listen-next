@@ -15,8 +15,8 @@ import {
   filterByExtensions,
   localLinkStrategy,
 } from '~lib/explorer';
-import { AudioMetadata } from '~models/AudioMetadata';
-import { PlaylistItem } from '~models/Playlist';
+import type { AudioMetadata } from '~models/AudioMetadata';
+import type { PlaylistItem } from '~models/Playlist';
 import {
   appendItems,
   createFromItems,
@@ -196,11 +196,15 @@ export function ExplorerView() {
 
                             if (file) {
                               const audioMetadata = await db.audioMetadata.get({
-                                path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                path: `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
                               });
 
                               console.log(
-                                `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
                                 audioMetadata,
                               );
 
@@ -243,11 +247,15 @@ export function ExplorerView() {
 
                             if (file) {
                               const audioMetadata = await db.audioMetadata.get({
-                                path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                path: `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
                               });
 
                               console.log(
-                                `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
                                 audioMetadata,
                               );
 
@@ -292,11 +300,15 @@ export function ExplorerView() {
 
                             if (file) {
                               const audioMetadata = await db.audioMetadata.get({
-                                path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                path: `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
                               });
 
                               console.log(
-                                `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                                `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
                                 audioMetadata,
                               );
 

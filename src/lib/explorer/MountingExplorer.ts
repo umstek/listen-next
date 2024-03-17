@@ -1,4 +1,4 @@
-import { FileSystemFileHandle } from 'native-file-system-adapter';
+import type { FileSystemFileHandle } from 'native-file-system-adapter';
 
 import Explorer from './Explorer';
 import rootDirHandle from './vfs';

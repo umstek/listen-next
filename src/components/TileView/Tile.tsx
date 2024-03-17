@@ -1,5 +1,5 @@
 import { CheckCircle } from '@phosphor-icons/react';
-import { LegacyRef, forwardRef } from 'react';
+import { type LegacyRef, forwardRef } from 'react';
 
 import { cn } from '~util/styles';
 

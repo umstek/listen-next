@@ -1,14 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { PlaylistItem, playlistSchema } from '~models/Playlist';
+import { type PlaylistItem, playlistSchema } from '~models/Playlist';
 
 export const playlistSlice = createSlice({
   name: 'playlist',
   initialState: playlistSchema.parse({}),
   reducers: {
     createFromItems: (state, action: { payload: PlaylistItem[] }) => {
-      state = playlistSchema.parse({ items: action.payload });
-      return state;
+      state.items = action.payload;
     },
     setName: (state, action: { payload: string }) => {
       state.name = action.payload;

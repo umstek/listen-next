@@ -47,8 +47,8 @@ function createAudioElement(options: AudioOptions = {}) {
 
 function createAnalyser(
   audioContext: AudioContext,
-  analyserOutputInterval: number = 0,
-  callback: (data: Uint8Array) => void,
+  analyserOutputInterval = 0,
+  callback: (data: Uint8Array) => void = () => {},
 ) {
   if (analyserOutputInterval <= 0 || audioContext.state === 'suspended') {
     return { analyserNode: undefined, analyserTimer: 0 };

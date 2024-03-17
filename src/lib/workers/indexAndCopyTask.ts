@@ -1,6 +1,6 @@
 import { db } from '~lib/db';
 import { Explorer } from '~lib/explorer';
-import { DirectoryEntity, FileEntity } from '~lib/fileLoader';
+import type { DirectoryEntity, FileEntity } from '~lib/fileLoader';
 import { getAudioMetadata } from '~lib/musicMetadata';
 import { audioMetadataSchema } from '~models/AudioMetadata';
 
@@ -10,6 +10,8 @@ import { audioMetadataSchema } from '~models/AudioMetadata';
  *
  * @param ev - Message event containing task ID, files and directories to process
  */
+
+// biome-ignore lint/suspicious/noGlobalAssign: There is no other way, son
 onmessage = async (
   ev: MessageEvent<{
     id: string;

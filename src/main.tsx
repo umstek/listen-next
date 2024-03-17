@@ -1,4 +1,4 @@
-import { Temporal, toTemporalInstant } from '@js-temporal/polyfill';
+import { type Temporal, toTemporalInstant } from '@js-temporal/polyfill';
 import { Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import React from 'react';

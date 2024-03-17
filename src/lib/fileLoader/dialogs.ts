@@ -1,5 +1,5 @@
 // ref: https://web.dev/patterns/files/
-import { DirectoryEntity, FileEntity } from './entity';
+import type { DirectoryEntity, FileEntity } from './entity';
 import { getFilesAndFoldersRecursively } from './scan';
 import { filePickerAcceptTypeExtToRegex } from './util';
 
