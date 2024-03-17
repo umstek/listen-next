@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { TaskStatusDefinition } from ':TaskStatusDisplay/TaskStatusDisplay';
+import type { TaskStatusDefinition } from ':TaskStatusDisplay/TaskStatusDisplay';
 
 export const tasksSlice = createSlice({
   name: 'tasks',

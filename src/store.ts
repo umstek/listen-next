@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { createLogger } from 'redux-logger';
 
 import playlist from '~modules/playlist/playlistSlice';
 import tasks from '~modules/tasks/tasksSlice';
@@ -8,6 +9,8 @@ const store = configureStore({
     playlist,
     tasks,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(createLogger({ collapsed: true })),
 });
 
 export default store;

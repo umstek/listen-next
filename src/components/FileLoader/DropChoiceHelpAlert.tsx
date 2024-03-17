@@ -1,5 +1,5 @@
-import { Box, Callout, Heading } from '@radix-ui/themes';
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
+import { Box, Callout, Heading } from '@radix-ui/themes';
 
 export function DropChoiceHelpAlert() {
   return (

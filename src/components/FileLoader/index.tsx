@@ -4,7 +4,6 @@ import {
 } from '@radix-ui/react-icons';
 import {
   Button,
-  Card,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -18,7 +17,7 @@ import {
 import { useState } from 'react';
 
 import config from '~config';
-import { DirectoryEntity, FileEntity } from '~lib/fileLoader';
+import type { DirectoryEntity, FileEntity } from '~lib/fileLoader';
 
 import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert';
 
@@ -53,7 +52,7 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
     useState(false);
 
   return (
-    <Card variant="ghost">
+    <div className="h-full w-full overflow-auto">
       <NotImplementedDialog
         open={showNotImplementedDialog}
         onOpenChange={setShowNotImplementedDialog}
@@ -116,6 +115,6 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
           Clear
         </Button>
       </Flex>
-    </Card>
+    </div>
   );
 }

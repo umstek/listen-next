@@ -1,4 +1,4 @@
-import { EventEmitter, Listener } from 'events';
+import { EventEmitter } from 'node:events';
 
 import createLogger from '../util/logging';
 
@@ -23,23 +23,16 @@ const AUDIO_ELEMENT_EVENTS = {
 } as const;
 
 interface AudioOptions {
-  autoplay?: boolean;
   preload?: HTMLMediaElement['preload'];
   src?: string;
   crossOrigin?: 'anonymous' | 'use-credentials' | null;
 }
 
 function createAudioElement(options: AudioOptions = {}) {
-  const {
-    autoplay = false,
-    preload = 'auto',
-    src = '',
-    crossOrigin = 'anonymous',
-  } = options;
+  const { preload = 'auto', src = '', crossOrigin = 'anonymous' } = options;
 
   const audioElement = new Audio();
   audioElement.preload = preload;
-  audioElement.autoplay = autoplay;
   audioElement.src = src;
   audioElement.crossOrigin = crossOrigin;
   return audioElement;
@@ -47,8 +40,8 @@ function createAudioElement(options: AudioOptions = {}) {
 
 function createAnalyser(
   audioContext: AudioContext,
-  analyserOutputInterval: number = 0,
-  callback: (data: Uint8Array) => void,
+  analyserOutputInterval = 0,
+  callback: (data: Uint8Array) => void = () => {},
 ) {
   if (analyserOutputInterval <= 0 || audioContext.state === 'suspended') {
     return { analyserNode: undefined, analyserTimer: 0 };
@@ -69,7 +62,6 @@ function createAnalyser(
 
 interface AudioPlayerOptions {
   analyserOutputInterval?: number;
-  autoplay?: boolean;
 }
 
 type EventMap = {
@@ -96,16 +88,16 @@ export default class AudioPlayer {
   private audioElement: HTMLAudioElement;
   private sourceNode: MediaElementAudioSourceNode;
   private analyserNode: AnalyserNode | undefined;
-  private analyserTimer: number;
+  private analyserTimer: number | NodeJS.Timeout;
   private pannerNode: StereoPannerNode;
   private gainNode: GainNode;
 
-  constructor({ analyserOutputInterval, autoplay }: AudioPlayerOptions = {}) {
+  constructor({ analyserOutputInterval }: AudioPlayerOptions = {}) {
     this.eventEmitter = new EventEmitter();
 
     this.audioContext = new AudioContext();
 
-    this.audioElement = createAudioElement({ autoplay });
+    this.audioElement = createAudioElement({});
     for (const eventName in AUDIO_ELEMENT_EVENTS) {
       this.audioElement.addEventListener(
         eventName,
@@ -144,25 +136,25 @@ export default class AudioPlayer {
 
   on = <K extends keyof EventMap>(
     type: K,
-    listener: (...arg: EventMap[K]) => void,
+    listener: (...arg: any[]) => void,
   ): this => {
-    this.eventEmitter.on(type, listener as Listener);
+    this.eventEmitter.on(type, listener);
     return this;
   };
 
   once = <K extends keyof EventMap>(
     type: K,
-    listener: (...arg: EventMap[K]) => void,
+    listener: (...arg: any[]) => void,
   ): this => {
-    this.eventEmitter.once(type, listener as Listener);
+    this.eventEmitter.once(type, listener);
     return this;
   };
 
   off = <K extends keyof EventMap>(
     type: K,
-    listener: (...arg: EventMap[K]) => void,
+    listener: (...arg: any[]) => void,
   ): this => {
-    this.eventEmitter.off(type, listener as Listener);
+    this.eventEmitter.off(type, listener);
     return this;
   };
 
@@ -254,9 +246,16 @@ export default class AudioPlayer {
     this.eventEmitter.emit('ended');
   };
 
+  setAutoplay = (autoplay = false) => {
+    this.audioElement.autoplay = autoplay;
+  };
+
   setAudioSource = (url: string) => {
     if (!url || this.audioElement.src === url) {
       return;
+    }
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
     }
     this.audioElement.src = url;
     this.audioElement.load();
@@ -270,9 +269,8 @@ export default class AudioPlayer {
     this.audioElement.currentTime = seek ?? this.audioElement.currentTime;
     if (this.audioContext.state === 'suspended') {
       this.audioContext.resume();
-    } else {
-      this.audioElement.play();
     }
+    this.audioElement.play();
   };
 
   pause = () => {

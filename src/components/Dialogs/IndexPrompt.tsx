@@ -13,7 +13,7 @@ export function IndexPrompt(
         <AlertDialog.Description>
           This will allow you to find audio by genre, artist, album, and more.
         </AlertDialog.Description>
-        <Flex gap="3" mt="4" className="flex-col sm:items-center sm:flex-row">
+        <Flex gap="3" mt="4" className="flex-col sm:flex-row sm:items-center">
           <Text as="label" size="2">
             <Flex gap="2">
               <Checkbox /> Remember this choice

@@ -20,7 +20,10 @@ import {
 import { useEffect, useState } from 'react';
 
 import usePlayer, { PlayerState } from '~hooks/usePlayer';
-import { BasicAudioMetadata, getAudioMetadata } from '~lib/musicMetadata';
+import { db } from '~lib/db';
+import { MountingExplorer, localLinkStrategy } from '~lib/explorer';
+import type { BasicAudioMetadata } from '~lib/musicMetadata';
+import type { PlaylistItem } from '~models/Playlist';
 import { toHmmss } from '~util/time';
 
 import { PanControl } from './PanControl';
@@ -29,7 +32,7 @@ import { SeekBar } from './SeekBar';
 import { VolumeControl } from './VolumeControl';
 
 interface PlayerProps {
-  url: string;
+  item: PlaylistItem;
   onPrevious: () => void;
   onNext: () => void;
   settings: unknown | undefined;
@@ -38,7 +41,7 @@ interface PlayerProps {
 
 const VPR = ['v', 'p', 'r'] as const;
 
-export function Player({ url, onPrevious, onNext }: PlayerProps) {
+export function Player({ item, onPrevious, onNext }: PlayerProps) {
   const {
     setAudioSource,
     playPause,
@@ -58,20 +61,29 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
     autoplay: true,
   });
 
-  const [metadata, setMetadata] = useState<BasicAudioMetadata | undefined>(
-    undefined,
-  );
-
-  // TODO use db/move to store
+  const [metadata, setMetadata] = useState<BasicAudioMetadata>();
   useEffect(() => {
-    if (url) {
-      getAudioMetadata(url).then(([metadata]) => setMetadata(metadata));
+    if (!item) {
+      return;
     }
-  }, [url]);
 
-  useEffect(() => {
-    setAudioSource(url);
-  }, [setAudioSource, url]);
+    let url = '';
+    const playFile = async () => {
+      setMetadata(await db.audioMetadata.get(item.fileId!));
+      const explorer = new MountingExplorer([localLinkStrategy]);
+      await explorer.changeDirectory(
+        item.path.split('/').slice(0, -1).join('/'),
+      );
+      const file = await explorer.getFile(item.path.split('/').pop()!);
+      url = URL.createObjectURL(file);
+      setAudioSource(url);
+    };
+
+    playFile();
+    return () => {
+      url && URL.revokeObjectURL(url);
+    };
+  }, [item, setAudioSource]);
 
   const [vpr, setVpr] = useState<'v' | 'p' | 'r'>('v');
   const [mb, setMb] = useState<'m' | 'b'>('m');
@@ -107,7 +119,7 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
           <Avatar variant="solid" fallback="LP" />
           <Flex grow="1" direction="column">
             <Text as="div" size="1" weight="medium">
-              {metadata?.title}
+              {metadata?.title || item.path?.split('/').pop()}
             </Text>
             <Flex justify="between">
               <Text as="div" size="1">

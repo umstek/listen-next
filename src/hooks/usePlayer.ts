@@ -10,22 +10,27 @@ export enum PlayerState {
 
 function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
   const playerRef = useRef<AudioPlayer | null>(null);
+
   const getPlayer = useCallback(() => {
     if (playerRef.current) {
       return playerRef.current;
     }
-    const player = new AudioPlayer({ autoplay });
-    (playerRef.current as unknown) = player;
+    const player = new AudioPlayer();
+    playerRef.current = player;
     return player;
-  }, [autoplay]);
-  useEffect(() => {
-    const currentPlayer = playerRef.current;
+  }, []);
 
+  useEffect(() => {
     return () => {
+      const currentPlayer = playerRef.current;
       playerRef.current = null;
       currentPlayer?.dispose();
     };
-  }, [autoplay]);
+  }, []);
+
+  useEffect(() => {
+    getPlayer().setAutoplay(autoplay);
+  }, [getPlayer, autoplay]);
 
   const {
     setAudioSource,
@@ -72,7 +77,7 @@ function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
     getPlayer().on('emptied', () => {
       setState(PlayerState.STOPPED);
     });
-  }, [autoplay, getPlayer, play]);
+  }, [getPlayer]);
 
   // Sends inputs to AudioPlayer
   useEffect(() => {

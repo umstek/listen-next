@@ -3,8 +3,8 @@ import { Box, Button, Flex } from '@radix-ui/themes';
 import { useState } from 'react';
 
 import {
-  DirectoryEntity,
-  FileEntity,
+  type DirectoryEntity,
+  type FileEntity,
   handleDragOverItems,
   handleDroppedFilesAndFolders,
   openDirectory,

@@ -3,7 +3,7 @@ import { Box, Callout } from '@radix-ui/themes';
 
 export function StoreChoiceHelpAlert() {
   return (
-    <Callout.Root className="text-blue-1 max-w-96">
+    <Callout.Root className="max-w-96 text-blue-1">
       <Callout.Icon>
         <QuestionMarkCircledIcon />
       </Callout.Icon>

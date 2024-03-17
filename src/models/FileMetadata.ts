@@ -3,13 +3,15 @@ import { z } from 'zod';
 
 import { fseKinds, nanoidRegex, sources } from './constants';
 
-export const fileSystemEntityMetadataSchema = z.object({
-  id: z.string().regex(nanoidRegex).optional().default(nanoid),
-  name: z.string(),
-  kind: z.enum(fseKinds),
-  source: z.enum(sources),
-  locator: z.unknown(),
-});
+export const fileSystemEntityMetadataSchema = z
+  .object({
+    id: z.string().regex(nanoidRegex).optional().default(nanoid),
+    name: z.string(),
+    kind: z.enum(fseKinds),
+    source: z.enum(sources),
+    locator: z.unknown(),
+  })
+  .describe('Reference to a file or directory in an external file system');
 
 export const directoryMetadataSchema = fileSystemEntityMetadataSchema.extend({
   kind: z.literal('directory'),

@@ -1,4 +1,4 @@
-import { DirectoryEntity, FileEntity } from './entity';
+import type { DirectoryEntity, FileEntity } from './entity';
 import { getFilesAndFoldersRecursively, scanDirectoryEntry } from './scan';
 import { filePickerAcceptTypeExtToRegex, isADirectory, isAFile } from './util';
 
@@ -80,7 +80,9 @@ export async function handleDroppedFilesAndFolders(
     }
 
     return { files, directories };
-  } else if (supportsWebkitGetAsEntry()) {
+  }
+
+  if (supportsWebkitGetAsEntry()) {
     const entries = fileItems
       .map((item) => item.webkitGetAsEntry())
       .filter(Boolean);
@@ -124,9 +126,9 @@ export async function handleDroppedFilesAndFolders(
     }
 
     return { files, directories };
-  } else {
-    return undefined;
   }
+
+  return undefined;
 }
 
 /**

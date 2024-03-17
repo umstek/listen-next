@@ -1,5 +1,5 @@
 import { CheckCircle } from '@phosphor-icons/react';
-import { LegacyRef, forwardRef } from 'react';
+import { type LegacyRef, forwardRef } from 'react';
 
 import { cn } from '~util/styles';
 
@@ -47,7 +47,7 @@ export const Tile = forwardRef(function Tile(
       <CheckCircle
         className={cn(
           selected ? 'visible' : 'invisible',
-          'absolute -left-3 -top-3 rounded-6 bg-white fill-current group-hover/tile:visible',
+          '-left-3 -top-3 absolute rounded-6 bg-white fill-current group-hover/tile:visible',
         )}
         size={24}
         weight="fill"

@@ -1,13 +1,13 @@
-import { Flex, IconButton, Slider } from '@radix-ui/themes';
 import {
   SpeakerSimpleHigh,
   SpeakerSimpleLow,
   SpeakerSimpleNone,
 } from '@phosphor-icons/react';
+import { Flex, IconButton, Slider } from '@radix-ui/themes';
 
 import { clamp } from '~util/math';
 
-import { VolumeControlProps } from './VolumeControl';
+import type { VolumeControlProps } from './VolumeControl';
 
 const speakerSimpleIconSet = [
   SpeakerSimpleNone,

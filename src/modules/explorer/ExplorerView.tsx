@@ -1,34 +1,87 @@
+import { DotsThree } from '@phosphor-icons/react';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
+} from '@radix-ui/react-icons';
+import { DropdownMenu, Flex, IconButton } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import env from '~config';
-import { Explorer, filterByExtensions } from '~lib/Explorer';
 import { db } from '~lib/db';
-import { setItems } from '~modules/playlist/playlistSlice';
+import {
+  MountingExplorer,
+  filterByExtensions,
+  localLinkStrategy,
+} from '~lib/explorer';
+import type { AudioMetadata } from '~models/AudioMetadata';
+import type { PlaylistItem } from '~models/Playlist';
+import {
+  appendItems,
+  createFromItems,
+  insertItemsAt,
+} from '~modules/playlist/playlistSlice';
 
 import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
+import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert';
 import { Thumbnail } from ':ExplorerTileBody';
 import { TileView } from ':TileView';
 
 const audioFilesFilter = filterByExtensions(new Set(env.supportedExtensions));
 
+interface BreadcrumbsControlsProps {
+  onBack?: () => void;
+  onForward?: () => void;
+  onUp?: () => void;
+}
+
+function BreadcrumbsControls({
+  onBack,
+  onForward,
+  onUp,
+}: BreadcrumbsControlsProps) {
+  return (
+    <Flex>
+      <Flex className="group/breadcrumbs-controls">
+        <IconButton variant="soft" className="rounded-r-[0]" onClick={onUp}>
+          <ArrowUpIcon />
+        </IconButton>
+        <IconButton variant="soft" className="rounded-[0]" onClick={onBack}>
+          <ArrowLeftIcon />
+        </IconButton>
+        <IconButton
+          variant="soft"
+          className="rounded-l-[0]"
+          onClick={onForward}
+        >
+          <ArrowRightIcon />
+        </IconButton>
+      </Flex>
+    </Flex>
+  );
+}
+
 /**
  * Renders the Explorer view component.
  *
- * @return {JSX.Element} The rendered Explorer view.
+ * @return The rendered Explorer view.
  */
 export function ExplorerView() {
   const dispatch = useDispatch();
 
-  const explorerRef = useRef<Explorer | null>(null);
+  const explorerRef = useRef<MountingExplorer | null>(null);
   const pathDirContentsRef = useRef<
     Map<FileSystemDirectoryHandle, FileSystemHandleUnion[]>
   >(new Map());
   const [pathDirs, setPathDirs] = useState<FileSystemDirectoryHandle[]>([]);
 
+  const [showNotImplementedDialog, setShowNotImplementedDialog] =
+    useState(false);
+
   const refresh = useCallback(async () => {
-    const folder = await explorerRef?.current?.getCurrentDirectory();
-    const pathDirs = await explorerRef?.current?.getPath();
+    const folder = explorerRef?.current?.getCurrentDirectory();
+    const pathDirs = explorerRef?.current?.getPath();
     const content = (await explorerRef?.current?.listItems())?.filter(
       (i) =>
         i.kind === 'directory' ||
@@ -40,25 +93,25 @@ export function ExplorerView() {
       // @ts-expect-error XXX Polyfill conflict
       pathDirContentsRef.current.set(folder, content);
       // @ts-expect-error XXX Polyfill conflict
-      setPathDirs([...pathDirs]);
-      // XXX        ^ Explorer mutates the path, so have to make a copy.
+      setPathDirs(pathDirs);
     }
   }, []);
 
   useEffect(() => {
-    explorerRef.current = new Explorer();
+    explorerRef.current = new MountingExplorer([localLinkStrategy]);
 
     refresh();
   }, [refresh]);
 
   return (
-    <div>
-      <Breadcrumbs
+    <div className="h-full w-full overflow-auto">
+      <BreadcrumbsControls
         onUp={async () => {
           await explorerRef.current?.changeDirectory('..');
           await refresh();
         }}
-      >
+      />
+      <Breadcrumbs>
         {pathDirs.map((folder, i) => {
           const dirPath = pathDirs
             .slice(i + 1)
@@ -97,11 +150,240 @@ export function ExplorerView() {
             kind={item.kind}
             title={item.name}
             source={
-              item.name.endsWith('.local.link')
+              // @ts-expect-error XXX Polyfill conflict
+              item.kind === 'file' && localLinkStrategy.test(item)
                 ? 'local'
-                : item.name.endsWith('.remote.link')
-                  ? 'remote'
-                  : 'sandbox'
+                : 'sandbox'
+            }
+            addOn={
+              <>
+                <NotImplementedDialog
+                  open={showNotImplementedDialog}
+                  onOpenChange={setShowNotImplementedDialog}
+                />
+                <div className="invisible absolute top-4 right-4 group-hover/tile:visible">
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                      <IconButton radius="full" variant="ghost">
+                        <DotsThree size={24} weight="bold" />
+                      </IconButton>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content>
+                      <DropdownMenu.Item
+                        shortcut="⌘ P"
+                        onClick={async () => {
+                          if (item.kind === 'directory') {
+                            const ex = await explorerRef.current?.spawn(
+                              item.name,
+                            );
+                            if (!ex) return;
+
+                            const items = await ex.listItems();
+                            // TODO Recursively get files and queue them.
+                            // TODO Optimization: queue 5 and start, then queue
+                            // the rest with a worker.
+                          } else if (item.kind === 'file') {
+                            const mountStrategy =
+                              await explorerRef.current?.getMountStrategy(
+                                item.name,
+                              );
+
+                            const file = mountStrategy
+                              ? await (
+                                  await explorerRef.current?.mount(item.name)
+                                )?.getFile()
+                              : await item.getFile();
+
+                            if (file) {
+                              const audioMetadata = await db.audioMetadata.get({
+                                path: `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
+                              });
+
+                              console.log(
+                                `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
+                                audioMetadata,
+                              );
+
+                              audioMetadata &&
+                                dispatch(
+                                  createFromItems([
+                                    metadataToPlaylistItem(audioMetadata),
+                                  ]),
+                                );
+                            }
+                          }
+                        }}
+                      >
+                        Play
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        shortcut="⌘ N"
+                        onClick={async () => {
+                          if (item.kind === 'directory') {
+                            const ex = await explorerRef.current?.spawn(
+                              item.name,
+                            );
+                            if (!ex) return;
+
+                            const items = await ex.listItems();
+                            // TODO Recursively get files and queue them.
+                            // TODO Optimization: queue 5 and start, then queue
+                            // the rest with a worker.
+                          } else if (item.kind === 'file') {
+                            const mountStrategy =
+                              await explorerRef.current?.getMountStrategy(
+                                item.name,
+                              );
+
+                            const file = mountStrategy
+                              ? await (
+                                  await explorerRef.current?.mount(item.name)
+                                )?.getFile()
+                              : await item.getFile();
+
+                            if (file) {
+                              const audioMetadata = await db.audioMetadata.get({
+                                path: `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
+                              });
+
+                              console.log(
+                                `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
+                                audioMetadata,
+                              );
+
+                              audioMetadata &&
+                                dispatch(
+                                  insertItemsAt({
+                                    items: [
+                                      metadataToPlaylistItem(audioMetadata),
+                                    ],
+                                  }),
+                                );
+                            }
+                          }
+                        }}
+                      >
+                        Play next
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        shortcut="⌘ A"
+                        onClick={async () => {
+                          if (item.kind === 'directory') {
+                            const ex = await explorerRef.current?.spawn(
+                              item.name,
+                            );
+                            if (!ex) return;
+
+                            const items = await ex.listItems();
+                            // TODO Recursively get files and queue them.
+                            // TODO Optimization: queue 5 and start, then queue
+                            // the rest with a worker.
+                          } else if (item.kind === 'file') {
+                            const mountStrategy =
+                              await explorerRef.current?.getMountStrategy(
+                                item.name,
+                              );
+
+                            const file = mountStrategy
+                              ? await (
+                                  await explorerRef.current?.mount(item.name)
+                                )?.getFile()
+                              : await item.getFile();
+
+                            if (file) {
+                              const audioMetadata = await db.audioMetadata.get({
+                                path: `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
+                              });
+
+                              console.log(
+                                `${explorerRef.current?.getPathAsString()}/${
+                                  item.name
+                                }`,
+                                audioMetadata,
+                              );
+
+                              audioMetadata &&
+                                dispatch(
+                                  appendItems([
+                                    metadataToPlaylistItem(audioMetadata),
+                                  ]),
+                                );
+                            }
+                          }
+                        }}
+                      >
+                        Append to current playlist
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Separator />
+                      <DropdownMenu.Item
+                        shortcut="⌘ F"
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Favorite
+                      </DropdownMenu.Item>
+
+                      <DropdownMenu.Sub>
+                        <DropdownMenu.SubTrigger>
+                          Add to playlist
+                        </DropdownMenu.SubTrigger>
+                        <DropdownMenu.SubContent>
+                          <DropdownMenu.Item
+                            onClick={() => setShowNotImplementedDialog(true)}
+                          >
+                            Playlist 1
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Item
+                            onClick={() => setShowNotImplementedDialog(true)}
+                          >
+                            Playlist 2
+                          </DropdownMenu.Item>
+
+                          <DropdownMenu.Separator />
+                          <DropdownMenu.Item
+                            onClick={() => setShowNotImplementedDialog(true)}
+                          >
+                            More playlists...
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Item
+                            onClick={() => setShowNotImplementedDialog(true)}
+                          >
+                            Create playlist...
+                          </DropdownMenu.Item>
+                        </DropdownMenu.SubContent>
+                      </DropdownMenu.Sub>
+
+                      <DropdownMenu.Separator />
+                      <DropdownMenu.Item
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Hide
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Re-index
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        shortcut="⌘ ⌫"
+                        color="red"
+                        onClick={() => setShowNotImplementedDialog(true)}
+                      >
+                        Delete
+                      </DropdownMenu.Item>
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Root>
+                </div>
+              </>
             }
           />
         )}
@@ -110,32 +392,29 @@ export function ExplorerView() {
             await explorerRef.current?.changeDirectory(item.name);
             await refresh();
           } else if (item.kind === 'file') {
-            /**
-             * This isn't a real file, but a link
-             */
-            const linkTarget = await tryGetLinkTarget(item);
-            if (linkTarget) {
-              if (
-                (await linkTarget.queryPermission({ mode: 'read' })) ===
-                  'granted' ||
-                (await linkTarget.requestPermission({ mode: 'read' })) ===
-                  'granted'
-              ) {
-                if (linkTarget.kind === 'directory') {
-                  // @ts-expect-error Polyfill conflict
-                  explorerRef.current = new Explorer(linkTarget);
-                  await refresh();
-                } else if (linkTarget.kind === 'file') {
-                  dispatch(
-                    setItems([URL.createObjectURL(await linkTarget.getFile())]),
-                  );
-                }
-              }
+            const mountStrategy = await explorerRef.current?.getMountStrategy(
+              item.name,
+            );
 
-              return;
+            const file = mountStrategy
+              ? await (await explorerRef.current?.mount(item.name))?.getFile()
+              : await item.getFile();
+
+            if (file) {
+              const audioMetadata = await db.audioMetadata.get({
+                path: `${explorerRef.current?.getPathAsString()}/${item.name}`,
+              });
+
+              console.log(
+                `${explorerRef.current?.getPathAsString()}/${item.name}`,
+                audioMetadata,
+              );
+
+              audioMetadata &&
+                dispatch(
+                  createFromItems([metadataToPlaylistItem(audioMetadata)]),
+                );
             }
-
-            dispatch(setItems([URL.createObjectURL(await item.getFile())]));
           }
         }}
       />
@@ -143,32 +422,14 @@ export function ExplorerView() {
   );
 }
 
-async function tryGetLinkTarget(
-  item: FileSystemFileHandle,
-): Promise<FileSystemHandleUnion | undefined> {
-  if (!item.name.startsWith('@link')) return;
-
-  const [link, source, kind] = (item.name.split(':', 1)[0] || '').split('-');
-
-  if (
-    ![
-      link === '@link',
-      ['local', 'remote', 'sandbox'].includes(source),
-      ['directory', 'file'].includes(kind),
-    ].every(Boolean)
-  ) {
-    return;
-  }
-
-  const json = await item.getFile();
-  try {
-    const data = JSON.parse(await json.text()) as { id: string };
-    const dbo = await db.linkedFSEs.get(data.id);
-    const handle = dbo?.locator as FileSystemHandleUnion;
-
-    if (handle.kind !== kind) return;
-    return handle;
-  } catch (error) {
-    return;
-  }
+function metadataToPlaylistItem(metadata: AudioMetadata): PlaylistItem {
+  return {
+    album: metadata.album || '',
+    artist: metadata.artists?.join(', ') || '',
+    title: metadata.title || '',
+    duration: Math.floor((metadata.duration || 0) * 1000),
+    createdAt: Date.now(),
+    fileId: metadata.id,
+    path: metadata.path,
+  };
 }

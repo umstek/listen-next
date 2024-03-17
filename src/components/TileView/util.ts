@@ -15,17 +15,17 @@ export enum SelectionMode {
   /**
    * No selection mode.
    */
-  NONE,
+  NONE = 0,
   /**
    * Select mode.
    */
-  SELECT,
+  SELECT = 1,
   /**
    * Add to selection mode.
    */
-  OR,
+  OR = 2,
   /**
    * Toggle selection mode.
    */
-  XOR,
+  XOR = 3,
 }

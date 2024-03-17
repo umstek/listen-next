@@ -1,9 +1,17 @@
-import { Explorer } from '~lib/Explorer';
 import { db } from '~lib/db';
-import { DirectoryEntity, FileEntity } from '~lib/fileLoader';
+import { Explorer } from '~lib/explorer';
+import type { DirectoryEntity, FileEntity } from '~lib/fileLoader';
 import { getAudioMetadata } from '~lib/musicMetadata';
 import { audioMetadataSchema } from '~models/AudioMetadata';
 
+/**
+ * Handler for indexAndCopy worker message event.
+ * Indexes audio files and copies them to the file system.
+ *
+ * @param ev - Message event containing task ID, files and directories to process
+ */
+
+// biome-ignore lint/suspicious/noGlobalAssign: There is no other way, son
 onmessage = async (
   ev: MessageEvent<{
     id: string;
@@ -31,7 +39,7 @@ onmessage = async (
   );
 
   for (const d of directories) {
-    if (d.parent && d.parent !== (await explorer.getPathAsString())) {
+    if (d.parent && d.parent !== explorer.getPathAsString()) {
       await explorer.changeDirectory(`/${d.parent}`);
     }
     await explorer.createDirectory(d.name);
@@ -41,12 +49,12 @@ onmessage = async (
 
   let filesDone = 0;
   for (const f of files) {
-    if (f.parent && f.parent !== (await explorer.getPathAsString())) {
+    if (f.parent && f.parent !== explorer.getPathAsString()) {
       await explorer.changeDirectory(`/${f.parent}`);
     }
     await explorer.putFile(f.file);
 
-    const fileInfo = { name: f.name, path: f.path, source: 'local' };
+    const fileInfo = { name: f.name, path: `/${f.path}`, source: 'local' };
     const [basicMetadata, _extendedMetadata] = await getAudioMetadata(f.file);
     await db.audioMetadata.add(
       audioMetadataSchema.parse({ ...basicMetadata, ...fileInfo }),
