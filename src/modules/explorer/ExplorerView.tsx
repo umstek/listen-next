@@ -161,7 +161,7 @@ export function ExplorerView() {
                   open={showNotImplementedDialog}
                   onOpenChange={setShowNotImplementedDialog}
                 />
-                <div className="invisible absolute right-4 top-4 group-hover/tile:visible">
+                <div className="invisible absolute top-4 right-4 group-hover/tile:visible">
                   <DropdownMenu.Root>
                     <DropdownMenu.Trigger>
                       <IconButton radius="full" variant="ghost">

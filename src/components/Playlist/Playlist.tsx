@@ -42,7 +42,7 @@ export function Playlist(props: PlaylistProps) {
   }, [props.items]);
 
   return (
-    <div className="w-full h-full overflow-y-auto overflow-x-hidden">
+    <div className="h-full w-full overflow-y-auto overflow-x-hidden">
       <Flex direction="column" gap="3" p="3">
         <DndContext
           sensors={sensors}

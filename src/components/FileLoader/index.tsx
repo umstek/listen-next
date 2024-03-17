@@ -52,7 +52,7 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
     useState(false);
 
   return (
-    <div className="w-full h-full overflow-auto">
+    <div className="h-full w-full overflow-auto">
       <NotImplementedDialog
         open={showNotImplementedDialog}
         onOpenChange={setShowNotImplementedDialog}

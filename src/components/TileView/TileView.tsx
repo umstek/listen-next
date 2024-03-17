@@ -65,7 +65,7 @@ export function TileView<T>({
       .filter(([, ref]) =>
         overlaps(
           ref.getBoundingClientRect(),
-          selectionBoxRef.current!.getBoundingClientRect(),
+          selectionBoxRef.current?.getBoundingClientRect(),
         ),
       )
       .map(([key]) => key);

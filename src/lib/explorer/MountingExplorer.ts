@@ -41,15 +41,15 @@ export default class MountingExplorer {
   }
 
   getCurrentDirectory() {
-    return this.mountStack.at(-1)!.getCurrentDirectory();
+    return this.mountStack.at(-1)?.getCurrentDirectory();
   }
 
   getPath() {
-    return this.mountStack.at(-1)!.getPath();
+    return this.mountStack.at(-1)?.getPath();
   }
 
   getPathAsString() {
-    return this.mountStack.at(-1)!.getPathAsString();
+    return this.mountStack.at(-1)?.getPathAsString();
   }
 
   async changeDirectory(path: string) {
@@ -60,33 +60,33 @@ export default class MountingExplorer {
     const paths = path.split('//');
     for (const path of paths) {
       if (path) {
-        await this.mountStack.at(-1)!.changeDirectory(path);
+        await this.mountStack.at(-1)?.changeDirectory(path);
       }
     }
   }
 
   async listItems() {
-    return this.mountStack.at(-1)!.listItems();
+    return this.mountStack.at(-1)?.listItems();
   }
 
   async createDirectory(name: string) {
-    return this.mountStack.at(-1)!.createDirectory(name);
+    return this.mountStack.at(-1)?.createDirectory(name);
   }
 
   async remove(name: string) {
-    await this.mountStack.at(-1)!.remove(name);
+    await this.mountStack.at(-1)?.remove(name);
   }
 
   async putFile(file: File) {
-    return this.mountStack.at(-1)!.putFile(file);
+    return this.mountStack.at(-1)?.putFile(file);
   }
 
   async getFileHandle(fileName: string) {
-    return this.mountStack.at(-1)!.getFileHandle(fileName);
+    return this.mountStack.at(-1)?.getFileHandle(fileName);
   }
 
   async getFile(fileName: string) {
-    return this.mountStack.at(-1)!.getFile(fileName);
+    return this.mountStack.at(-1)?.getFile(fileName);
   }
 
   /**

@@ -33,7 +33,7 @@ export function Thumbnail({
           <FolderSimple className="fill-current" size={64} weight="thin" />
         )}
         <Tooltip content={title}>
-          <p className="text-sm line-clamp-2 select-none overflow-hidden text-ellipsis break-all">
+          <p className="line-clamp-2 select-none overflow-hidden text-ellipsis break-all text-sm">
             {title}
           </p>
         </Tooltip>

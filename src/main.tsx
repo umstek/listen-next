@@ -23,7 +23,7 @@ root &&
     <React.StrictMode>
       <Provider store={store}>
         <Theme
-          className="w-full h-full"
+          className="h-full w-full"
           accentColor="indigo"
           appearance="inherit"
           radius="large"

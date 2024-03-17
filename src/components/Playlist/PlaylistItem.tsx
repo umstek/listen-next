@@ -24,7 +24,7 @@ export function PlaylistItem({ id, active, item }: PlaylistItemProps) {
   return (
     <div
       className={cn(
-        'select-none rounded-3 group/playlist-item transition-shadow duration-200 hover:ring-offset-1 hover:ring-2',
+        'group/playlist-item select-none rounded-3 transition-shadow duration-200 hover:ring-2 hover:ring-offset-1',
         active ? 'text-accent-11 ring-accent-5' : 'text-gray-11 ring-gray-5',
       )}
       ref={setNodeRef}

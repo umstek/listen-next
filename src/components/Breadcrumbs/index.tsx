@@ -38,7 +38,7 @@ export function Breadcrumb({
   return (
     <>
       <Button
-        className="first:rounded-l-1 last:rounded-r-1"
+        className="last:rounded-r-1 first:rounded-l-1"
         variant="soft"
         onClick={onClick}
       >
@@ -48,7 +48,7 @@ export function Breadcrumb({
         <DropdownMenu.Root>
           <DropdownMenuTrigger>
             <IconButton
-              className="first:rounded-l-1 last:rounded-r-1"
+              className="last:rounded-r-1 first:rounded-l-1"
               variant="soft"
             >
               <ChevronRightIcon />

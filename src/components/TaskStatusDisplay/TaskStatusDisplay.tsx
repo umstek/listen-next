@@ -71,7 +71,7 @@ export function TaskStatusDisplay({
           </Flex>
 
           <Progress.Root
-            className="relative overflow-hidden bg-accent-4 rounded-6 w-full h-rx-2"
+            className="relative h-rx-2 w-full overflow-hidden rounded-6 bg-accent-4"
             style={{
               // Fix overflow clipping in Safari
               // https://gist.github.com/domske/b66047671c780a238b51c51ffde8d3a0
@@ -80,7 +80,7 @@ export function TaskStatusDisplay({
             value={progress}
           >
             <Progress.Indicator
-              className="bg-accent-9 w-full h-full transition-transform duration-500 ease-out"
+              className="h-full w-full bg-accent-9 transition-transform duration-500 ease-out"
               style={{ transform: `translateX(-${100 - progress}%)` }}
             />
           </Progress.Root>
