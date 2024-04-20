@@ -139,8 +139,8 @@ importers:
         specifier: ^0.5.11
         version: 0.5.14(@trivago/prettier-plugin-sort-imports@4.3.0(prettier@3.2.5))(prettier@3.2.5)
       radix-themes-tw:
-        specifier: ^0.1.3
-        version: 0.1.3
+        specifier: ^0.2.0
+        version: 0.2.3
       rimraf:
         specifier: ^5.0.5
         version: 5.0.5
@@ -2831,8 +2831,8 @@ packages:
   quick-format-unescaped@4.0.4:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
 
-  radix-themes-tw@0.1.3:
-    resolution: {integrity: sha512-W3J36AVvg8R/yAQFGnMiNBJ9Pq7buNYSKqCnI3s4tFoaNwoKEXifCXXO4sgaohGlx3xwHOwTyNCy//qCZAVcIg==}
+  radix-themes-tw@0.2.3:
+    resolution: {integrity: sha512-n3Luc4LzB5Zcv6SSvHWGey4Wzx1qtt+3Yj6OmRXzAD6RtZ2+RkT0OoilyxlaKr+kqJuvKhF4YfLbcMAkFu5gEw==}
 
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
@@ -6381,7 +6381,7 @@ snapshots:
 
   quick-format-unescaped@4.0.4: {}
 
-  radix-themes-tw@0.1.3: {}
+  radix-themes-tw@0.2.3: {}
 
   randombytes@2.1.0:
     dependencies:
