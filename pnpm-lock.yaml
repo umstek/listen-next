@@ -55,7 +55,7 @@ importers:
         version: 2.5.10
       nanoid:
         specifier: ^5.0.4
-        version: 5.0.4
+        version: 5.0.7
       native-file-system-adapter:
         specifier: ^3.0.0
         version: 3.0.0
@@ -2447,8 +2447,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.0.4:
-    resolution: {integrity: sha512-vAjmBf13gsmhXSgBrtIclinISzFFy22WwCYoyilZlsrRXNIHSwgFQ1bEdjRwMT3aoadeIF6HMuDRlOxzfXV8ig==}
+  nanoid@5.0.7:
+    resolution: {integrity: sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -5944,7 +5944,7 @@ snapshots:
 
   nanoid@3.3.7: {}
 
-  nanoid@5.0.4: {}
+  nanoid@5.0.7: {}
 
   native-file-system-adapter@3.0.0:
     optionalDependencies:
