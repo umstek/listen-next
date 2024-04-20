@@ -58,7 +58,7 @@ importers:
         version: 5.0.7
       native-file-system-adapter:
         specifier: ^3.0.0
-        version: 3.0.0
+        version: 3.0.1
       pino:
         specifier: ^8.17.2
         version: 8.17.2
@@ -2452,8 +2452,8 @@ packages:
     engines: {node: ^18 || >=20}
     hasBin: true
 
-  native-file-system-adapter@3.0.0:
-    resolution: {integrity: sha512-IXwQiLiS7UlrlUetr9rHp+6uAAHT3291w2FGse5rdrQ7YXKtZHaqC4+tEXHMXVcevwsJNB3c7q9KO1Iu3IxgLw==}
+  native-file-system-adapter@3.0.1:
+    resolution: {integrity: sha512-ocuhsYk2SY0906LPc3QIMW+rCV3MdhqGiy7wV5Bf0e8/5TsMjDdyIwhNiVPiKxzTJLDrLT6h8BoV9ERfJscKhw==}
     engines: {node: '>=14.8.0'}
 
   natural-compare@1.4.0:
@@ -3334,8 +3334,8 @@ packages:
   vm-browserify@1.1.2:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==}
 
-  web-streams-polyfill@3.3.2:
-    resolution: {integrity: sha512-3pRGuxRF5gpuZc0W+EpwQRmCD7gRqcDOMt688KmdlDAgAyaB1XlN0zq2njfDNm44XVdIouE7pZ6GzbdyH47uIQ==}
+  web-streams-polyfill@3.3.3:
+    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
     engines: {node: '>= 8'}
 
   which-boxed-primitive@1.0.2:
@@ -5439,7 +5439,7 @@ snapshots:
   fetch-blob@3.2.0:
     dependencies:
       node-domexception: 1.0.0
-      web-streams-polyfill: 3.3.2
+      web-streams-polyfill: 3.3.3
     optional: true
 
   file-entry-cache@6.0.1:
@@ -5946,7 +5946,7 @@ snapshots:
 
   nanoid@5.0.7: {}
 
-  native-file-system-adapter@3.0.0:
+  native-file-system-adapter@3.0.1:
     optionalDependencies:
       fetch-blob: 3.2.0
 
@@ -6857,7 +6857,7 @@ snapshots:
 
   vm-browserify@1.1.2: {}
 
-  web-streams-polyfill@3.3.2:
+  web-streams-polyfill@3.3.3:
     optional: true
 
   which-boxed-primitive@1.0.2:
