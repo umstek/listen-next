@@ -154,8 +154,8 @@ importers:
         specifier: ^5.0.11
         version: 5.2.10
       vite-plugin-node-polyfills:
-        specifier: ^0.19.0
-        version: 0.19.0(rollup@4.16.0)(vite@5.2.10)
+        specifier: ^0.21.0
+        version: 0.21.0(rollup@4.16.0)(vite@5.2.10)
       vite-tsconfig-paths:
         specifier: ^4.2.3
         version: 4.3.2(typescript@5.4.5)(vite@5.2.10)
@@ -2303,10 +2303,6 @@ packages:
     resolution: {integrity: sha512-C/CPBqKWnvdcxqIARxyOh4v1UUEOCHpgDa0WYgpKDFMszcrPcffg5uhwSgPCLD2WWxmq6isisz87tzT01tuGhg==}
     engines: {node: '>= 0.4'}
 
-  is-typed-array@1.1.12:
-    resolution: {integrity: sha512-Z14TF2JNG8Lss5/HMqt0//T9JeHXttXy5pH/DBU4vi98ozO2btxzq9MwYDZYnKwU8nRsz/+GVFVRDq3DkVuSPg==}
-    engines: {node: '>= 0.4'}
-
   is-typed-array@1.1.13:
     resolution: {integrity: sha512-uZ25/bUAlUY5fR4OKT4rZQEBrzQWYV9ZJYGGsUmEJ6thodVJ1HX64ePQ6Z0qPWP+m+Uq6e9UugrE38jeYsDSMw==}
     engines: {node: '>= 0.4'}
@@ -3340,8 +3336,8 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  vite-plugin-node-polyfills@0.19.0:
-    resolution: {integrity: sha512-AhdVxAmVnd1doUlIRGUGV6ZRPfB9BvIwDF10oCOmL742IsvsFIAV4tSMxSfu5e0Px0QeJLgWVOSbtHIvblzqMw==}
+  vite-plugin-node-polyfills@0.21.0:
+    resolution: {integrity: sha512-Sk4DiKnmxN8E0vhgEhzLudfJQfaT8k4/gJ25xvUPG54KjLJ6HAmDKbr4rzDD/QWEY+Lwg80KE85fGYBQihEPQA==}
     peerDependencies:
       vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
 
@@ -3422,10 +3418,6 @@ packages:
 
   which-collection@1.0.2:
     resolution: {integrity: sha512-K4jVyjnBdgvc86Y6BkaLZEN933SwYOuBFkdmBu9ZfkcAbdVbpITnDmjvZ/aQjRXQrv5EPkTnD1s39GiiqbngCw==}
-    engines: {node: '>= 0.4'}
-
-  which-typed-array@1.1.13:
-    resolution: {integrity: sha512-P5Nra0qjSncduVPEAr7xhoF5guty49ArDTwzJ/yNuPIbZppyRxFQsRCWrocxIY+CnMVG+qfbU2FmDKyvSGClow==}
     engines: {node: '>= 0.4'}
 
   which-typed-array@1.1.15:
@@ -5894,10 +5886,6 @@ snapshots:
     dependencies:
       has-symbols: 1.0.3
 
-  is-typed-array@1.1.12:
-    dependencies:
-      which-typed-array: 1.1.13
-
   is-typed-array@1.1.13:
     dependencies:
       which-typed-array: 1.1.15
@@ -6954,8 +6942,8 @@ snapshots:
       inherits: 2.0.4
       is-arguments: 1.1.1
       is-generator-function: 1.0.10
-      is-typed-array: 1.1.12
-      which-typed-array: 1.1.13
+      is-typed-array: 1.1.13
+      which-typed-array: 1.1.15
 
   vite-node@1.2.1:
     dependencies:
@@ -6974,7 +6962,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-node-polyfills@0.19.0(rollup@4.16.0)(vite@5.2.10):
+  vite-plugin-node-polyfills@0.21.0(rollup@4.16.0)(vite@5.2.10):
     dependencies:
       '@rollup/plugin-inject': 5.0.5(rollup@4.16.0)
       node-stdlib-browser: 1.2.0
@@ -7067,14 +7055,6 @@ snapshots:
       is-set: 2.0.3
       is-weakmap: 2.0.2
       is-weakset: 2.0.3
-
-  which-typed-array@1.1.13:
-    dependencies:
-      available-typed-arrays: 1.0.7
-      call-bind: 1.0.7
-      for-each: 0.3.3
-      gopd: 1.0.1
-      has-tostringtag: 1.0.2
 
   which-typed-array@1.1.15:
     dependencies:
