@@ -46,7 +46,7 @@ importers:
         version: 3.2.7
       dockview:
         specifier: ^1.9.0
-        version: 1.13.0
+        version: 1.13.1
       events:
         specifier: ^3.3.0
         version: 3.3.0
@@ -1826,11 +1826,11 @@ packages:
   dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
 
-  dockview-core@1.13.0:
-    resolution: {integrity: sha512-u9dA3ARJAflb3Np0Wj7jgaBBrzFWTNgpiNMTgK/OsO/C2Dl9k6spM0F4Z4kkW7bh+mCjXBOsdt8l+mUlxmPO9w==}
+  dockview-core@1.13.1:
+    resolution: {integrity: sha512-8sjzYHUNVIBLMPVqir5HJrlw9bFZtMubrJmS17eSdhZWzZzmhJ7aSKqZZxDp0yrZPrvJZjKOOv0NtYoGbA8/KQ==}
 
-  dockview@1.13.0:
-    resolution: {integrity: sha512-Fgk2HtuD0gDTmUlwHcj35hd3mvVM5yy3wcBtPbxfZ9VbwaQsQ71bL7mP+SlKUzOJRHC/EwBgzDkB4V0RJznhew==}
+  dockview@1.13.1:
+    resolution: {integrity: sha512-BnqIAIihx/tzpdH17RkjB5kAHjP42UaoKPEYzRhJ0izyAEXiYVa+CUik3A1gTNTFr0oJvCsKFcTAPItxdBBS9w==}
 
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
@@ -5268,11 +5268,11 @@ snapshots:
 
   dlv@1.1.3: {}
 
-  dockview-core@1.13.0: {}
+  dockview-core@1.13.1: {}
 
-  dockview@1.13.0:
+  dockview@1.13.1:
     dependencies:
-      dockview-core: 1.13.0
+      dockview-core: 1.13.1
 
   doctrine@2.1.0:
     dependencies:
