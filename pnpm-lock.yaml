@@ -154,8 +154,8 @@ importers:
         specifier: ^5.0.11
         version: 5.2.11
       vite-plugin-node-polyfills:
-        specifier: ^0.21.0
-        version: 0.21.0(rollup@4.17.2)(vite@5.2.11)
+        specifier: ^0.22.0
+        version: 0.22.0(rollup@4.17.2)(vite@5.2.11)
       vite-tsconfig-paths:
         specifier: ^4.2.3
         version: 4.3.2(typescript@5.4.5)(vite@5.2.11)
@@ -3314,8 +3314,8 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  vite-plugin-node-polyfills@0.21.0:
-    resolution: {integrity: sha512-Sk4DiKnmxN8E0vhgEhzLudfJQfaT8k4/gJ25xvUPG54KjLJ6HAmDKbr4rzDD/QWEY+Lwg80KE85fGYBQihEPQA==}
+  vite-plugin-node-polyfills@0.22.0:
+    resolution: {integrity: sha512-F+G3LjiGbG8QpbH9bZ//GSBr9i1InSTkaulfUHFa9jkLqVGORFBoqc2A/Yu5Mmh1kNAbiAeKeK+6aaQUf3x0JA==}
     peerDependencies:
       vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
 
@@ -6923,7 +6923,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-node-polyfills@0.21.0(rollup@4.17.2)(vite@5.2.11):
+  vite-plugin-node-polyfills@0.22.0(rollup@4.17.2)(vite@5.2.11):
     dependencies:
       '@rollup/plugin-inject': 5.0.5(rollup@4.17.2)
       node-stdlib-browser: 1.2.0
