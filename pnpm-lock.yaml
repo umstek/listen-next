@@ -154,8 +154,8 @@ importers:
         specifier: ^5.0.11
         version: 5.4.14
       vite-plugin-node-polyfills:
-        specifier: ^0.22.0
-        version: 0.22.0(rollup@4.34.3)(vite@5.4.14)
+        specifier: ^0.23.0
+        version: 0.23.0(rollup@4.34.3)(vite@5.4.14)
       vite-tsconfig-paths:
         specifier: ^4.2.3
         version: 4.3.2(typescript@5.7.3)(vite@5.4.14)
@@ -2172,9 +2172,6 @@ packages:
   flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
 
-  for-each@0.3.3:
-    resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
-
   for-each@0.3.4:
     resolution: {integrity: sha512-kKaIINnFpzW6ffJNDjjyjrk21BkDx38c0xa/klsT8VzLCaMEefv4ZTacrcVR4DmgTeBra++jMDAfS/tS799YDw==}
     engines: {node: '>= 0.4'}
@@ -2409,10 +2406,6 @@ packages:
     resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
     engines: {node: '>=8'}
 
-  is-generator-function@1.0.10:
-    resolution: {integrity: sha512-jsEjy9l3yiXEQ+PsXdmBwEPcOxaXWLspKdplFUVI9vq1iZgIekeC0L167qeu86czQaxed3q/Uzuw0swL0irL8A==}
-    engines: {node: '>= 0.4'}
-
   is-generator-function@1.1.0:
     resolution: {integrity: sha512-nPUB5km40q9e8UfN/Zc24eLlzdSf9OfKByBw9CIdw4H1giPMeA0OIJvbchsCu4npfI2QcMVBsGEBHKZ7wLTWmQ==}
     engines: {node: '>= 0.4'}
@@ -2463,10 +2456,6 @@ packages:
 
   is-symbol@1.1.1:
     resolution: {integrity: sha512-9gGx6GTtCQM73BgmHQXfDmLtfjjTUDSyoxTCbp5WtoixAhfgsDirWIcVQ/IHpvI5Vgd5i/J5F7B9cN/WlVbC/w==}
-    engines: {node: '>= 0.4'}
-
-  is-typed-array@1.1.13:
-    resolution: {integrity: sha512-uZ25/bUAlUY5fR4OKT4rZQEBrzQWYV9ZJYGGsUmEJ6thodVJ1HX64ePQ6Z0qPWP+m+Uq6e9UugrE38jeYsDSMw==}
     engines: {node: '>= 0.4'}
 
   is-typed-array@1.1.15:
@@ -3547,10 +3536,10 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  vite-plugin-node-polyfills@0.22.0:
-    resolution: {integrity: sha512-F+G3LjiGbG8QpbH9bZ//GSBr9i1InSTkaulfUHFa9jkLqVGORFBoqc2A/Yu5Mmh1kNAbiAeKeK+6aaQUf3x0JA==}
+  vite-plugin-node-polyfills@0.23.0:
+    resolution: {integrity: sha512-4n+Ys+2bKHQohPBKigFlndwWQ5fFKwaGY6muNDMTb0fSQLyBzS+jjUNRZG9sKF0S/Go4ApG6LFnUGopjkILg3w==}
     peerDependencies:
-      vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
+      vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
 
   vite-tsconfig-paths@4.3.2:
     resolution: {integrity: sha512-0Vd/a6po6Q+86rPlntHye7F31zA2URZMbH8M3saAZ/xR9QoGN/L21bxEGfXdWmFdNkqPpRdxFT7nmNe12e9/uA==}
@@ -3633,10 +3622,6 @@ packages:
 
   which-collection@1.0.2:
     resolution: {integrity: sha512-K4jVyjnBdgvc86Y6BkaLZEN933SwYOuBFkdmBu9ZfkcAbdVbpITnDmjvZ/aQjRXQrv5EPkTnD1s39GiiqbngCw==}
-    engines: {node: '>= 0.4'}
-
-  which-typed-array@1.1.15:
-    resolution: {integrity: sha512-oV0jmFtUky6CXfkqehVvBP/LSWJ2sy4vWMioiENyJLePrBO/yKyV9OyJySfAKosh+RYkIl5zJCNZ8/4JncrpdA==}
     engines: {node: '>= 0.4'}
 
   which-typed-array@1.1.18:
@@ -5946,10 +5931,6 @@ snapshots:
 
   flatted@3.3.1: {}
 
-  for-each@0.3.3:
-    dependencies:
-      is-callable: 1.2.7
-
   for-each@0.3.4:
     dependencies:
       is-callable: 1.2.7
@@ -6197,10 +6178,6 @@ snapshots:
 
   is-fullwidth-code-point@3.0.0: {}
 
-  is-generator-function@1.0.10:
-    dependencies:
-      has-tostringtag: 1.0.2
-
   is-generator-function@1.1.0:
     dependencies:
       call-bound: 1.0.3
@@ -6253,10 +6230,6 @@ snapshots:
       call-bound: 1.0.3
       has-symbols: 1.1.0
       safe-regex-test: 1.1.0
-
-  is-typed-array@1.1.13:
-    dependencies:
-      which-typed-array: 1.1.15
 
   is-typed-array@1.1.15:
     dependencies:
@@ -7374,9 +7347,9 @@ snapshots:
     dependencies:
       inherits: 2.0.4
       is-arguments: 1.1.1
-      is-generator-function: 1.0.10
-      is-typed-array: 1.1.13
-      which-typed-array: 1.1.15
+      is-generator-function: 1.1.0
+      is-typed-array: 1.1.15
+      which-typed-array: 1.1.18
 
   vite-node@1.6.1:
     dependencies:
@@ -7396,7 +7369,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-node-polyfills@0.22.0(rollup@4.34.3)(vite@5.4.14):
+  vite-plugin-node-polyfills@0.23.0(rollup@4.34.3)(vite@5.4.14):
     dependencies:
       '@rollup/plugin-inject': 5.0.5(rollup@4.34.3)
       node-stdlib-browser: 1.2.0
@@ -7490,14 +7463,6 @@ snapshots:
       is-set: 2.0.3
       is-weakmap: 2.0.2
       is-weakset: 2.0.4
-
-  which-typed-array@1.1.15:
-    dependencies:
-      available-typed-arrays: 1.0.7
-      call-bind: 1.0.8
-      for-each: 0.3.3
-      gopd: 1.2.0
-      has-tostringtag: 1.0.2
 
   which-typed-array@1.1.18:
     dependencies:
