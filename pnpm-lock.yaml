@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@js-temporal/polyfill':
-        specifier: ^0.4.4
-        version: 0.4.4
+        specifier: ^0.5.0
+        version: 0.5.1
       '@phosphor-icons/react':
         specifier: ^2.0.15
         version: 2.1.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -559,8 +559,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.29':
     resolution: {integrity: sha512-uw6guiW/gcAGPDhLmd77/6lW8QLeiV5RUTsAX46Db6oLhGaVj4lhnPwb184s1bkc8kdVg/+h988dro8GRDpmYQ==}
 
-  '@js-temporal/polyfill@0.4.4':
-    resolution: {integrity: sha512-2X6bvghJ/JAoZO52lbgyAPFj8uCflhTo2g7nkFzEQdXd/D8rEeD4HtmTEpmtGCva260fcd66YNXBOYdnmHqSOg==}
+  '@js-temporal/polyfill@0.5.1':
+    resolution: {integrity: sha512-hloP58zRVCRSpgDxmqCWJNlizAlUgJFqG2ypq79DCvyv9tHjRYMDOcPFjzfl/A1/YxDvRCZz8wvZvmapQnKwFQ==}
     engines: {node: '>=12'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -4084,10 +4084,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.4
 
-  '@js-temporal/polyfill@0.4.4':
+  '@js-temporal/polyfill@0.5.1':
     dependencies:
       jsbi: 4.3.0
-      tslib: 2.6.2
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
