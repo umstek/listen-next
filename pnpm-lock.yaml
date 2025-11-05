@@ -157,8 +157,8 @@ importers:
         specifier: ^0.24.0
         version: 0.24.0(rollup@4.52.5)(vite@5.4.21)
       vite-tsconfig-paths:
-        specifier: ^4.2.3
-        version: 4.3.2(typescript@5.9.3)(vite@5.4.21)
+        specifier: ^5.0.0
+        version: 5.1.4(typescript@5.9.3)(vite@5.4.21)
       vitest:
         specifier: ^1.2.0
         version: 1.6.1
@@ -3572,8 +3572,8 @@ packages:
     peerDependencies:
       vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
 
-  vite-tsconfig-paths@4.3.2:
-    resolution: {integrity: sha512-0Vd/a6po6Q+86rPlntHye7F31zA2URZMbH8M3saAZ/xR9QoGN/L21bxEGfXdWmFdNkqPpRdxFT7nmNe12e9/uA==}
+  vite-tsconfig-paths@5.1.4:
+    resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
@@ -6472,7 +6472,7 @@ snapshots:
     dependencies:
       '@tokenizer/token': 0.3.0
       content-type: 1.0.5
-      debug: 4.3.5
+      debug: 4.4.1
       file-type: 16.5.4
       media-typer: 1.1.0
       strtok3: 6.3.0
@@ -7433,9 +7433,9 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  vite-tsconfig-paths@4.3.2(typescript@5.9.3)(vite@5.4.21):
+  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@5.4.21):
     dependencies:
-      debug: 4.3.4
+      debug: 4.4.1
       globrex: 0.1.2
       tsconfck: 3.0.3(typescript@5.9.3)
     optionalDependencies:
