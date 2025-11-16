@@ -4,6 +4,7 @@ import {
   IDockviewPanelProps,
 } from 'dockview';
 
+import { ThemeSwitcher } from ':ThemeSwitcher';
 import { ExplorerView } from '~modules/explorer/ExplorerView';
 import { FileLoaderView } from '~modules/fileLoader/FileLoaderView';
 import { PlayerView } from '~modules/player/PlayerView';
@@ -67,11 +68,19 @@ function App() {
   };
 
   return (
-    <DockviewReact
-      className="dockview-theme-light"
-      components={components}
-      onReady={onReady}
-    />
+    <div className="w-full h-full flex flex-col">
+      <div className="flex justify-between items-center px-4 py-2 border-b border-gray-6 bg-gray-2">
+        <h1 className="text-lg font-semibold">Listen-Next</h1>
+        <ThemeSwitcher />
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <DockviewReact
+          className="dockview-theme-light"
+          components={components}
+          onReady={onReady}
+        />
+      </div>
+    </div>
   );
 }
 
