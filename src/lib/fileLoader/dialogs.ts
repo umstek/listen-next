@@ -1,7 +1,7 @@
 // ref: https://web.dev/patterns/files/
-import { DirectoryEntity, FileEntity } from './entity';
-import { getFilesAndFoldersRecursively } from './scan';
-import { filePickerAcceptTypeExtToRegex } from './util';
+import type { DirectoryEntity, FileEntity } from './entity'
+import { getFilesAndFoldersRecursively } from './scan'
+import { filePickerAcceptTypeExtToRegex } from './util'
 
 /**
  * Open the directory picker and return an object containing arrays of files and
@@ -17,10 +17,10 @@ export async function openDirectory(
   options?: DirectoryPickerOptions & { types?: FilePickerAcceptType[] },
 ) {
   if (supportsDirectoryPicker()) {
-    return openDirectoryWithNewPicker(options);
+    return openDirectoryWithNewPicker(options)
   }
 
-  return openDirectoryWithOldPicker();
+  return openDirectoryWithOldPicker()
 }
 
 /**
@@ -34,18 +34,18 @@ declare interface DirectoryPickerOptions {
    * different IDs. If the same ID is used for another picker, the picker opens
    * in the same directory.
    */
-  id?: string;
+  id?: string
   /**
    * A string that defaults to `"read"` for read-only access or `"readwrite"`
    * for read and write access to the directory.
    */
-  mode?: FileSystemPermissionMode;
+  mode?: FileSystemPermissionMode
   /**
    * A `FileSystemHandle` or a well known directory (`"desktop"`, `"documents"`,
    * `"downloads"`, `"music"`, `"pictures"`, or `"videos"`) to open the dialog
    * in.
    */
-  startIn?: FileSystemHandle | WellKnownDirectoryNames;
+  startIn?: FileSystemHandle | WellKnownDirectoryNames
 }
 
 /**
@@ -58,7 +58,7 @@ type WellKnownDirectoryNames =
   | 'downloads'
   | 'music'
   | 'pictures'
-  | 'videos';
+  | 'videos'
 
 /**
  * Checks if the browser supports the directory picker feature.
@@ -67,9 +67,9 @@ type WellKnownDirectoryNames =
  */
 function supportsDirectoryPicker() {
   try {
-    return 'showDirectoryPicker' in window && window.self === window.top;
-  } catch (error) {
-    return false;
+    return 'showDirectoryPicker' in window && window.self === window.top
+  } catch (_error) {
+    return false
   }
 }
 
@@ -83,17 +83,17 @@ async function openDirectoryWithNewPicker(
   options?: DirectoryPickerOptions & { types?: FilePickerAcceptType[] },
 ) {
   try {
-    const handle = await window.showDirectoryPicker(options);
-    return getFilesAndFolders(handle, options?.types || []);
+    const handle = await window.showDirectoryPicker(options)
+    return getFilesAndFolders(handle, options?.types || [])
   } catch (e) {
-    const err = e as Error;
+    const err = e as Error
     // Fail silently if the user has simply canceled the dialog.
     if (err.name !== 'AbortError') {
-      console.error(err.name, err.message);
+      console.error(err.name, err.message)
     }
   }
 
-  return undefined;
+  return undefined
 }
 
 /**
@@ -113,15 +113,15 @@ async function getFilesAndFolders(
     parent: undefined,
     path: directoryEntry.name,
     handle: directoryEntry,
-  };
+  }
 
-  const regex = filePickerAcceptTypeExtToRegex(types);
+  const regex = filePickerAcceptTypeExtToRegex(types)
   const { files, directories } = await getFilesAndFoldersRecursively(
     rootDirectoryEntity,
     regex,
-  );
+  )
 
-  return { files, directories: [rootDirectoryEntity, ...directories] };
+  return { files, directories: [rootDirectoryEntity, ...directories] }
 }
 
 /**
@@ -130,7 +130,7 @@ async function getFilesAndFolders(
  * @returns The result of calling the `openFilesWithOldPicker` function.
  */
 function openDirectoryWithOldPicker() {
-  return openFilesWithOldPicker(undefined, true);
+  return openFilesWithOldPicker(undefined, true)
 }
 
 /**
@@ -145,19 +145,19 @@ function openFilesWithOldPicker(options?: OpenFilesOptions, directory = false) {
     { files: FileEntity[]; directories: DirectoryEntity[] } | undefined
   >((resolve) => {
     // Append a new `<input type="file" multiple? />` and hide it.
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.style.display = 'none';
-    document.body.append(input);
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.style.display = 'none'
+    document.body.append(input)
     if (directory) {
-      input.webkitdirectory = true;
+      input.webkitdirectory = true
     } else if (options?.multiple) {
-      input.multiple = true;
+      input.multiple = true
     }
 
     input.addEventListener('change', () => {
       // Remove the `<input type="file" multiple? />` again from the DOM.
-      input.remove();
+      input.remove()
 
       const files: FileEntity[] | undefined = input.files
         ? Array.from(input.files).map((file) => ({
@@ -170,7 +170,7 @@ function openFilesWithOldPicker(options?: OpenFilesOptions, directory = false) {
             handle: undefined,
             file,
           }))
-        : undefined;
+        : undefined
 
       const directories: DirectoryEntity[] = extractDirectoryPaths(
         files?.map((file) => file.parent).filter(Boolean) || [],
@@ -180,22 +180,22 @@ function openFilesWithOldPicker(options?: OpenFilesOptions, directory = false) {
         parent: path.split('/').slice(0, -1).join('/') || undefined,
         path,
         handle: undefined,
-      }));
+      }))
 
       // Use undefined instead of null to indicate that no files were selected.
-      resolve(files ? { files, directories } : undefined);
-    });
+      resolve(files ? { files, directories } : undefined)
+    })
 
     try {
       if ('showPicker' in HTMLInputElement.prototype) {
-        input.showPicker();
+        input.showPicker()
       } else {
-        input.click();
+        input.click()
       }
-    } catch (error) {
-      resolve(undefined);
+    } catch (_error) {
+      resolve(undefined)
     }
-  });
+  })
 }
 
 /**
@@ -205,17 +205,17 @@ function openFilesWithOldPicker(options?: OpenFilesOptions, directory = false) {
  * @returns An array of directory paths.
  */
 function extractDirectoryPaths(parentPaths: string[]) {
-  const directoryPaths = new Set<string>();
+  const directoryPaths = new Set<string>()
 
   for (const dirPath of parentPaths) {
-    const parts = dirPath.split('/');
+    const parts = dirPath.split('/')
     for (let i = 0; i < parts.length; i++) {
-      const directoryPath = parts.slice(0, i).join('/');
-      directoryPaths.add(directoryPath);
+      const directoryPath = parts.slice(0, i).join('/')
+      directoryPaths.add(directoryPath)
     }
   }
 
-  return Array.from(directoryPaths);
+  return Array.from(directoryPaths)
 }
 
 /**
@@ -226,16 +226,16 @@ function extractDirectoryPaths(parentPaths: string[]) {
  */
 export async function openFiles(options: OpenFilesOptions) {
   if (supportsOpenFilePicker()) {
-    return openFilesWithNewPicker(options);
+    return openFilesWithNewPicker(options)
   }
 
-  return openFilesWithOldPicker(options);
+  return openFilesWithOldPicker(options)
 }
 
 /**
  * Options for opening files. Extends OpenFilePickerOptions.
  */
-type OpenFilesOptions = OpenFilePickerOptions;
+type OpenFilesOptions = OpenFilePickerOptions
 
 /**
  * Checks if the browser supports the open file picker feature.
@@ -244,9 +244,9 @@ type OpenFilesOptions = OpenFilePickerOptions;
  */
 function supportsOpenFilePicker() {
   try {
-    return 'showOpenFilePicker' in window && window.self === window.top;
-  } catch (error) {
-    return false;
+    return 'showOpenFilePicker' in window && window.self === window.top
+  } catch (_error) {
+    return false
   }
 }
 
@@ -258,14 +258,14 @@ function supportsOpenFilePicker() {
  */
 async function openFilesWithNewPicker(options: OpenFilesOptions) {
   try {
-    const files: FileEntity[] = [];
+    const files: FileEntity[] = []
     for (const handle of await window.showOpenFilePicker(options)) {
-      const file = await handle.getFile();
+      const file = await handle.getFile()
       Object.defineProperty(file, 'webkitRelativePath', {
         configurable: true,
         enumerable: true,
         get: () => handle.name,
-      });
+      })
       files.push({
         kind: 'file',
         name: handle.name,
@@ -273,16 +273,16 @@ async function openFilesWithNewPicker(options: OpenFilesOptions) {
         path: handle.name,
         handle,
         file,
-      });
+      })
     }
-    return { files, directories: [] as DirectoryEntity[] };
+    return { files, directories: [] as DirectoryEntity[] }
   } catch (e) {
-    const err = e as Error;
+    const err = e as Error
     // Fail silently if the user has simply canceled the dialog.
     if (err.name !== 'AbortError') {
-      console.error(err.name, err.message);
+      console.error(err.name, err.message)
     }
   }
 
-  return undefined;
+  return undefined
 }

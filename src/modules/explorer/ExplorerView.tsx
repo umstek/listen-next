@@ -1,16 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs'
+import { Thumbnail } from ':ExplorerTileBody'
+import { TileView } from ':TileView'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import env from '~config'
+import { db } from '~lib/db'
+import { Explorer, filterByExtensions } from '~lib/Explorer'
+import { setItems } from '~modules/playlist/playlistSlice'
 
-import env from '~config';
-import { Explorer, filterByExtensions } from '~lib/Explorer';
-import { db } from '~lib/db';
-import { setItems } from '~modules/playlist/playlistSlice';
-
-import { Breadcrumb, Breadcrumbs } from ':Breadcrumbs';
-import { Thumbnail } from ':ExplorerTileBody';
-import { TileView } from ':TileView';
-
-const audioFilesFilter = filterByExtensions(new Set(env.supportedExtensions));
+const audioFilesFilter = filterByExtensions(new Set(env.supportedExtensions))
 
 /**
  * Renders the Explorer view component.
@@ -18,52 +16,52 @@ const audioFilesFilter = filterByExtensions(new Set(env.supportedExtensions));
  * @return The rendered Explorer view.
  */
 export function ExplorerView() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  const explorerRef = useRef<Explorer | null>(null);
+  const explorerRef = useRef<Explorer | null>(null)
   const pathDirContentsRef = useRef<
     Map<FileSystemDirectoryHandle, FileSystemHandleUnion[]>
-  >(new Map());
-  const [pathDirs, setPathDirs] = useState<FileSystemDirectoryHandle[]>([]);
+  >(new Map())
+  const [pathDirs, setPathDirs] = useState<FileSystemDirectoryHandle[]>([])
 
   const refresh = useCallback(async () => {
-    const folder = await explorerRef?.current?.getCurrentDirectory();
-    const pathDirs = await explorerRef?.current?.getPath();
+    const folder = await explorerRef?.current?.getCurrentDirectory()
+    const pathDirs = await explorerRef?.current?.getPath()
     const content = (await explorerRef?.current?.listItems())?.filter(
       (i) =>
         i.kind === 'directory' ||
         i.name.startsWith('@link') ||
         audioFilesFilter(i),
-    );
+    )
 
     if (pathDirs && folder && content) {
       // @ts-expect-error XXX Polyfill conflict
-      pathDirContentsRef.current.set(folder, content);
+      pathDirContentsRef.current.set(folder, content)
       // @ts-expect-error XXX Polyfill conflict
-      setPathDirs([...pathDirs]);
+      setPathDirs([...pathDirs])
       // XXX        ^ Explorer mutates the path, so have to make a copy.
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    explorerRef.current = new Explorer();
+    explorerRef.current = new Explorer()
 
-    refresh();
-  }, [refresh]);
+    refresh()
+  }, [refresh])
 
   return (
     <div>
       <Breadcrumbs
         onUp={async () => {
-          await explorerRef.current?.changeDirectory('..');
-          await refresh();
+          await explorerRef.current?.changeDirectory('..')
+          await refresh()
         }}
       >
         {pathDirs.map((folder, i) => {
           const dirPath = pathDirs
             .slice(i + 1)
             .map(() => '..')
-            .join('/');
+            .join('/')
 
           return (
             <Breadcrumb
@@ -73,20 +71,20 @@ export function ExplorerView() {
                 .filter((c) => c.kind === 'directory')
                 .map((c) => c.name)}
               onClick={async () => {
-                await explorerRef.current?.changeDirectory(dirPath);
-                await refresh();
+                await explorerRef.current?.changeDirectory(dirPath)
+                await refresh()
               }}
               onItemClick={async (name) => {
                 await explorerRef.current?.changeDirectory(
                   dirPath ? `${dirPath}/${name}` : name,
-                );
-                await refresh();
+                )
+                await refresh()
               }}
               selected={
                 pathDirs[pathDirs.indexOf(folder) + 1]?.name || undefined
               }
             />
-          );
+          )
         })}
       </Breadcrumbs>
       <TileView
@@ -105,7 +103,7 @@ export function ExplorerView() {
             }
             onPlay={async () => {
               if (item.kind === 'file') {
-                const linkTarget = await tryGetLinkTarget(item);
+                const linkTarget = await tryGetLinkTarget(item)
                 if (linkTarget) {
                   if (
                     (await linkTarget.queryPermission({ mode: 'read' })) ===
@@ -115,42 +113,44 @@ export function ExplorerView() {
                   ) {
                     if (linkTarget.kind === 'file') {
                       dispatch(
-                        setItems([URL.createObjectURL(await linkTarget.getFile())]),
-                      );
+                        setItems([
+                          URL.createObjectURL(await linkTarget.getFile()),
+                        ]),
+                      )
                     }
                   }
-                  return;
+                  return
                 }
-                dispatch(setItems([URL.createObjectURL(await item.getFile())]));
+                dispatch(setItems([URL.createObjectURL(await item.getFile())]))
               }
             }}
             onDelete={async () => {
               // If it's a link file, also delete the database entry
               if (item.kind === 'file' && item.name.startsWith('@link')) {
                 try {
-                  const json = await item.getFile();
-                  const data = JSON.parse(await json.text()) as { id: string };
-                  await db.linkedFSEs.delete(data.id);
+                  const json = await item.getFile()
+                  const data = JSON.parse(await json.text()) as { id: string }
+                  await db.linkedFSEs.delete(data.id)
                 } catch (error) {
-                  console.error('Failed to delete link database entry:', error);
+                  console.error('Failed to delete link database entry:', error)
                 }
               }
 
               // Delete the file/directory from OPFS (recursive for directories)
-              await explorerRef.current?.remove(item.name, true);
-              await refresh();
+              await explorerRef.current?.remove(item.name, true)
+              await refresh()
             }}
           />
         )}
         onOpen={async (item) => {
           if (item.kind === 'directory') {
-            await explorerRef.current?.changeDirectory(item.name);
-            await refresh();
+            await explorerRef.current?.changeDirectory(item.name)
+            await refresh()
           } else if (item.kind === 'file') {
             /**
              * This isn't a real file, but a link
              */
-            const linkTarget = await tryGetLinkTarget(item);
+            const linkTarget = await tryGetLinkTarget(item)
             if (linkTarget) {
               if (
                 (await linkTarget.queryPermission({ mode: 'read' })) ===
@@ -160,32 +160,32 @@ export function ExplorerView() {
               ) {
                 if (linkTarget.kind === 'directory') {
                   // @ts-expect-error Polyfill conflict
-                  explorerRef.current = new Explorer(linkTarget);
-                  await refresh();
+                  explorerRef.current = new Explorer(linkTarget)
+                  await refresh()
                 } else if (linkTarget.kind === 'file') {
                   dispatch(
                     setItems([URL.createObjectURL(await linkTarget.getFile())]),
-                  );
+                  )
                 }
               }
 
-              return;
+              return
             }
 
-            dispatch(setItems([URL.createObjectURL(await item.getFile())]));
+            dispatch(setItems([URL.createObjectURL(await item.getFile())]))
           }
         }}
       />
     </div>
-  );
+  )
 }
 
 async function tryGetLinkTarget(
   item: FileSystemFileHandle,
 ): Promise<FileSystemHandleUnion | undefined> {
-  if (!item.name.startsWith('@link')) return;
+  if (!item.name.startsWith('@link')) return
 
-  const [link, source, kind] = (item.name.split(':', 1)[0] || '').split('-');
+  const [link, source, kind] = (item.name.split(':', 1)[0] || '').split('-')
 
   if (
     ![
@@ -194,18 +194,18 @@ async function tryGetLinkTarget(
       ['directory', 'file'].includes(kind),
     ].every(Boolean)
   ) {
-    return;
+    return
   }
 
-  const json = await item.getFile();
+  const json = await item.getFile()
   try {
-    const data = JSON.parse(await json.text()) as { id: string };
-    const dbo = await db.linkedFSEs.get(data.id);
-    const handle = dbo?.locator as FileSystemHandleUnion;
+    const data = JSON.parse(await json.text()) as { id: string }
+    const dbo = await db.linkedFSEs.get(data.id)
+    const handle = dbo?.locator as FileSystemHandleUnion
 
-    if (handle.kind !== kind) return;
-    return handle;
-  } catch (error) {
-    return;
+    if (handle.kind !== kind) return
+    return handle
+  } catch (_error) {
+    return
   }
 }

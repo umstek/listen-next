@@ -1,12 +1,12 @@
-import { z } from 'zod';
-import camelCase from 'camelcase';
+import camelCase from 'camelcase'
+import { z } from 'zod'
 
 const Env = z.object({
   supportedExtensions: z.preprocess(
     (val) => (val as string | '').split(','),
     z.string().startsWith('.').array(),
   ),
-});
+})
 
 const env = Env.parse(
   Object.fromEntries(
@@ -15,7 +15,7 @@ const env = Env.parse(
       value,
     ]),
   ),
-);
+)
 
-export default env;
-export type EnvType = z.infer<typeof Env>;
+export default env
+export type EnvType = z.infer<typeof Env>

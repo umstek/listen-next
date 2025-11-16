@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 export const playlistSlice = createSlice({
   name: 'playlist',
@@ -8,17 +8,17 @@ export const playlistSlice = createSlice({
   },
   reducers: {
     setItems: (state, action) => {
-      state.items = action.payload;
-      state.activeIndex = 0; // Reset to first item when setting new playlist
+      state.items = action.payload
+      state.activeIndex = 0 // Reset to first item when setting new playlist
     },
     appendItems: (state, action) => {
-      state.items.push(...action.payload);
+      state.items.push(...action.payload)
     },
     clearItems: (state) => {
-      state.items = [];
+      state.items = []
     },
     setActiveIndex: (state, action) => {
-      state.activeIndex = action.payload;
+      state.activeIndex = action.payload
     },
   },
   // Redux is dumb. Types aren't right when code is right and vice versa.
@@ -27,9 +27,9 @@ export const playlistSlice = createSlice({
   //   activeIndex: (state) => state.playlist.activeIndex || 0,
   //   activeItem: (state) => state.playlist.items[state.activeIndex] || '',
   // },
-});
+})
 
 export const { setItems, appendItems, clearItems, setActiveIndex } =
-  playlistSlice.actions;
+  playlistSlice.actions
 
-export default playlistSlice.reducer;
+export default playlistSlice.reducer

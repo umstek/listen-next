@@ -1,29 +1,29 @@
-import {
+import type {
   FileSystemDirectoryHandle,
   FileSystemHandle,
-} from 'native-file-system-adapter';
+} from 'native-file-system-adapter'
 
-import rootDirHandle from './vfs';
+import rootDirHandle from './vfs'
 
 export async function listItems(handle: FileSystemDirectoryHandle) {
-  const entries: FileSystemHandle[] = [];
+  const entries: FileSystemHandle[] = []
   for await (const entry of handle.values()) {
-    entries.push(entry);
+    entries.push(entry)
   }
-  return entries;
+  return entries
 }
 
 export function filterByExtensions(extensions: Set<string>) {
   return (handle: FileSystemHandle) => {
-    return extensions.has(handle.name.slice(handle.name.lastIndexOf('.')));
-  };
+    return extensions.has(handle.name.slice(handle.name.lastIndexOf('.')))
+  }
 }
 
 /**
  * The Explorer class provides methods for exploring and navigating a virtual file system.
  */
 export class Explorer {
-  private path: FileSystemDirectoryHandle[] = [];
+  private path: FileSystemDirectoryHandle[] = []
 
   /**
    * Constructs a new instance of the class.
@@ -32,10 +32,10 @@ export class Explorer {
    */
   constructor(root = rootDirHandle) {
     if (!root) {
-      throw new Error('Root directory not found');
+      throw new Error('Root directory not found')
     }
 
-    this.path.push(root);
+    this.path.push(root)
   }
 
   /**
@@ -44,7 +44,7 @@ export class Explorer {
    * @returns The current working directory.
    */
   async getCurrentDirectory() {
-    return this.path[this.path.length - 1];
+    return this.path[this.path.length - 1]
   }
 
   /**
@@ -54,9 +54,9 @@ export class Explorer {
    */
   async getPathAsString() {
     if (this.path.length <= 1) {
-      return '/';
+      return '/'
     }
-    return this.path.map((handle) => handle.name).join('/');
+    return this.path.map((handle) => handle.name).join('/')
   }
 
   /**
@@ -65,7 +65,7 @@ export class Explorer {
    * @return The path as an array of FileSystemDirectoryHandle objects.
    */
   async getPath() {
-    return this.path;
+    return this.path
   }
 
   /**
@@ -74,33 +74,33 @@ export class Explorer {
    * @param path The path to change the current directory to.
    */
   async changeDirectory(path: string) {
-    let pathSegments = path.split('/');
+    let pathSegments = path.split('/')
     if (path.startsWith('/')) {
       // Absolute path
-      this.path = [this.path[0]];
+      this.path = [this.path[0]]
     }
     // Avoid empty segments in the path in case of absolute path or trailing "/"
-    pathSegments = pathSegments.filter(Boolean);
+    pathSegments = pathSegments.filter(Boolean)
 
     for (const segment of pathSegments) {
       if (segment === '.') {
         // Do nothing
-        continue;
+        continue
       }
 
       if (segment === '..') {
         // Go up
         if (this.path.length <= 1) {
-          return;
+          return
         }
 
-        this.path.pop();
-        continue;
+        this.path.pop()
+        continue
       }
 
-      const handle = this.path[this.path.length - 1];
-      const childHandle = await handle.getDirectoryHandle(segment);
-      this.path.push(childHandle);
+      const handle = this.path[this.path.length - 1]
+      const childHandle = await handle.getDirectoryHandle(segment)
+      this.path.push(childHandle)
     }
   }
 
@@ -110,9 +110,9 @@ export class Explorer {
    * @return An array of FileSystemHandles representing the entries in the current directory.
    */
   async listItems() {
-    const handle = this.path[this.path.length - 1];
+    const handle = this.path[this.path.length - 1]
 
-    return listItems(handle);
+    return listItems(handle)
   }
 
   /**
@@ -122,11 +122,11 @@ export class Explorer {
    * @return A promise that resolves to the new DirectoryHandle.
    */
   async createDirectory(name: string) {
-    const handle = this.path[this.path.length - 1];
+    const handle = this.path[this.path.length - 1]
     const newHandle = await handle.getDirectoryHandle(name, {
       create: true,
-    });
-    return newHandle;
+    })
+    return newHandle
   }
 
   /**
@@ -141,20 +141,24 @@ export class Explorer {
    * @throws Error if the entry doesn't exist or removal fails.
    */
   async remove(name: string, recursive = false) {
-    const handle = this.path[this.path.length - 1];
+    const handle = this.path[this.path.length - 1]
 
     try {
       // Verify the entry exists before attempting deletion
       await handle.getFileHandle(name).catch(async () => {
         // If not a file, try as directory
-        await handle.getDirectoryHandle(name);
-      });
+        await handle.getDirectoryHandle(name)
+      })
 
       // Attempt removal
-      await handle.removeEntry(name, recursive ? { recursive: true } : undefined);
+      await handle.removeEntry(
+        name,
+        recursive ? { recursive: true } : undefined,
+      )
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to remove "${name}": ${errorMessage}`);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error)
+      throw new Error(`Failed to remove "${name}": ${errorMessage}`)
     }
   }
 
@@ -166,13 +170,13 @@ export class Explorer {
    * @return A promise that resolves when the content has been written.
    */
   async putFile(file: File) {
-    const folderHandle = this.path[this.path.length - 1];
+    const folderHandle = this.path[this.path.length - 1]
     const fileHandle = await folderHandle.getFileHandle(file.name, {
       create: true,
-    });
-    const writable = await fileHandle.createWritable();
-    await writable.write(file);
-    await writable.close();
+    })
+    const writable = await fileHandle.createWritable()
+    await writable.write(file)
+    await writable.close()
   }
 
   /**
@@ -182,9 +186,9 @@ export class Explorer {
    * @return A Promise that resolves to the retrieved file.
    */
   async getFile(fileName: string) {
-    const handle = this.path[this.path.length - 1];
-    const fileHandle = await handle.getFileHandle(fileName);
-    const file = await fileHandle.getFile();
-    return file;
+    const handle = this.path[this.path.length - 1]
+    const fileHandle = await handle.getFileHandle(fileName)
+    const file = await fileHandle.getFile()
+    return file
   }
 }

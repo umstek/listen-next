@@ -1,9 +1,9 @@
-import { Flex, Slider } from '@radix-ui/themes';
+import { Flex, Slider } from '@radix-ui/themes'
 
 export interface SeekBarProps {
-  onChange: (value: number) => void;
-  duration: number;
-  position: number;
+  onChange: (value: number) => void
+  duration: number
+  position: number
 }
 
 export function SeekBar({ onChange, duration, position }: SeekBarProps) {
@@ -19,5 +19,5 @@ export function SeekBar({ onChange, duration, position }: SeekBarProps) {
         onValueChange={([n]) => onChange(n as number)}
       />
     </Flex>
-  );
+  )
 }

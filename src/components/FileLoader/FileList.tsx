@@ -1,42 +1,37 @@
-import { Play } from '@phosphor-icons/react';
+import { Play } from '@phosphor-icons/react'
+import { Checkbox, Flex, IconButton, Table } from '@radix-ui/themes'
 import {
-  Checkbox,
-  Flex,
-  IconButton,
-  Table,
-} from '@radix-ui/themes';
-import {
-  CellContext,
-  Row,
+  type CellContext,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  type Row,
   useReactTable,
-} from '@tanstack/react-table';
-import { useVirtualizer } from '@tanstack/react-virtual';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+} from '@tanstack/react-table'
+import { useVirtualizer } from '@tanstack/react-virtual'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import usePlayer from '~hooks/usePlayer';
-import { FileEntity, FileSystemEntity } from '~lib/fileLoader';
+import usePlayer from '~hooks/usePlayer'
+import type { FileEntity, FileSystemEntity } from '~lib/fileLoader'
 
 interface RowActionsProps {
-  row: Row<FileSystemEntity>;
-  preview: (url: string) => void;
-  stopPreview: () => void;
+  row: Row<FileSystemEntity>
+  preview: (url: string) => void
+  stopPreview: () => void
 }
 
 function RowActions({ row, preview, stopPreview }: RowActionsProps) {
-  const [url, setUrl] = useState<string | null>(null);
+  const [url, setUrl] = useState<string | null>(null)
 
   useEffect(() => {
     if (row.original.kind === 'file') {
-      const fileEntity = row.original as FileEntity;
-      const url = URL.createObjectURL(fileEntity.file);
-      setUrl(url);
+      const fileEntity = row.original as FileEntity
+      const url = URL.createObjectURL(fileEntity.file)
+      setUrl(url)
 
-      return () => URL.revokeObjectURL(url);
+      return () => URL.revokeObjectURL(url)
     }
-  }, [row.original]);
+  }, [row.original])
 
   return (
     <Flex className="invisible group-hover:visible">
@@ -44,35 +39,35 @@ function RowActions({ row, preview, stopPreview }: RowActionsProps) {
         variant="ghost"
         size="1"
         onMouseEnter={(e) => {
-          e.stopPropagation();
+          e.stopPropagation()
 
           if (row.original.kind === 'file' && url) {
-            preview(url);
+            preview(url)
           }
         }}
         onMouseLeave={(e) => {
-          e.stopPropagation();
+          e.stopPropagation()
 
-          stopPreview();
+          stopPreview()
         }}
       >
         <Play />
       </IconButton>
     </Flex>
-  );
+  )
 }
 
-const columnHelper = createColumnHelper<FileSystemEntity>();
+const columnHelper = createColumnHelper<FileSystemEntity>()
 
 interface FileListProps {
-  data: FileSystemEntity[];
-  selected?: Set<string>;
-  onSelectionChange?: (selected: Set<string>) => void;
+  data: FileSystemEntity[]
+  selected?: Set<string>
+  onSelectionChange?: (selected: Set<string>) => void
 }
 
 type EmptyTableContentProps = {
-  length: number;
-};
+  length: number
+}
 
 function EmptyTableContent(props: EmptyTableContentProps) {
   return (
@@ -81,39 +76,46 @@ function EmptyTableContent(props: EmptyTableContentProps) {
         No results.
       </Table.Cell>
     </Table.Row>
-  );
+  )
 }
 
-export function FileList({ data, selected = new Set(), onSelectionChange }: FileListProps) {
-  const { play, stop } = usePlayer();
+export function FileList({
+  data,
+  selected = new Set(),
+  onSelectionChange,
+}: FileListProps) {
+  const { play, stop } = usePlayer()
 
   const preview = useCallback(
     (url: string) => {
-      play({ url, seek: 10 });
+      play({ url, seek: 10 })
     },
     [play],
-  );
+  )
   const stopPreview = useCallback(() => {
-    stop();
-  }, [stop]);
+    stop()
+  }, [stop])
 
-  const toggleSelection = useCallback((path: string) => {
-    const newSelected = new Set(selected);
-    if (newSelected.has(path)) {
-      newSelected.delete(path);
-    } else {
-      newSelected.add(path);
-    }
-    onSelectionChange?.(newSelected);
-  }, [selected, onSelectionChange]);
+  const toggleSelection = useCallback(
+    (path: string) => {
+      const newSelected = new Set(selected)
+      if (newSelected.has(path)) {
+        newSelected.delete(path)
+      } else {
+        newSelected.add(path)
+      }
+      onSelectionChange?.(newSelected)
+    },
+    [selected, onSelectionChange],
+  )
 
   const toggleAll = useCallback(() => {
     if (selected.size === data.length) {
-      onSelectionChange?.(new Set());
+      onSelectionChange?.(new Set())
     } else {
-      onSelectionChange?.(new Set(data.map(item => item.path)));
+      onSelectionChange?.(new Set(data.map((item) => item.path)))
     }
-  }, [selected.size, data, onSelectionChange]);
+  }, [selected.size, data, onSelectionChange])
 
   const columns = useMemo(
     () => [
@@ -145,21 +147,21 @@ export function FileList({ data, selected = new Set(), onSelectionChange }: File
       }),
     ],
     [preview, stopPreview, selected, toggleSelection, toggleAll, data.length],
-  );
+  )
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  });
+  })
 
-  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const tableContainerRef = useRef<HTMLDivElement>(null)
   const rowVirtualizer = useVirtualizer({
     count: data.length,
     getScrollElement: () => tableContainerRef.current,
     estimateSize: () => 50,
     overscan: 10,
-  });
+  })
 
   return (
     <div ref={tableContainerRef} className="overflow-auto h-[300px]">
@@ -177,7 +179,7 @@ export function FileList({ data, selected = new Set(), onSelectionChange }: File
                           header.getContext(),
                         )}
                   </Table.ColumnHeaderCell>
-                );
+                )
               })}
             </Table.Row>
           ))}
@@ -185,7 +187,7 @@ export function FileList({ data, selected = new Set(), onSelectionChange }: File
         <Table.Body>
           {table.getRowModel().rows?.length ? (
             rowVirtualizer.getVirtualItems().map((virtualRow) => {
-              const row = table.getRowModel().rows[virtualRow.index];
+              const row = table.getRowModel().rows[virtualRow.index]
               return (
                 <Table.Row
                   align="center"
@@ -202,7 +204,7 @@ export function FileList({ data, selected = new Set(), onSelectionChange }: File
                     </Table.Cell>
                   ))}
                 </Table.Row>
-              );
+              )
             })
           ) : (
             <EmptyTableContent length={columns.length} />
@@ -210,6 +212,6 @@ export function FileList({ data, selected = new Set(), onSelectionChange }: File
         </Table.Body>
       </Table.Root>
     </div>
-  );
+  )
 }
-FileList.whyDidYouRender = true;
+FileList.whyDidYouRender = true

@@ -1,6 +1,5 @@
-import { DirectoryEntity } from './entity';
-import { FileEntity } from './entity';
-import { isADirectory, isAFile } from './util';
+import type { DirectoryEntity, FileEntity } from './entity'
+import { isADirectory, isAFile } from './util'
 
 /**
  * Recursively retrieves files and folders from a given directory.
@@ -13,9 +12,9 @@ export async function getFilesAndFoldersRecursively(
   directoryEntity: DirectoryEntity,
   type?: RegExp,
 ) {
-  const basePath = directoryEntity.path;
-  const directories: DirectoryEntity[] = [];
-  const files: FileEntity[] = [];
+  const basePath = directoryEntity.path
+  const directories: DirectoryEntity[] = []
+  const files: FileEntity[] = []
 
   try {
     for await (const handle of directoryEntity.handle?.values() || []) {
@@ -27,24 +26,22 @@ export async function getFilesAndFoldersRecursively(
             parent: basePath,
             path: `${basePath}/${handle.name}`,
             handle,
-          };
-          directories.push(subdirectoryEntity);
-          const { files: f, directories: d } = await getFilesAndFoldersRecursively(
-            subdirectoryEntity,
-            type,
-          );
-          directories.push(...d);
-          files.push(...f);
+          }
+          directories.push(subdirectoryEntity)
+          const { files: f, directories: d } =
+            await getFilesAndFoldersRecursively(subdirectoryEntity, type)
+          directories.push(...d)
+          files.push(...f)
         } else if (handle.kind === 'file') {
-          const file = await handle.getFile();
+          const file = await handle.getFile()
           if (type && !type.test(file.name)) {
-            continue;
+            continue
           }
           Object.defineProperty(file, 'webkitRelativePath', {
             configurable: true,
             enumerable: true,
             get: () => `${basePath}/${handle.name}`,
-          });
+          })
           files.push({
             kind: 'file',
             name: handle.name,
@@ -52,19 +49,18 @@ export async function getFilesAndFoldersRecursively(
             path: `${basePath}/${handle.name}`,
             handle,
             file,
-          });
+          })
         }
       } catch (error) {
         // Skip files/folders that can't be accessed (permissions, not found, etc.)
-        console.warn(`Skipping ${handle.name}:`, error);
-        continue;
+        console.warn(`Skipping ${handle.name}:`, error)
       }
     }
   } catch (error) {
-    console.error('Error scanning directory:', error);
+    console.error('Error scanning directory:', error)
   }
 
-  return { files, directories };
+  return { files, directories }
 }
 
 /**
@@ -80,14 +76,14 @@ export async function scanDirectoryEntry(
   type?: RegExp,
 ) {
   try {
-    const directoryReader = directoryEntry.createReader();
+    const directoryReader = directoryEntry.createReader()
 
-    const directories: DirectoryEntity[] = [];
-    const files: FileEntity[] = [];
+    const directories: DirectoryEntity[] = []
+    const files: FileEntity[] = []
 
     const entries = await new Promise<FileSystemEntry[]>((resolve, reject) => {
-      directoryReader.readEntries(resolve, reject);
-    });
+      directoryReader.readEntries(resolve, reject)
+    })
 
     for (const entry of entries) {
       if (isADirectory(entry)) {
@@ -99,20 +95,20 @@ export async function scanDirectoryEntry(
             entry.fullPath ||
             `${directoryEntry.fullPath || directoryEntry.name}/${entry.name}`,
           handle: undefined,
-        };
+        }
         const { files: childFiles, directories: childDirectories } =
           (await scanDirectoryEntry(entry, type)) || {
             files: [],
             directories: [],
-          };
-        directories.push(directoryEntity, ...childDirectories);
-        files.push(...childFiles);
+          }
+        directories.push(directoryEntity, ...childDirectories)
+        files.push(...childFiles)
       } else if (isAFile(entry)) {
         const file = await new Promise<File>((resolve, reject) =>
           entry.file(resolve, reject),
-        );
+        )
         if (type && !type.test(file.name)) {
-          continue;
+          continue
         }
         Object.defineProperty(file, 'webkitRelativePath', {
           configurable: true,
@@ -120,7 +116,7 @@ export async function scanDirectoryEntry(
           get: () =>
             entry.fullPath ||
             `${directoryEntry.fullPath || directoryEntry.name}/${entry.name}`,
-        });
+        })
         files.push({
           kind: 'file',
           name: entry.name,
@@ -128,14 +124,14 @@ export async function scanDirectoryEntry(
           path: entry.name,
           handle: undefined,
           file,
-        });
+        })
       }
     }
 
-    return { files, directories };
+    return { files, directories }
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
 
-  return undefined;
+  return undefined
 }

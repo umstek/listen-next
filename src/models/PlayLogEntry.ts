@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const playLogEntrySchema = z.object({
   time: z
@@ -16,6 +16,6 @@ export const playLogEntrySchema = z.object({
   title: z.string().default(''),
   artist: z.string().default(''),
   album: z.string().default(''),
-});
+})
 
-export type PlayLogEntry = z.infer<typeof playLogEntrySchema>;
+export type PlayLogEntry = z.infer<typeof playLogEntrySchema>

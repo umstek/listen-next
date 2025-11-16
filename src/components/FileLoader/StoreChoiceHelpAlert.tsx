@@ -1,5 +1,5 @@
-import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
-import { Box, Callout } from '@radix-ui/themes';
+import { QuestionMarkCircledIcon } from '@radix-ui/react-icons'
+import { Box, Callout } from '@radix-ui/themes'
 
 export function StoreChoiceHelpAlert() {
   return (
@@ -20,5 +20,5 @@ export function StoreChoiceHelpAlert() {
         </Callout.Text>
       </Box>
     </Callout.Root>
-  );
+  )
 }

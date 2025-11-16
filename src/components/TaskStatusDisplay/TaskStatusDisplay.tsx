@@ -1,8 +1,8 @@
-import { Pause, X } from '@phosphor-icons/react';
-import * as Progress from '@radix-ui/react-progress';
-import { Badge, Box, Button, Flex, Tooltip } from '@radix-ui/themes';
-import type { BadgeProps } from '@radix-ui/themes';
-import { ReactNode } from 'react';
+import { Pause, X } from '@phosphor-icons/react'
+import * as Progress from '@radix-ui/react-progress'
+import type { BadgeProps } from '@radix-ui/themes'
+import { Badge, Box, Button, Flex, Tooltip } from '@radix-ui/themes'
+import type { ReactNode } from 'react'
 
 const statuses = [
   'pending',
@@ -10,7 +10,7 @@ const statuses = [
   'paused',
   'failed',
   'success',
-] as const;
+] as const
 
 const statusToColor: Record<(typeof statuses)[number], BadgeProps['color']> = {
   pending: 'gray',
@@ -18,19 +18,19 @@ const statusToColor: Record<(typeof statuses)[number], BadgeProps['color']> = {
   paused: 'yellow',
   failed: 'red',
   success: 'green',
-};
+}
 
 export interface TaskStatusDefinition {
-  id: string;
-  display: ReactNode;
-  partsCount: number;
-  partsDone: number;
-  status: (typeof statuses)[number];
+  id: string
+  display: ReactNode
+  partsCount: number
+  partsDone: number
+  status: (typeof statuses)[number]
 }
 
 interface TaskStatusDisplayProps extends TaskStatusDefinition {
-  onPause?: () => void;
-  onAbort?: () => void;
+  onPause?: () => void
+  onAbort?: () => void
 }
 
 export function TaskStatusDisplay({
@@ -42,7 +42,8 @@ export function TaskStatusDisplay({
   onPause,
   onAbort,
 }: TaskStatusDisplayProps) {
-  const progress = partsCount > 0 ? Math.floor((partsDone / partsCount) * 100) : 0;
+  const progress =
+    partsCount > 0 ? Math.floor((partsDone / partsCount) * 100) : 0
 
   return (
     <Tooltip
@@ -87,5 +88,5 @@ export function TaskStatusDisplay({
         </Flex>
       </Box>
     </Tooltip>
-  );
+  )
 }

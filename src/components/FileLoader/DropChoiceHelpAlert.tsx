@@ -1,5 +1,5 @@
-import { Box, Callout, Heading } from '@radix-ui/themes';
-import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
+import { QuestionMarkCircledIcon } from '@radix-ui/react-icons'
+import { Box, Callout, Heading } from '@radix-ui/themes'
 
 export function DropChoiceHelpAlert() {
   return (
@@ -17,5 +17,5 @@ export function DropChoiceHelpAlert() {
         </Callout.Text>
       </Box>
     </Callout.Root>
-  );
+  )
 }

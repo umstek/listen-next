@@ -1,22 +1,22 @@
-import { Flex, IconButton, Slider } from '@radix-ui/themes';
 import {
   SpeakerSimpleHigh,
   SpeakerSimpleLow,
   SpeakerSimpleNone,
-} from '@phosphor-icons/react';
+} from '@phosphor-icons/react'
+import { Flex, IconButton, Slider } from '@radix-ui/themes'
 
-import { clamp } from '~util/math';
+import { clamp } from '~util/math'
 
-import { VolumeControlProps } from './VolumeControl';
+import type { VolumeControlProps } from './VolumeControl'
 
 const speakerSimpleIconSet = [
   SpeakerSimpleNone,
   SpeakerSimpleLow,
   SpeakerSimpleHigh,
-];
+]
 export function PanControl({ onChange, value }: VolumeControlProps) {
-  const LeftSpeaker = speakerSimpleIconSet[clamp(Math.ceil(-value + 1), 0, 2)];
-  const RightSpeaker = speakerSimpleIconSet[clamp(Math.ceil(value + 1), 0, 2)];
+  const LeftSpeaker = speakerSimpleIconSet[clamp(Math.ceil(-value + 1), 0, 2)]
+  const RightSpeaker = speakerSimpleIconSet[clamp(Math.ceil(value + 1), 0, 2)]
 
   return (
     <Flex align="center" gap="1">
@@ -46,5 +46,5 @@ export function PanControl({ onChange, value }: VolumeControlProps) {
         <RightSpeaker size={16} weight="fill" />
       </IconButton>
     </Flex>
-  );
+  )
 }

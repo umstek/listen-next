@@ -1,9 +1,9 @@
-import { PersonSimpleRun } from '@phosphor-icons/react';
-import { Flex, Select } from '@radix-ui/themes';
+import { PersonSimpleRun } from '@phosphor-icons/react'
+import { Flex, Select } from '@radix-ui/themes'
 
 export interface PlaybackRateControlProps {
-  onChange: (value: number) => void;
-  value: number;
+  onChange: (value: number) => void
+  value: number
 }
 
 export function PlaybackRateControl({
@@ -38,5 +38,5 @@ export function PlaybackRateControl({
         </Select.Content>
       </Select.Root>
     </Flex>
-  );
+  )
 }

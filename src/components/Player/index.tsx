@@ -7,7 +7,7 @@ import {
   Play,
   SkipBack,
   SkipForward,
-} from '@phosphor-icons/react';
+} from '@phosphor-icons/react'
 import {
   Avatar,
   Button,
@@ -16,27 +16,27 @@ import {
   IconButton,
   Text,
   Tooltip,
-} from '@radix-ui/themes';
-import { useEffect, useState } from 'react';
+} from '@radix-ui/themes'
+import { useEffect, useState } from 'react'
 
-import usePlayer, { PlayerState } from '~hooks/usePlayer';
-import { BasicAudioMetadata, getAudioMetadata } from '~lib/musicMetadata';
-import { toHmmss } from '~util/time';
+import usePlayer, { PlayerState } from '~hooks/usePlayer'
+import { type BasicAudioMetadata, getAudioMetadata } from '~lib/musicMetadata'
+import { toHmmss } from '~util/time'
 
-import { PanControl } from './PanControl';
-import { PlaybackRateControl } from './PlaybackRateControl';
-import { SeekBar } from './SeekBar';
-import { VolumeControl } from './VolumeControl';
+import { PanControl } from './PanControl'
+import { PlaybackRateControl } from './PlaybackRateControl'
+import { SeekBar } from './SeekBar'
+import { VolumeControl } from './VolumeControl'
 
 interface PlayerProps {
-  url: string;
-  onPrevious: () => void;
-  onNext: () => void;
-  settings: unknown | undefined;
-  metadata: unknown | undefined;
+  url: string
+  onPrevious: () => void
+  onNext: () => void
+  settings: unknown | undefined
+  metadata: unknown | undefined
 }
 
-const VPR = ['v', 'p', 'r'] as const;
+const VPR = ['v', 'p', 'r'] as const
 
 export function Player({ url, onPrevious, onNext }: PlayerProps) {
   const {
@@ -56,25 +56,25 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
     state,
   } = usePlayer({
     autoplay: true,
-  });
+  })
 
   const [metadata, setMetadata] = useState<BasicAudioMetadata | undefined>(
     undefined,
-  );
+  )
 
   // TODO use db/move to store
   useEffect(() => {
     if (url) {
-      getAudioMetadata(url).then(([metadata]) => setMetadata(metadata));
+      getAudioMetadata(url).then(([metadata]) => setMetadata(metadata))
     }
-  }, [url]);
+  }, [url])
 
   useEffect(() => {
-    setAudioSource(url);
-  }, [setAudioSource, url]);
+    setAudioSource(url)
+  }, [setAudioSource, url])
 
-  const [vpr, setVpr] = useState<'v' | 'p' | 'r'>('v');
-  const [mb, setMb] = useState<'m' | 'b'>('m');
+  const [vpr, setVpr] = useState<'v' | 'p' | 'r'>('v')
+  const [mb, setMb] = useState<'m' | 'b'>('m')
 
   return (
     <Card variant="surface">
@@ -85,7 +85,7 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
             radius="full"
             size="1"
             onClick={() => {
-              setVpr(VPR[(VPR.indexOf(vpr) + 1) % VPR.length]);
+              setVpr(VPR[(VPR.indexOf(vpr) + 1) % VPR.length])
             }}
           >
             {vpr.toUpperCase()}
@@ -163,5 +163,5 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
         </Tooltip>
       </Flex>
     </Card>
-  );
+  )
 }

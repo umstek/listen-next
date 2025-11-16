@@ -3,17 +3,17 @@ import {
   SpeakerLow,
   SpeakerNone,
   SpeakerX,
-} from '@phosphor-icons/react';
-import { Flex, IconButton, Slider } from '@radix-ui/themes';
-import { clamp } from '~util/math';
+} from '@phosphor-icons/react'
+import { Flex, IconButton, Slider } from '@radix-ui/themes'
+import { clamp } from '~util/math'
 
 export interface VolumeControlProps {
-  onChange: (value: number) => void;
-  value: number;
+  onChange: (value: number) => void
+  value: number
 }
-const speakerIconSet = [SpeakerNone, SpeakerLow, SpeakerHigh];
+const speakerIconSet = [SpeakerNone, SpeakerLow, SpeakerHigh]
 export function VolumeControl({ onChange, value }: VolumeControlProps) {
-  const Speaker = speakerIconSet[Math.ceil(value)];
+  const Speaker = speakerIconSet[Math.ceil(value)]
 
   return (
     <Flex align="center" gap="1">
@@ -39,5 +39,5 @@ export function VolumeControl({ onChange, value }: VolumeControlProps) {
         <Speaker size={16} weight="fill" />
       </IconButton>
     </Flex>
-  );
+  )
 }
