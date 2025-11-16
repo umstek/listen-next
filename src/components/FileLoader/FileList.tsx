@@ -3,11 +3,6 @@ import {
   Flex,
   IconButton,
   Table,
-  TableBody,
-  TableCell,
-  TableColumnHeaderCell,
-  TableHeader,
-  TableRow,
 } from '@radix-ui/themes';
 import {
   CellContext,
@@ -75,13 +70,13 @@ type EmptyTableContentProps = {
   length: number;
 };
 
-function EmptyTableContent(props: EmptyTableContentProps): JSX.Element {
+function EmptyTableContent(props: EmptyTableContentProps) {
   return (
-    <TableRow>
-      <TableCell colSpan={props.length} className="h-24 text-center">
+    <Table.Row>
+      <Table.Cell colSpan={props.length} className="h-24 text-center">
         No results.
-      </TableCell>
-    </TableRow>
+      </Table.Cell>
+    </Table.Row>
   );
 }
 
@@ -137,50 +132,50 @@ export function FileList({ data }: FileListProps) {
   return (
     <div ref={tableContainerRef} className="overflow-auto h-[300px]">
       <Table.Root>
-        <TableHeader>
+        <Table.Header>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <Table.Row key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableColumnHeaderCell key={header.id}>
+                  <Table.ColumnHeaderCell key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
-                  </TableColumnHeaderCell>
+                  </Table.ColumnHeaderCell>
                 );
               })}
-            </TableRow>
+            </Table.Row>
           ))}
-        </TableHeader>
-        <TableBody>
+        </Table.Header>
+        <Table.Body>
           {table.getRowModel().rows?.length ? (
             rowVirtualizer.getVirtualItems().map((virtualRow) => {
               const row = table.getRowModel().rows[virtualRow.index];
               return (
-                <TableRow
+                <Table.Row
                   align="center"
                   className="group"
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <Table.Cell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
                       )}
-                    </TableCell>
+                    </Table.Cell>
                   ))}
-                </TableRow>
+                </Table.Row>
               );
             })
           ) : (
             <EmptyTableContent length={columns.length} />
           )}
-        </TableBody>
+        </Table.Body>
       </Table.Root>
     </div>
   );

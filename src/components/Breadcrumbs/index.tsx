@@ -7,9 +7,6 @@ import {
 import {
   Button,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   Flex,
   IconButton,
 } from '@radix-ui/themes';
@@ -72,25 +69,25 @@ export function Breadcrumb({
       </Button>
       {itemNames.length > 0 && (
         <DropdownMenu.Root>
-          <DropdownMenuTrigger>
+          <DropdownMenu.Trigger>
             <IconButton
               className="first:rounded-l-1 last:rounded-r-1"
               variant="soft"
             >
               <ChevronRightIcon />
             </IconButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content>
             {itemNames.map((itemName) => (
-              <DropdownMenuItem
+              <DropdownMenu.Item
                 key={itemName}
                 onClick={() => onItemClick(itemName)}
                 className={selected === itemName ? 'font-bold' : ''}
               >
                 {itemName}
-              </DropdownMenuItem>
+              </DropdownMenu.Item>
             ))}
-          </DropdownMenuContent>
+          </DropdownMenu.Content>
         </DropdownMenu.Root>
       )}
     </>

@@ -29,7 +29,7 @@ export const Tile = forwardRef(function Tile(
     HTMLDivElement
   >,
   ref: LegacyRef<HTMLDivElement> | undefined,
-): JSX.Element {
+) {
   return (
     <div
       {...rest}

@@ -11,7 +11,7 @@ import { overlaps, SelectionMode } from './util';
 export interface TileViewProps<T> {
   items: T[];
   extractKey: (item: T) => string;
-  renderItem: (item: T) => JSX.Element;
+  renderItem: (item: T) => React.ReactElement;
   onOpen: (item: T) => void;
 }
 

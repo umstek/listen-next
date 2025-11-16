@@ -8,7 +8,7 @@ export interface SeekBarProps {
 
 export function SeekBar({ onChange, duration, position }: SeekBarProps) {
   return (
-    <Flex grow="1">
+    <Flex flexGrow="1">
       <Slider
         variant="surface"
         size="1"

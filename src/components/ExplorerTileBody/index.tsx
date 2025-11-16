@@ -17,7 +17,7 @@ interface TileBodyProps {
   source: 'sandbox' | 'local' | 'remote';
 }
 
-export function Thumbnail({ title, kind, source }: TileBodyProps): JSX.Element {
+export function Thumbnail({ title, kind, source }: TileBodyProps) {
   const Icon = { sandbox: Browser, local: HardDrive, remote: Planet }[source];
 
   const [showNotImplementedDialog, setShowNotImplementedDialog] =

@@ -92,7 +92,7 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
           </Button>
         </Tooltip>
 
-        <Flex direction="column" grow="0" align="end" justify="center">
+        <Flex direction="column" flexGrow="0" align="end" justify="center">
           {vpr === 'v' && <VolumeControl value={volume} onChange={setVolume} />}
           {vpr === 'p' && <PanControl value={pan} onChange={setPan} />}
           {vpr === 'r' && (
@@ -103,9 +103,9 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
           )}
         </Flex>
 
-        <Flex gap="3" grow="1">
+        <Flex gap="3" flexGrow="1">
           <Avatar variant="solid" fallback="LP" />
-          <Flex grow="1" direction="column">
+          <Flex flexGrow="1" direction="column">
             <Text as="div" size="1" weight="medium">
               {metadata?.title}
             </Text>
@@ -121,7 +121,7 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
           </Flex>
         </Flex>
 
-        <Flex grow="0" align="center" justify="start" gap="3">
+        <Flex flexGrow="0" align="center" justify="start" gap="3">
           {mb === 'm' && (
             <IconButton size="1" variant="ghost" onClick={onPrevious}>
               <SkipBack size={20} />

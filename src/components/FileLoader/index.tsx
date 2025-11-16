@@ -6,9 +6,6 @@ import {
   Button,
   Card,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   Flex,
   Heading,
   IconButton,
@@ -93,20 +90,20 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
             </Button>
           </Tooltip>
           <DropdownMenu.Root>
-            <DropdownMenuTrigger>
+            <DropdownMenu.Trigger>
               <IconButton className="rounded-l-[0]">
                 <ChevronDownIcon />
               </IconButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content>
               <Tooltip content="Store links to the original files/folders you dropped. You'll be asked for permission each time you open them and, the changes to the original files will be reflected here.">
-                <DropdownMenuItem
+                <DropdownMenu.Item
                   onClick={() => onLink({ files, directories })}
                 >
                   Store as Links
-                </DropdownMenuItem>
+                </DropdownMenu.Item>
               </Tooltip>
-            </DropdownMenuContent>
+            </DropdownMenu.Content>
           </DropdownMenu.Root>
         </Flex>
         <Tooltip content={<StoreChoiceHelpAlert />}>

@@ -15,7 +15,7 @@ const audioFilesFilter = filterByExtensions(new Set(env.supportedExtensions));
 /**
  * Renders the Explorer view component.
  *
- * @return {JSX.Element} The rendered Explorer view.
+ * @return The rendered Explorer view.
  */
 export function ExplorerView() {
   const dispatch = useDispatch();
