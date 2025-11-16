@@ -4,7 +4,7 @@ import {
   IDockviewPanelProps,
 } from 'dockview';
 
-import { ThemeSwitcher } from ':ThemeSwitcher';
+import { ThemeSwitcher, useThemePreference } from ':ThemeSwitcher';
 import { ExplorerView } from '~modules/explorer/ExplorerView';
 import { FileLoaderView } from '~modules/fileLoader/FileLoaderView';
 import { PlayerView } from '~modules/player/PlayerView';
@@ -29,6 +29,11 @@ const components = {
 };
 
 function App() {
+  const [theme] = useThemePreference();
+
+  // Determine dockview theme class
+  const dockviewTheme = theme === 'dark' ? 'dockview-theme-dark' : 'dockview-theme-light';
+
   const onReady = (event: DockviewReadyEvent) => {
     const explorerPanel = event.api.addPanel({
       id: 'explorer',
@@ -68,14 +73,14 @@ function App() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <div className="flex justify-between items-center px-4 py-2 border-b border-gray-6 bg-gray-2">
-        <h1 className="text-lg font-semibold">Listen-Next</h1>
+    <div className="w-full h-full flex flex-col overflow-hidden">
+      <div className="flex justify-between items-center px-4 py-1 border-b border-gray-6 bg-gray-2 shrink-0">
+        <h1 className="text-sm font-semibold">Listen-Next</h1>
         <ThemeSwitcher />
       </div>
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 min-h-0">
         <DockviewReact
-          className="dockview-theme-light"
+          className={dockviewTheme}
           components={components}
           onReady={onReady}
         />
