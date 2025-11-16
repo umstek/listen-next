@@ -620,8 +620,8 @@ Open Listen-Next in your browser. If critical features are missing, you'll see a
 
 ### Resources
 
-- **GitHub Issues**: https://github.com/umstek/listen/issues
-- **Discussions**: https://github.com/umstek/listen/discussions
+- **GitHub Issues**: https://github.com/umstek/listen-next/issues
+- **Discussions**: https://github.com/umstek/listen-next/discussions
 - **Developer Guide**: [DEVELOPER.md](./DEVELOPER.md)
 - **Roadmap**: [TODO.md](./TODO.md)
 

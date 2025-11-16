@@ -136,8 +136,8 @@ export function ExplorerView() {
                 }
               }
 
-              // Delete the file/directory from OPFS
-              await explorerRef.current?.remove(item.name);
+              // Delete the file/directory from OPFS (recursive for directories)
+              await explorerRef.current?.remove(item.name, true);
               await refresh();
             }}
           />

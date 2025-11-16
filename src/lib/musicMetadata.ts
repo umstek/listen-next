@@ -19,12 +19,24 @@ export async function getAudioMetadata(
   let metadata: IAudioMetadata;
   if (typeof fileOrUrl === 'string') {
     // Fetch URL and convert to Blob for parsing
-    const response = await fetch(fileOrUrl);
-    const blob = await response.blob();
-    metadata = await mm.parseBlob(blob, {
-      duration: true,
-      includeChapters: true,
-    });
+    try {
+      const response = await fetch(fileOrUrl);
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch audio file: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      const blob = await response.blob();
+      metadata = await mm.parseBlob(blob, {
+        duration: true,
+        includeChapters: true,
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to load audio metadata from URL: ${errorMessage}`);
+    }
   } else {
     metadata = await mm.parseBlob(fileOrUrl, {
       duration: true,

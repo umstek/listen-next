@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { fseKinds, nanoidRegex, sources } from './constants';
 
 export const fileSystemEntityMetadataSchema = z.object({
-  id: z.string().regex(nanoidRegex).optional().default(nanoid),
+  id: z.string().regex(nanoidRegex).default(nanoid),
   name: z.string(),
   kind: z.enum(fseKinds),
   source: z.enum(sources),

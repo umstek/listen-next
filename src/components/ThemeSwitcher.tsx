@@ -9,11 +9,16 @@ const THEME_STORAGE_KEY = 'listen-theme-preference';
 export function useThemePreference() {
   const [theme, setTheme] = useState<ThemePreference>(() => {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
-    // Always default to light for better visibility
-    if (!stored || stored === 'auto') {
+
+    // Validate stored value against allowed themes
+    const validThemes: ThemePreference[] = ['light', 'dark', 'auto'];
+    if (!stored || !validThemes.includes(stored as ThemePreference)) {
+      // Only set default if missing or invalid
       localStorage.setItem(THEME_STORAGE_KEY, 'light');
       return 'light';
     }
+
+    // Preserve valid stored value (including 'auto')
     return stored as ThemePreference;
   });
 
