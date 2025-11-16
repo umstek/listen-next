@@ -15,9 +15,10 @@ interface TileBodyProps {
   title: string;
   kind: 'file' | 'directory';
   source: 'sandbox' | 'local' | 'remote';
+  onPlay?: () => void;
 }
 
-export function Thumbnail({ title, kind, source }: TileBodyProps) {
+export function Thumbnail({ title, kind, source, onPlay }: TileBodyProps) {
   const Icon = { sandbox: Browser, local: HardDrive, remote: Planet }[source];
 
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
@@ -39,7 +40,15 @@ export function Thumbnail({ title, kind, source }: TileBodyProps) {
           <DropdownMenu.Content>
             <DropdownMenu.Item
               shortcut="⌘ P"
-              onClick={() => setShowNotImplementedDialog(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onPlay && kind === 'file') {
+                  onPlay();
+                } else {
+                  setShowNotImplementedDialog(true);
+                }
+              }}
+              disabled={kind === 'directory'}
             >
               Play
             </DropdownMenu.Item>

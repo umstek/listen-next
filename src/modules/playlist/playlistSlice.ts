@@ -9,6 +9,7 @@ export const playlistSlice = createSlice({
   reducers: {
     setItems: (state, action) => {
       state.items = action.payload;
+      state.activeIndex = 0; // Reset to first item when setting new playlist
     },
     appendItems: (state, action) => {
       state.items.push(...action.payload);

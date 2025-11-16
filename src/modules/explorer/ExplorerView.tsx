@@ -103,6 +103,27 @@ export function ExplorerView() {
                   ? 'remote'
                   : 'sandbox'
             }
+            onPlay={async () => {
+              if (item.kind === 'file') {
+                const linkTarget = await tryGetLinkTarget(item);
+                if (linkTarget) {
+                  if (
+                    (await linkTarget.queryPermission({ mode: 'read' })) ===
+                      'granted' ||
+                    (await linkTarget.requestPermission({ mode: 'read' })) ===
+                      'granted'
+                  ) {
+                    if (linkTarget.kind === 'file') {
+                      dispatch(
+                        setItems([URL.createObjectURL(await linkTarget.getFile())]),
+                      );
+                    }
+                  }
+                  return;
+                }
+                dispatch(setItems([URL.createObjectURL(await item.getFile())]));
+              }
+            }}
           />
         )}
         onOpen={async (item) => {

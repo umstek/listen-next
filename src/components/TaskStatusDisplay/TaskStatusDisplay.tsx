@@ -42,7 +42,7 @@ export function TaskStatusDisplay({
   onPause,
   onAbort,
 }: TaskStatusDisplayProps) {
-  const progress = Math.floor((partsDone / partsCount) * 100);
+  const progress = partsCount > 0 ? Math.floor((partsDone / partsCount) * 100) : 0;
 
   return (
     <Tooltip
