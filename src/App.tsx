@@ -3,6 +3,7 @@ import {
   DockviewReadyEvent,
   IDockviewPanelProps,
 } from 'dockview';
+import { Theme } from '@radix-ui/themes';
 
 import { ThemeSwitcher, useThemePreference } from ':ThemeSwitcher';
 import { ExplorerView } from '~modules/explorer/ExplorerView';
@@ -10,21 +11,51 @@ import { FileLoaderView } from '~modules/fileLoader/FileLoaderView';
 import { PlayerView } from '~modules/player/PlayerView';
 import { TasksView } from '~modules/tasks/TasksView';
 
+const PanelWrapper = ({ children }: { children: React.ReactNode }) => {
+  const [theme] = useThemePreference();
+  const appearance = theme === 'auto' ? 'inherit' : theme;
+  return (
+    <Theme appearance={appearance} className="w-full h-full">
+      {children}
+    </Theme>
+  );
+};
+
 const components = {
   explorer: (props: IDockviewPanelProps<{ title: string }>) => {
-    return <ExplorerView />;
+    return (
+      <PanelWrapper>
+        <ExplorerView />
+      </PanelWrapper>
+    );
   },
   fileLoader: (props: IDockviewPanelProps<{ title: string }>) => {
-    return <FileLoaderView />;
+    return (
+      <PanelWrapper>
+        <FileLoaderView />
+      </PanelWrapper>
+    );
   },
   player: (props: IDockviewPanelProps<{ title: string }>) => {
-    return <PlayerView />;
+    return (
+      <PanelWrapper>
+        <PlayerView />
+      </PanelWrapper>
+    );
   },
   tasks: (props: IDockviewPanelProps<{ title: string }>) => {
-    return <TasksView />;
+    return (
+      <PanelWrapper>
+        <TasksView />
+      </PanelWrapper>
+    );
   },
   empty: (props: IDockviewPanelProps<{ title: string }>) => {
-    return <div className="w-full h-full">Empty</div>;
+    return (
+      <PanelWrapper>
+        <div className="w-full h-full">Empty</div>
+      </PanelWrapper>
+    );
   },
 };
 
