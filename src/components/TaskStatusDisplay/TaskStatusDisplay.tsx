@@ -1,7 +1,7 @@
 import { Pause, X } from '@phosphor-icons/react';
 import * as Progress from '@radix-ui/react-progress';
 import { Badge, Box, Button, Flex, Tooltip } from '@radix-ui/themes';
-import { BadgeProps } from 'node_modules/@radix-ui/themes/dist/esm/components/badge';
+import type { BadgeProps } from '@radix-ui/themes';
 import { ReactNode } from 'react';
 
 const statuses = [

@@ -450,7 +450,7 @@
 
 ## Dependencies and Relationships
 
-```
+```text
 Priority 1.1 (Playlists) → Blocks → Priority 2.3 (Import/Export)
 Priority 1.2 (Search) → Requires → Priority 3.1 (DB Optimization)
 Priority 1.3 (History) → Enables → Priority 2.4 (Recommendations - Future)

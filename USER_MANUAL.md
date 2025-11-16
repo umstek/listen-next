@@ -58,7 +58,7 @@ Listen-Next is a modern, privacy-focused audio player that runs entirely in your
 
 ## User Interface Overview
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │  Listen-Next              [Theme: Light/Dark/Auto]               │
 ├───────────┬──────────────┬──────────────┬─────────────────────┤
