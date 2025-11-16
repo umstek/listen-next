@@ -52,6 +52,25 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
 
   const selectedFiles = files.filter(f => selected.has(f.path));
 
+  // Filter directories to only include those that are in the path of selected files
+  const getRelevantDirectories = () => {
+    if (selected.size === 0) return directories;
+
+    const relevantDirs = new Set<DirectoryEntity>();
+
+    // For each selected file, add all its ancestor directories
+    for (const file of selectedFiles) {
+      for (const dir of directories) {
+        // Include directory if the file's path starts with the directory's path
+        if (file.path.startsWith(dir.path + '/') || file.parent === dir.path) {
+          relevantDirs.add(dir);
+        }
+      }
+    }
+
+    return Array.from(relevantDirs);
+  };
+
   return (
     <Card variant="ghost">
       <NotImplementedDialog
@@ -102,7 +121,7 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
               size="2"
               onClick={() => onCopy({
                 files: selected.size > 0 ? selectedFiles : files,
-                directories
+                directories: getRelevantDirectories()
               })}
               className="rounded-r-[0]"
               disabled={files.length === 0}
@@ -121,7 +140,7 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
                 <DropdownMenu.Item
                   onClick={() => onLink({
                     files: selected.size > 0 ? selectedFiles : files,
-                    directories
+                    directories: getRelevantDirectories()
                   })}
                 >
                   Store as Links
