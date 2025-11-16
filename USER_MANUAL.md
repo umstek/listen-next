@@ -60,13 +60,13 @@ Listen-Next is a modern, privacy-focused audio player that runs entirely in your
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Listen-Next                                  │
+│  Listen-Next              [Theme: Light/Dark/Auto]               │
 ├───────────┬──────────────┬──────────────┬─────────────────────┤
 │ Explorer  │ File Loader  │   Player     │       Tasks         │
 │           │              │              │                     │
 │  Browse   │  Add Files/  │  ▶ ⏸ ⏹ ⏮ ⏭  │  Copying files...   │
 │  folders  │  Folders     │              │  Indexing...        │
-│  & files  │              │  Volume/Pan  │  [Progress bars]    │
+│  & files  │  ☑ Select    │  Volume/Pan  │  [Progress bars]    │
 │           │  [Drop zone] │  Seek bar    │                     │
 │  [Tree]   │  [File list] │  Metadata    │                     │
 └───────────┴──────────────┴──────────────┴─────────────────────┘
@@ -78,12 +78,13 @@ Listen-Next is a modern, privacy-focused audio player that runs entirely in your
    - Browse files and folders in your library
    - Navigate using breadcrumb trail
    - Tile view with file/folder icons
-   - Right-click for context menu (coming soon)
+   - Right-click for context menu (Play, Delete, etc.)
 
 2. **File Loader Panel**
    - Drag and drop files or folders
    - Browse for files using the file picker
-   - Preview files before adding
+   - Preview files in a list with checkboxes
+   - Select specific files to add
    - Choose storage method
 
 3. **Player Panel**
@@ -113,13 +114,21 @@ Listen-Next is a modern, privacy-focused audio player that runs entirely in your
 1. Open the **FileLoader** panel
 2. Drag audio files or folders from your computer
 3. Drop them onto the drop zone
-4. Files will appear in the file list
+4. Files will appear in the file list with checkboxes
 
 ### Method 2: Browse for Files
 
 1. Click the file browse button in FileLoader
 2. Select audio files or folders
 3. Click "Open"
+
+### Selecting Files
+
+- **Select All**: Click the checkbox in the header row
+- **Select Individual Files**: Click checkboxes next to specific files
+- **Selection Count**: Shows "X selected" when files are selected
+- All actions (Play Now, Copy, Store as Links) work on selected files only
+- If no files are selected, actions apply to all files
 
 ### Supported Audio Formats
 
@@ -134,11 +143,13 @@ Listen-Next is a modern, privacy-focused audio player that runs entirely in your
 
 ### Storage Options
 
-After adding files, choose how to store them:
+After adding files (or selecting specific ones), choose how to store them:
 
 1. **Play Now** - Play immediately without storing
-2. **Copy to Browser** - Create a sandboxed copy in your browser
+2. **Copy to Browser** - Create a sandboxed copy in your browser (only selected files and their parent folders)
 3. **Store as Links** - Keep links to original files
+
+**Note**: When files are selected, only those files and their necessary parent directories are copied, avoiding empty folder clutter.
 
 See [Storage Options Explained](#storage-options-explained) for details.
 
@@ -175,8 +186,14 @@ Currently, Listen-Next plays individual tracks. Playlist management is planned f
 ### File/Folder Display
 
 - **Tile View**: Grid layout with thumbnails
-- **Select**: Click to select, Shift/Ctrl+click for multiple
 - **Open**: Double-click to open folder or play file
+- **Context Menu**: Right-click for options:
+  - **Play**: Start playback (files only)
+  - **Add to current playlist**: Coming soon
+  - **Favorite**: Coming soon
+  - **Hide**: Coming soon
+  - **Re-index**: Coming soon
+  - **Delete**: Remove file/folder permanently
 
 ### File Source Indicators
 
@@ -490,7 +507,12 @@ See [TODO.md](./TODO.md) - Priority 2.1 for development status.
 
 ### Is there a dark mode?
 
-**Yes (inherited).** Listen-Next respects your system theme. A theme picker is planned (TODO.md - Priority 1.4).
+**Yes.** Listen-Next has a theme switcher in the header with three options:
+- **Light**: Force light theme
+- **Dark**: Force dark theme
+- **Auto**: Follow system theme
+
+Your preference is saved and persists across sessions. Default is Light mode.
 
 ### Can I use Listen-Next with my streaming service?
 
@@ -617,6 +639,13 @@ When reporting bugs, include:
 Feature requests are welcome! Check [TODO.md](./TODO.md) first to see if it's already planned.
 
 ---
+
+## Recently Added Features
+
+- ✅ **Theme Switcher** - Light/Dark/Auto mode toggle
+- ✅ **File Selection** - Checkboxes for selecting specific files
+- ✅ **Delete Files** - Remove files/folders from Explorer
+- ✅ **Smart Directory Copying** - Only copies folders containing selected files
 
 ## Coming Soon
 

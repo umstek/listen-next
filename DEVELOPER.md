@@ -107,9 +107,9 @@ Listen-Next is a client-side music player that runs entirely in the browser usin
 
 ### Module Structure
 
-- **App.tsx** - Root component, Dockview setup with 4 panels
+- **App.tsx** - Root component, Dockview setup with 4 panels + theme management
 - **modules/** - Feature modules (explorer, player, fileLoader, playlist, tasks)
-- **components/** - Reusable UI components
+- **components/** - Reusable UI components (including ThemeSwitcher)
 - **lib/** - Core utilities (AudioPlayer, Explorer, db, musicMetadata)
 - **hooks/** - Custom React hooks (usePlayer)
 - **models/** - Data schemas (AudioMetadata, FileMetadata, Playlist, PlayLogEntry)
@@ -203,9 +203,10 @@ listen-next/
 │   ├── components/                # Reusable UI components
 │   │   ├── Breadcrumbs/           # Path navigation with dropdowns
 │   │   ├── Dialogs/               # Alert dialogs
-│   │   ├── ExplorerTileBody/      # File/folder thumbnail with context menu
-│   │   ├── FileLoader/            # File upload/drag-drop UI
+│   │   ├── ExplorerTileBody/      # File/folder thumbnail with context menu (Play, Delete)
+│   │   ├── FileLoader/            # File upload/drag-drop UI with checkboxes
 │   │   ├── Player/                # Playback controls and metadata display
+│   │   ├── ThemeSwitcher/         # Light/Dark/Auto theme toggle
 │   │   └── TileView/              # Grid layout with drag-to-select
 │   │
 │   ├── modules/                   # Feature modules
@@ -313,6 +314,45 @@ Web Workers handle CPU-intensive tasks without blocking the UI:
 - **indexAndCopyTask.worker.ts** - Copies files and extracts metadata
 - **Communication** - Uses `postMessage` and message listeners
 - **Progress tracking** - Updates Redux store with task status
+
+### 5. Theme Management
+
+The app supports three theme modes via `ThemeSwitcher` component:
+
+- **Light Mode**: Forces light theme
+- **Dark Mode**: Forces dark theme
+- **Auto Mode**: Follows system preference
+
+**Implementation Details:**
+- Theme preference stored in localStorage
+- Applied to both main app and individual dockview panels via `PanelWrapper`
+- Dockview theme class changes dynamically (`dockview-theme-light` / `dockview-theme-dark`)
+
+See `src/components/ThemeSwitcher.tsx` and `src/App.tsx` for implementation.
+
+### 6. File Selection and Smart Copying
+
+FileLoader supports selective file operations:
+
+- **Checkboxes**: Select individual files or all files
+- **Smart Directory Filtering**: Only copies parent directories of selected files
+- **Selection Count**: Shows feedback on number of selected items
+
+When files are selected, `getRelevantDirectories()` filters directories to include only ancestors of selected files, preventing empty folder creation.
+
+See `src/components/FileLoader/index.tsx:55-72` for implementation.
+
+### 7. Delete Functionality
+
+Explorer supports deleting files and directories:
+
+- **Recursive Deletion**: Directories deleted with all contents
+- **Link Cleanup**: Deletes database entries for linked files
+- **Immediate Refresh**: Explorer updates after deletion
+
+Implementation uses `Explorer.remove()` with `{ recursive: true }` option.
+
+See `src/modules/explorer/ExplorerView.tsx:127-142` for delete handler.
 
 ---
 
@@ -679,6 +719,14 @@ Run `pnpm format` before committing.
 
 **Solution**: Use unique task IDs and atomic state updates.
 
+### 7. Theme Application to Dockview Panels
+
+**Issue**: Radix UI Theme doesn't automatically propagate to dockview panels.
+
+**Solution**: Wrap each panel component with `PanelWrapper` that applies Theme component. Also set dockview theme class dynamically based on current theme.
+
+See `src/App.tsx` for implementation pattern.
+
 ---
 
 ## Contributing
@@ -744,6 +792,15 @@ docs: update developer guide with testing section
 - **Update documentation** if behavior changes
 - **Follow existing patterns** in the codebase
 - **Address review feedback** promptly
+
+### Recent Contributions
+
+Recent features implemented:
+
+1. ✅ **Theme Switcher** - Light/Dark/Auto mode with localStorage persistence
+2. ✅ **File Selection** - Checkbox-based selection in FileLoader
+3. ✅ **Delete Functionality** - Remove files/folders from Explorer
+4. ✅ **Smart Directory Copying** - Only copy folders containing selected files
 
 ### Areas Needing Contribution
 
