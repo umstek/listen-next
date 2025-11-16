@@ -1,24 +1,19 @@
 import {
-  ChevronRightIcon,
-  ArrowUpIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
-} from '@radix-ui/react-icons';
-import {
-  Button,
-  DropdownMenu,
-  Flex,
-  IconButton,
-} from '@radix-ui/themes';
-import React from 'react';
+  ArrowUpIcon,
+  ChevronRightIcon,
+} from '@radix-ui/react-icons'
+import { Button, DropdownMenu, Flex, IconButton } from '@radix-ui/themes'
+import type React from 'react'
 
 interface BreadcrumbsProps {
-  onUp?: () => void;
-  onBack?: () => void;
-  onForward?: () => void;
+  onUp?: () => void
+  onBack?: () => void
+  onForward?: () => void
   children:
     | React.ReactElement<BreadcrumbProps>[]
-    | React.ReactElement<BreadcrumbProps>;
+    | React.ReactElement<BreadcrumbProps>
 }
 
 export function Breadcrumbs({
@@ -40,15 +35,15 @@ export function Breadcrumbs({
       </IconButton>
       <Flex className="group/breadcrumbs ml-2 *:rounded-[0]">{children}</Flex>
     </Flex>
-  );
+  )
 }
 
 interface BreadcrumbProps {
-  name: string;
-  onClick?: () => void;
-  itemNames: string[];
-  onItemClick?: (name: string) => void;
-  selected?: string;
+  name: string
+  onClick?: () => void
+  itemNames: string[]
+  onItemClick?: (name: string) => void
+  selected?: string
 }
 
 export function Breadcrumb({
@@ -91,5 +86,5 @@ export function Breadcrumb({
         </DropdownMenu.Root>
       )}
     </>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import { AlertDialog, Button, Checkbox, Flex, Text } from '@radix-ui/themes';
+import { AlertDialog, Button, Checkbox, Flex, Text } from '@radix-ui/themes'
 
 export function IndexPrompt(
   props: React.ComponentProps<typeof AlertDialog.Root>,
@@ -30,5 +30,5 @@ export function IndexPrompt(
         </Flex>
       </AlertDialog.Content>
     </AlertDialog.Root>
-  );
+  )
 }

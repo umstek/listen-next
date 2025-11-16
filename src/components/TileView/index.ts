@@ -1,1 +1,1 @@
-export { TileView } from './TileView';
+export { TileView } from './TileView'

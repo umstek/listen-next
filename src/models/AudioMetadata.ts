@@ -1,7 +1,7 @@
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { nanoid } from 'nanoid'
+import { z } from 'zod'
 
-import { nanoidRegex, sources } from './constants';
+import { nanoidRegex, sources } from './constants'
 
 export const audioMetadataSchema = z.object({
   id: z.string().regex(nanoidRegex).default(nanoid),
@@ -16,6 +16,6 @@ export const audioMetadataSchema = z.object({
   trackCount: z.number().int().optional(),
   duration: z.number().optional(),
   year: z.number().int().optional(),
-});
+})
 
-export type AudioMetadata = z.infer<typeof audioMetadataSchema>;
+export type AudioMetadata = z.infer<typeof audioMetadataSchema>

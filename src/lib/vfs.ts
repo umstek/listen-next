@@ -1,21 +1,21 @@
 import {
+  type FileSystemDirectoryHandle,
   getOriginPrivateDirectory,
-  FileSystemDirectoryHandle,
-} from 'native-file-system-adapter';
+} from 'native-file-system-adapter'
 
-let rootDirHandle: FileSystemDirectoryHandle | undefined;
+let rootDirHandle: FileSystemDirectoryHandle | undefined
 
 try {
-  rootDirHandle = await getOriginPrivateDirectory();
-} catch (error) {
+  rootDirHandle = await getOriginPrivateDirectory()
+} catch (_error) {
   try {
     rootDirHandle = await getOriginPrivateDirectory(
       // @ts-expect-error This works anyway
       import('native-file-system-adapter/src/adapters/indexeddb'),
-    );
-  } catch (error) {
-    rootDirHandle = undefined;
+    )
+  } catch (_error) {
+    rootDirHandle = undefined
   }
 }
 
-export default rootDirHandle;
+export default rootDirHandle

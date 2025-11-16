@@ -1,4 +1,4 @@
-import { AlertDialog, Button, Flex } from '@radix-ui/themes';
+import { AlertDialog, Button, Flex } from '@radix-ui/themes'
 
 export function NotImplementedDialog(
   props: React.ComponentProps<typeof AlertDialog.Root>,
@@ -17,5 +17,5 @@ export function NotImplementedDialog(
         </Flex>
       </AlertDialog.Content>
     </AlertDialog.Root>
-  );
+  )
 }

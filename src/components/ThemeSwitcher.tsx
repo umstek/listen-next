@@ -1,48 +1,48 @@
-import { Moon, Sun, Monitor } from '@phosphor-icons/react';
-import { Button, Flex, DropdownMenu, Tooltip } from '@radix-ui/themes';
-import { useEffect, useState } from 'react';
+import { Monitor, Moon, Sun } from '@phosphor-icons/react'
+import { Button, DropdownMenu, Flex, Tooltip } from '@radix-ui/themes'
+import { useEffect, useState } from 'react'
 
-export type ThemePreference = 'light' | 'dark' | 'auto';
+export type ThemePreference = 'light' | 'dark' | 'auto'
 
-const THEME_STORAGE_KEY = 'listen-theme-preference';
+const THEME_STORAGE_KEY = 'listen-theme-preference'
 
 export function useThemePreference() {
   const [theme, setTheme] = useState<ThemePreference>(() => {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    const stored = localStorage.getItem(THEME_STORAGE_KEY)
 
     // Validate stored value against allowed themes
-    const validThemes: ThemePreference[] = ['light', 'dark', 'auto'];
+    const validThemes: ThemePreference[] = ['light', 'dark', 'auto']
     if (!stored || !validThemes.includes(stored as ThemePreference)) {
       // Only set default if missing or invalid
-      localStorage.setItem(THEME_STORAGE_KEY, 'light');
-      return 'light';
+      localStorage.setItem(THEME_STORAGE_KEY, 'light')
+      return 'light'
     }
 
     // Preserve valid stored value (including 'auto')
-    return stored as ThemePreference;
-  });
+    return stored as ThemePreference
+  })
 
   useEffect(() => {
-    localStorage.setItem(THEME_STORAGE_KEY, theme);
-  }, [theme]);
+    localStorage.setItem(THEME_STORAGE_KEY, theme)
+  }, [theme])
 
-  return [theme, setTheme] as const;
+  return [theme, setTheme] as const
 }
 
 export function ThemeSwitcher() {
-  const [theme, setTheme] = useThemePreference();
+  const [theme, setTheme] = useThemePreference()
 
   const icons = {
     light: <Sun size={16} weight="fill" />,
     dark: <Moon size={16} weight="fill" />,
     auto: <Monitor size={16} weight="fill" />,
-  };
+  }
 
-  const labels = {
+  const _labels = {
     light: 'Light',
     dark: 'Dark',
     auto: 'Auto',
-  };
+  }
 
   return (
     <DropdownMenu.Root>
@@ -80,5 +80,5 @@ export function ThemeSwitcher() {
         </DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
-  );
+  )
 }

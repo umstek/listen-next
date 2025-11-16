@@ -1,14 +1,14 @@
-import { Explorer } from '~lib/Explorer';
-import { db } from '~lib/db';
-import { DirectoryEntity, FileEntity } from '~lib/fileLoader';
-import { getAudioMetadata } from '~lib/musicMetadata';
-import { audioMetadataSchema } from '~models/AudioMetadata';
+import { db } from '~lib/db'
+import { Explorer } from '~lib/Explorer'
+import type { DirectoryEntity, FileEntity } from '~lib/fileLoader'
+import { getAudioMetadata } from '~lib/musicMetadata'
+import { audioMetadataSchema } from '~models/AudioMetadata'
 
 onmessage = async (
   ev: MessageEvent<{
-    id: string;
-    files: FileEntity[];
-    directories: DirectoryEntity[];
+    id: string
+    files: FileEntity[]
+    directories: DirectoryEntity[]
   }>,
 ) => {
   const event = (action: string, data: Record<string, unknown> = {}) => ({
@@ -16,10 +16,10 @@ onmessage = async (
     id,
     action,
     ...data,
-  });
+  })
 
-  const { id, files, directories } = ev.data;
-  const explorer = new Explorer();
+  const { id, files, directories } = ev.data
+  const explorer = new Explorer()
 
   postMessage(
     event('start', {
@@ -28,34 +28,34 @@ onmessage = async (
       directoriesTotal: directories.length,
       directoriesDone: 0,
     }),
-  );
+  )
 
   for (const d of directories) {
     if (d.parent && d.parent !== (await explorer.getPathAsString())) {
-      await explorer.changeDirectory(`/${d.parent}`);
+      await explorer.changeDirectory(`/${d.parent}`)
     }
-    await explorer.createDirectory(d.name);
+    await explorer.createDirectory(d.name)
   }
 
-  postMessage(event('progress', { directoriesDone: directories.length }));
+  postMessage(event('progress', { directoriesDone: directories.length }))
 
-  let filesDone = 0;
+  let filesDone = 0
   for (const f of files) {
     if (f.parent && f.parent !== (await explorer.getPathAsString())) {
-      await explorer.changeDirectory(`/${f.parent}`);
+      await explorer.changeDirectory(`/${f.parent}`)
     }
-    await explorer.putFile(f.file);
+    await explorer.putFile(f.file)
 
-    const fileInfo = { name: f.name, path: f.path, source: 'local' };
-    const [basicMetadata, _extendedMetadata] = await getAudioMetadata(f.file);
+    const fileInfo = { name: f.name, path: f.path, source: 'local' }
+    const [basicMetadata, _extendedMetadata] = await getAudioMetadata(f.file)
     await db.audioMetadata.add(
       audioMetadataSchema.parse({ ...basicMetadata, ...fileInfo }),
-    );
+    )
 
-    filesDone += 1;
-    postMessage(event('progress', { filesDone }));
+    filesDone += 1
+    postMessage(event('progress', { filesDone }))
   }
 
-  await explorer.changeDirectory('/');
-  postMessage(event('done'));
-};
+  await explorer.changeDirectory('/')
+  postMessage(event('done'))
+}

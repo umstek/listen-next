@@ -1,5 +1,5 @@
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import { nanoid } from 'nanoid'
+import { z } from 'zod'
 
 export const playlistItemSchema = z.object({
   fileId: z.string().regex(/[A-Za-z0-9_-]{21}/),
@@ -8,7 +8,7 @@ export const playlistItemSchema = z.object({
   title: z.string().default(''),
   artist: z.string().default(''),
   album: z.string().default(''),
-});
+})
 
 export const playlistSchema = z.object({
   id: z
@@ -17,4 +17,4 @@ export const playlistSchema = z.object({
     .default(nanoid),
   name: z.string(),
   items: z.array(playlistItemSchema),
-});
+})

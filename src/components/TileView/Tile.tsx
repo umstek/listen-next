@@ -1,7 +1,7 @@
-import { CheckCircle } from '@phosphor-icons/react';
-import { LegacyRef, forwardRef } from 'react';
+import { CheckCircle } from '@phosphor-icons/react'
+import { forwardRef, type LegacyRef } from 'react'
 
-import { cn } from '~util/styles';
+import { cn } from '~util/styles'
 
 /**
  * Tile component that renders a button with a checkmark icon, background styling,
@@ -22,8 +22,8 @@ export const Tile = forwardRef(function Tile(
     onCheckClick,
     ...rest
   }: {
-    selected?: boolean;
-    onCheckClick?: () => void;
+    selected?: boolean
+    onCheckClick?: () => void
   } & React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLDivElement>,
     HTMLDivElement
@@ -52,12 +52,12 @@ export const Tile = forwardRef(function Tile(
         size={24}
         weight="fill"
         onClick={(e) => {
-          e.stopPropagation();
-          onCheckClick?.();
+          e.stopPropagation()
+          onCheckClick?.()
         }}
       />
 
       {children}
     </div>
-  );
-});
+  )
+})

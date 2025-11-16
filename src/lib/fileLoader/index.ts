@@ -1,7 +1,7 @@
-export { openFiles, openDirectory } from './dialogs';
-export { handleDragOverItems, handleDroppedFilesAndFolders } from './dropzone';
-export {
-  type DirectoryEntity,
-  type FileEntity,
-  type FileSystemEntity,
-} from './entity';
+export { openDirectory, openFiles } from './dialogs'
+export { handleDragOverItems, handleDroppedFilesAndFolders } from './dropzone'
+export type {
+  DirectoryEntity,
+  FileEntity,
+  FileSystemEntity,
+} from './entity'

@@ -1,1 +1,1 @@
-export { TaskStatusDisplay } from './TaskStatusDisplay';
+export { TaskStatusDisplay } from './TaskStatusDisplay'

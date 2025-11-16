@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-import AudioPlayer from '~lib/AudioPlayer';
+import AudioPlayer from '~lib/AudioPlayer'
 
 export enum PlayerState {
   STOPPED = 'STOPPED',
@@ -9,23 +9,23 @@ export enum PlayerState {
 }
 
 function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
-  const playerRef = useRef<AudioPlayer | null>(null);
+  const playerRef = useRef<AudioPlayer | null>(null)
   const getPlayer = useCallback(() => {
     if (playerRef.current) {
-      return playerRef.current;
+      return playerRef.current
     }
-    const player = new AudioPlayer({ autoplay });
-    (playerRef.current as unknown) = player;
-    return player;
-  }, [autoplay]);
+    const player = new AudioPlayer({ autoplay })
+    ;(playerRef.current as unknown) = player
+    return player
+  }, [autoplay])
   useEffect(() => {
-    const currentPlayer = playerRef.current;
+    const currentPlayer = playerRef.current
 
     return () => {
-      playerRef.current = null;
-      currentPlayer?.dispose();
-    };
-  }, [autoplay]);
+      playerRef.current = null
+      currentPlayer?.dispose()
+    }
+  }, [])
 
   const {
     setAudioSource,
@@ -36,54 +36,54 @@ function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
     seek,
     rewind,
     forward,
-  } = getPlayer();
+  } = getPlayer()
 
   // Outputs from AudioPlayer
-  const [url, setUrl] = useState('');
-  const [duration, setDuration] = useState(0);
-  const [position, setPosition] = useState(0);
-  const [state, setState] = useState(PlayerState.STOPPED);
+  const [url, setUrl] = useState('')
+  const [duration, setDuration] = useState(0)
+  const [position, setPosition] = useState(0)
+  const [state, setState] = useState(PlayerState.STOPPED)
 
   // Inputs to AudioPlayer
-  const [volume, setVolume] = useState(1);
-  const [pan, setPan] = useState(0);
-  const [playbackRate, setPlaybackRate] = useState(1);
+  const [volume, setVolume] = useState(1)
+  const [pan, setPan] = useState(0)
+  const [playbackRate, setPlaybackRate] = useState(1)
 
   useEffect(() => {
     // Collect outputs from AudioPlayer
     getPlayer().on('trackset', (url) => {
-      setUrl(url);
-    });
+      setUrl(url)
+    })
     getPlayer().on('loadedmetadata', ({ duration, seekable, tracks }) => {
-      setDuration(duration);
-    });
+      setDuration(duration)
+    })
     getPlayer().on('play', () => {
-      setState(PlayerState.PLAYING);
-    });
+      setState(PlayerState.PLAYING)
+    })
     getPlayer().on('pause', () => {
-      setState(PlayerState.PAUSED);
-    });
+      setState(PlayerState.PAUSED)
+    })
     getPlayer().on('timeupdate', (time) => {
-      setPosition(time);
-    });
+      setPosition(time)
+    })
     getPlayer().on('ended', () => {
-      setState(PlayerState.STOPPED);
-    });
+      setState(PlayerState.STOPPED)
+    })
     getPlayer().on('emptied', () => {
-      setState(PlayerState.STOPPED);
-    });
-  }, [autoplay, getPlayer, play]);
+      setState(PlayerState.STOPPED)
+    })
+  }, [getPlayer])
 
   // Sends inputs to AudioPlayer
   useEffect(() => {
-    getPlayer().setVolume(volume);
-  }, [getPlayer, volume]);
+    getPlayer().setVolume(volume)
+  }, [getPlayer, volume])
   useEffect(() => {
-    getPlayer().setPan(pan);
-  }, [getPlayer, pan]);
+    getPlayer().setPan(pan)
+  }, [getPlayer, pan])
   useEffect(() => {
-    getPlayer().setPlaybackRate(playbackRate);
-  }, [getPlayer, playbackRate]);
+    getPlayer().setPlaybackRate(playbackRate)
+  }, [getPlayer, playbackRate])
 
   return {
     url,
@@ -104,7 +104,7 @@ function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
     duration,
     position,
     state,
-  };
+  }
 }
 
-export default usePlayer;
+export default usePlayer

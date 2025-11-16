@@ -1,6 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-
-import { TaskStatusDefinition } from ':TaskStatusDisplay/TaskStatusDisplay';
+import type { TaskStatusDefinition } from ':TaskStatusDisplay/TaskStatusDisplay'
+import { createSlice } from '@reduxjs/toolkit'
 
 export const tasksSlice = createSlice({
   name: 'tasks',
@@ -9,20 +8,20 @@ export const tasksSlice = createSlice({
   },
   reducers: {
     addTask: (state, action: { payload: TaskStatusDefinition }) => {
-      state.items.push(action.payload);
+      state.items.push(action.payload)
     },
     removeTask: (state, action: { payload: string }) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
+      state.items = state.items.filter((item) => item.id !== action.payload)
     },
     updateTask: (state, action: { payload: Partial<TaskStatusDefinition> }) => {
-      const task = state.items.find((item) => item.id === action.payload.id);
+      const task = state.items.find((item) => item.id === action.payload.id)
       if (task) {
-        Object.assign(task, action.payload);
+        Object.assign(task, action.payload)
       }
     },
   },
-});
+})
 
-export const { addTask, updateTask, removeTask } = tasksSlice.actions;
+export const { addTask, updateTask, removeTask } = tasksSlice.actions
 
-export default tasksSlice.reducer;
+export default tasksSlice.reducer

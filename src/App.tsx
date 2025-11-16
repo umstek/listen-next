@@ -1,107 +1,107 @@
+import { ThemeSwitcher, useThemePreference } from ':ThemeSwitcher'
+import { Theme } from '@radix-ui/themes'
 import {
   DockviewReact,
-  DockviewReadyEvent,
-  IDockviewPanelProps,
-} from 'dockview';
-import { Theme } from '@radix-ui/themes';
-
-import { ThemeSwitcher, useThemePreference } from ':ThemeSwitcher';
-import { ExplorerView } from '~modules/explorer/ExplorerView';
-import { FileLoaderView } from '~modules/fileLoader/FileLoaderView';
-import { PlayerView } from '~modules/player/PlayerView';
-import { TasksView } from '~modules/tasks/TasksView';
+  type DockviewReadyEvent,
+  type IDockviewPanelProps,
+} from 'dockview'
+import { ExplorerView } from '~modules/explorer/ExplorerView'
+import { FileLoaderView } from '~modules/fileLoader/FileLoaderView'
+import { PlayerView } from '~modules/player/PlayerView'
+import { TasksView } from '~modules/tasks/TasksView'
 
 const PanelWrapper = ({ children }: { children: React.ReactNode }) => {
-  const [theme] = useThemePreference();
-  const appearance = theme === 'auto' ? 'inherit' : theme;
+  const [theme] = useThemePreference()
+  const appearance = theme === 'auto' ? 'inherit' : theme
   return (
     <Theme appearance={appearance} className="w-full h-full">
       {children}
     </Theme>
-  );
-};
+  )
+}
 
 const components = {
-  explorer: (props: IDockviewPanelProps<{ title: string }>) => {
+  explorer: (_props: IDockviewPanelProps<{ title: string }>) => {
     return (
       <PanelWrapper>
         <ExplorerView />
       </PanelWrapper>
-    );
+    )
   },
-  fileLoader: (props: IDockviewPanelProps<{ title: string }>) => {
+  fileLoader: (_props: IDockviewPanelProps<{ title: string }>) => {
     return (
       <PanelWrapper>
         <FileLoaderView />
       </PanelWrapper>
-    );
+    )
   },
-  player: (props: IDockviewPanelProps<{ title: string }>) => {
+  player: (_props: IDockviewPanelProps<{ title: string }>) => {
     return (
       <PanelWrapper>
         <PlayerView />
       </PanelWrapper>
-    );
+    )
   },
-  tasks: (props: IDockviewPanelProps<{ title: string }>) => {
+  tasks: (_props: IDockviewPanelProps<{ title: string }>) => {
     return (
       <PanelWrapper>
         <TasksView />
       </PanelWrapper>
-    );
+    )
   },
-  empty: (props: IDockviewPanelProps<{ title: string }>) => {
+  empty: (_props: IDockviewPanelProps<{ title: string }>) => {
     return (
       <PanelWrapper>
         <div className="w-full h-full">Empty</div>
       </PanelWrapper>
-    );
+    )
   },
-};
+}
 
 function App() {
-  const [theme] = useThemePreference();
+  const [theme] = useThemePreference()
 
   // Determine dockview theme class
-  const dockviewTheme = theme === 'dark' ? 'dockview-theme-dark' : 'dockview-theme-light';
+  const dockviewTheme =
+    theme === 'dark' ? 'dockview-theme-dark' : 'dockview-theme-light'
 
   const onReady = (event: DockviewReadyEvent) => {
     const explorerPanel = event.api.addPanel({
       id: 'explorer',
       component: 'explorer',
       title: 'Explorer',
-    });
+    })
 
     const _fileLoaderPanel = event.api.addPanel({
       id: 'fileLoader',
       component: 'fileLoader',
       title: 'File Loader',
       position: { referencePanel: 'explorer' },
-    });
+    })
 
     const _emptyPanel = event.api.addPanel({
       id: 'empty',
       component: 'empty',
       title: 'Empty',
       position: { referencePanel: 'explorer' },
-    });
+    })
 
     const _playerPanel = event.api.addPanel({
       id: 'player',
       component: 'player',
       title: 'Player',
       position: { referencePanel: 'explorer' },
-    });
+    })
 
     const _tasksPanel = event.api.addPanel({
       id: 'tasks',
       component: 'tasks',
       title: 'Tasks',
       position: { referencePanel: explorerPanel, direction: 'right' },
-    });
+    })
 
-    explorerPanel.api.setActive();
-  };
+    explorerPanel.api.setActive()
+  }
 
   return (
     <div className="w-full h-full flex flex-col overflow-hidden">
@@ -117,7 +117,7 @@ function App() {
         />
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

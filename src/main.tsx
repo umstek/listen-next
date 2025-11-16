@@ -1,27 +1,27 @@
-import { Temporal, toTemporalInstant } from '@js-temporal/polyfill';
-import { Theme } from '@radix-ui/themes';
-import '@radix-ui/themes/styles.css';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { Provider } from 'react-redux';
+import { type Temporal, toTemporalInstant } from '@js-temporal/polyfill'
+import { Theme } from '@radix-ui/themes'
+import '@radix-ui/themes/styles.css'
 
-import { useThemePreference } from ':ThemeSwitcher';
-import App from './App';
-import './main.css';
-import store from './store';
+import { useThemePreference } from ':ThemeSwitcher'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { Provider } from 'react-redux'
+import App from './App'
+import './main.css'
+import store from './store'
 
 declare global {
   interface Date {
-    toTemporalInstant(): Temporal.Instant;
+    toTemporalInstant(): Temporal.Instant
   }
 }
 
-Date.prototype.toTemporalInstant = toTemporalInstant;
+Date.prototype.toTemporalInstant = toTemporalInstant
 
 function ThemedApp() {
-  const [theme] = useThemePreference();
+  const [theme] = useThemePreference()
 
-  const appearance = theme === 'auto' ? 'inherit' : theme;
+  const appearance = theme === 'auto' ? 'inherit' : theme
 
   return (
     <Theme
@@ -32,10 +32,10 @@ function ThemedApp() {
     >
       <App />
     </Theme>
-  );
+  )
 }
 
-const root = document.getElementById('root');
+const root = document.getElementById('root')
 root &&
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
@@ -43,4 +43,4 @@ root &&
         <ThemedApp />
       </Provider>
     </React.StrictMode>,
-  );
+  )

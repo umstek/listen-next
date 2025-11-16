@@ -8,10 +8,10 @@ export function filePickerAcceptTypeExtToRegex(types: FilePickerAcceptType[]) {
   const extensions = types
     .flatMap((t) => Object.values(t.accept || {}))
     .flat()
-    .map((a) => a.slice(1));
+    .map((a) => a.slice(1))
   return extensions.length > 0
     ? new RegExp(`\\.(${extensions.join('|')})$`)
-    : undefined;
+    : undefined
 }
 
 /**
@@ -22,8 +22,8 @@ export function filePickerAcceptTypeExtToRegex(types: FilePickerAcceptType[]) {
  */
 export function isAFile(
   handle: FileSystemHandle,
-): handle is FileSystemFileHandle;
-export function isAFile(handle: FileSystemEntry): handle is FileSystemFileEntry;
+): handle is FileSystemFileHandle
+export function isAFile(handle: FileSystemEntry): handle is FileSystemFileEntry
 /**
  * Checks if the given handle is a file.
  *
@@ -34,12 +34,12 @@ export function isAFile(
   handle: FileSystemHandle | FileSystemEntry,
 ): handle is FileSystemFileHandle | FileSystemFileEntry {
   if (!handle) {
-    return false;
+    return false
   }
   if ('kind' in handle) {
-    return handle.kind === 'file';
+    return handle.kind === 'file'
   }
-  return handle.isFile;
+  return handle.isFile
 }
 
 /**
@@ -50,7 +50,7 @@ export function isAFile(
  */
 export function isADirectory(
   handle: FileSystemHandle,
-): handle is FileSystemDirectoryHandle;
+): handle is FileSystemDirectoryHandle
 /**
  * Checks if the given handle is a directory.
  *
@@ -59,7 +59,7 @@ export function isADirectory(
  */
 export function isADirectory(
   handle: FileSystemEntry,
-): handle is FileSystemDirectoryEntry;
+): handle is FileSystemDirectoryEntry
 /**
  * Checks whether the given handle is a directory or not.
  *
@@ -70,10 +70,10 @@ export function isADirectory(
   handle: FileSystemHandle | FileSystemEntry,
 ): handle is FileSystemDirectoryHandle | FileSystemDirectoryEntry {
   if (!handle) {
-    return false;
+    return false
   }
   if ('kind' in handle) {
-    return handle.kind === 'directory';
+    return handle.kind === 'directory'
   }
-  return handle.isDirectory;
+  return handle.isDirectory
 }

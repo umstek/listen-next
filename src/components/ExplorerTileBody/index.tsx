@@ -1,3 +1,4 @@
+import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert'
 import {
   Browser,
   DotsThree,
@@ -5,25 +6,29 @@ import {
   FolderSimple,
   HardDrive,
   Planet,
-} from '@phosphor-icons/react';
-import { DropdownMenu, IconButton, Tooltip } from '@radix-ui/themes';
-import { useState } from 'react';
-
-import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert';
+} from '@phosphor-icons/react'
+import { DropdownMenu, IconButton, Tooltip } from '@radix-ui/themes'
+import { useState } from 'react'
 
 interface TileBodyProps {
-  title: string;
-  kind: 'file' | 'directory';
-  source: 'sandbox' | 'local' | 'remote';
-  onPlay?: () => void;
-  onDelete?: () => void;
+  title: string
+  kind: 'file' | 'directory'
+  source: 'sandbox' | 'local' | 'remote'
+  onPlay?: () => void
+  onDelete?: () => void
 }
 
-export function Thumbnail({ title, kind, source, onPlay, onDelete }: TileBodyProps) {
-  const Icon = { sandbox: Browser, local: HardDrive, remote: Planet }[source];
+export function Thumbnail({
+  title,
+  kind,
+  source,
+  onPlay,
+  onDelete,
+}: TileBodyProps) {
+  const Icon = { sandbox: Browser, local: HardDrive, remote: Planet }[source]
 
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
-    useState(false);
+    useState(false)
 
   return (
     <>
@@ -42,11 +47,11 @@ export function Thumbnail({ title, kind, source, onPlay, onDelete }: TileBodyPro
             <DropdownMenu.Item
               shortcut="⌘ P"
               onClick={(e) => {
-                e.stopPropagation();
+                e.stopPropagation()
                 if (onPlay && kind === 'file') {
-                  onPlay();
+                  onPlay()
                 } else {
-                  setShowNotImplementedDialog(true);
+                  setShowNotImplementedDialog(true)
                 }
               }}
               disabled={kind === 'directory'}
@@ -110,11 +115,11 @@ export function Thumbnail({ title, kind, source, onPlay, onDelete }: TileBodyPro
               shortcut="⌘ ⌫"
               color="red"
               onClick={(e) => {
-                e.stopPropagation();
+                e.stopPropagation()
                 if (onDelete) {
-                  onDelete();
+                  onDelete()
                 } else {
-                  setShowNotImplementedDialog(true);
+                  setShowNotImplementedDialog(true)
                 }
               }}
             >
@@ -146,5 +151,5 @@ export function Thumbnail({ title, kind, source, onPlay, onDelete }: TileBodyPro
         )}
       </div>
     </>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-import { radixThemePreset } from 'radix-themes-tw';
-import type { Config } from 'tailwindcss';
-import animate from 'tailwindcss-animate';
+import { radixThemePreset } from 'radix-themes-tw'
+import type { Config } from 'tailwindcss'
+import animate from 'tailwindcss-animate'
 
 const config: Config = {
   darkMode: ['class'],
@@ -19,6 +19,6 @@ const config: Config = {
   corePlugins: {
     preflight: false,
   },
-};
+}
 
-export default config;
+export default config
