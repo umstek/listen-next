@@ -16,9 +16,10 @@ interface TileBodyProps {
   kind: 'file' | 'directory';
   source: 'sandbox' | 'local' | 'remote';
   onPlay?: () => void;
+  onDelete?: () => void;
 }
 
-export function Thumbnail({ title, kind, source, onPlay }: TileBodyProps) {
+export function Thumbnail({ title, kind, source, onPlay, onDelete }: TileBodyProps) {
   const Icon = { sandbox: Browser, local: HardDrive, remote: Planet }[source];
 
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
@@ -108,7 +109,14 @@ export function Thumbnail({ title, kind, source, onPlay }: TileBodyProps) {
             <DropdownMenu.Item
               shortcut="⌘ ⌫"
               color="red"
-              onClick={() => setShowNotImplementedDialog(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onDelete) {
+                  onDelete();
+                } else {
+                  setShowNotImplementedDialog(true);
+                }
+              }}
             >
               Delete
             </DropdownMenu.Item>

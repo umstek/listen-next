@@ -124,6 +124,22 @@ export function ExplorerView() {
                 dispatch(setItems([URL.createObjectURL(await item.getFile())]));
               }
             }}
+            onDelete={async () => {
+              // If it's a link file, also delete the database entry
+              if (item.kind === 'file' && item.name.startsWith('@link')) {
+                try {
+                  const json = await item.getFile();
+                  const data = JSON.parse(await json.text()) as { id: string };
+                  await db.linkedFSEs.delete(data.id);
+                } catch (error) {
+                  console.error('Failed to delete link database entry:', error);
+                }
+              }
+
+              // Delete the file/directory from OPFS
+              await explorerRef.current?.remove(item.name);
+              await refresh();
+            }}
           />
         )}
         onOpen={async (item) => {

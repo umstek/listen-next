@@ -137,7 +137,7 @@ export class Explorer {
    */
   async remove(name: string) {
     const handle = this.path[this.path.length - 1];
-    await handle.removeEntry(name);
+    await handle.removeEntry(name, { recursive: true });
   }
 
   /**
