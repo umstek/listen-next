@@ -1,4 +1,4 @@
-import { IAudioMetadata } from 'music-metadata-browser';
+import { IAudioMetadata } from 'music-metadata';
 
 export interface BasicAudioMetadata {
   genre: string[];
@@ -14,16 +14,31 @@ export interface BasicAudioMetadata {
 export async function getAudioMetadata(
   fileOrUrl: File | string,
 ): Promise<[BasicAudioMetadata, IAudioMetadata]> {
-  const mmb = await import('music-metadata-browser');
+  const mm = await import('music-metadata');
 
   let metadata: IAudioMetadata;
   if (typeof fileOrUrl === 'string') {
-    metadata = await mmb.fetchFromUrl(fileOrUrl, {
-      duration: true,
-      includeChapters: true,
-    });
+    // Fetch URL and convert to Blob for parsing
+    try {
+      const response = await fetch(fileOrUrl);
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch audio file: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      const blob = await response.blob();
+      metadata = await mm.parseBlob(blob, {
+        duration: true,
+        includeChapters: true,
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to load audio metadata from URL: ${errorMessage}`);
+    }
   } else {
-    metadata = await mmb.parseBlob(fileOrUrl, {
+    metadata = await mm.parseBlob(fileOrUrl, {
       duration: true,
       includeChapters: true,
     });

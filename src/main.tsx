@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
+import { useThemePreference } from ':ThemeSwitcher';
 import App from './App';
 import './main.css';
 import store from './store';
@@ -17,19 +18,29 @@ declare global {
 
 Date.prototype.toTemporalInstant = toTemporalInstant;
 
+function ThemedApp() {
+  const [theme] = useThemePreference();
+
+  const appearance = theme === 'auto' ? 'inherit' : theme;
+
+  return (
+    <Theme
+      className="w-full h-full"
+      accentColor="indigo"
+      appearance={appearance}
+      radius="large"
+    >
+      <App />
+    </Theme>
+  );
+}
+
 const root = document.getElementById('root');
 root &&
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
       <Provider store={store}>
-        <Theme
-          className="w-full h-full"
-          accentColor="indigo"
-          appearance="inherit"
-          radius="large"
-        >
-          <App />
-        </Theme>
+        <ThemedApp />
       </Provider>
     </React.StrictMode>,
   );

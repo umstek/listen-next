@@ -1,13 +1,9 @@
 import { Play } from '@phosphor-icons/react';
 import {
+  Checkbox,
   Flex,
   IconButton,
   Table,
-  TableBody,
-  TableCell,
-  TableColumnHeaderCell,
-  TableHeader,
-  TableRow,
 } from '@radix-ui/themes';
 import {
   CellContext,
@@ -46,6 +42,7 @@ function RowActions({ row, preview, stopPreview }: RowActionsProps) {
     <Flex className="invisible group-hover:visible">
       <IconButton
         variant="ghost"
+        size="1"
         onMouseEnter={(e) => {
           e.stopPropagation();
 
@@ -69,23 +66,25 @@ const columnHelper = createColumnHelper<FileSystemEntity>();
 
 interface FileListProps {
   data: FileSystemEntity[];
+  selected?: Set<string>;
+  onSelectionChange?: (selected: Set<string>) => void;
 }
 
 type EmptyTableContentProps = {
   length: number;
 };
 
-function EmptyTableContent(props: EmptyTableContentProps): JSX.Element {
+function EmptyTableContent(props: EmptyTableContentProps) {
   return (
-    <TableRow>
-      <TableCell colSpan={props.length} className="h-24 text-center">
+    <Table.Row>
+      <Table.Cell colSpan={props.length} className="h-24 text-center">
         No results.
-      </TableCell>
-    </TableRow>
+      </Table.Cell>
+    </Table.Row>
   );
 }
 
-export function FileList({ data }: FileListProps) {
+export function FileList({ data, selected = new Set(), onSelectionChange }: FileListProps) {
   const { play, stop } = usePlayer();
 
   const preview = useCallback(
@@ -98,12 +97,40 @@ export function FileList({ data }: FileListProps) {
     stop();
   }, [stop]);
 
+  const toggleSelection = useCallback((path: string) => {
+    const newSelected = new Set(selected);
+    if (newSelected.has(path)) {
+      newSelected.delete(path);
+    } else {
+      newSelected.add(path);
+    }
+    onSelectionChange?.(newSelected);
+  }, [selected, onSelectionChange]);
+
+  const toggleAll = useCallback(() => {
+    if (selected.size === data.length) {
+      onSelectionChange?.(new Set());
+    } else {
+      onSelectionChange?.(new Set(data.map(item => item.path)));
+    }
+  }, [selected.size, data, onSelectionChange]);
+
   const columns = useMemo(
     () => [
-      columnHelper.group({
-        id: 'parent',
-        header: 'Parent',
-        aggregationFn: 'count',
+      columnHelper.display({
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={data.length > 0 && selected.size === data.length}
+            onCheckedChange={toggleAll}
+          />
+        ),
+        cell: (props: CellContext<FileSystemEntity, unknown>) => (
+          <Checkbox
+            checked={selected.has(props.row.original.path)}
+            onCheckedChange={() => toggleSelection(props.row.original.path)}
+          />
+        ),
       }),
       columnHelper.accessor('name', { header: 'File Name' }),
       columnHelper.display({
@@ -117,7 +144,7 @@ export function FileList({ data }: FileListProps) {
         ),
       }),
     ],
-    [preview, stopPreview],
+    [preview, stopPreview, selected, toggleSelection, toggleAll, data.length],
   );
 
   const table = useReactTable({
@@ -137,50 +164,50 @@ export function FileList({ data }: FileListProps) {
   return (
     <div ref={tableContainerRef} className="overflow-auto h-[300px]">
       <Table.Root>
-        <TableHeader>
+        <Table.Header>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <Table.Row key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableColumnHeaderCell key={header.id}>
+                  <Table.ColumnHeaderCell key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
-                  </TableColumnHeaderCell>
+                  </Table.ColumnHeaderCell>
                 );
               })}
-            </TableRow>
+            </Table.Row>
           ))}
-        </TableHeader>
-        <TableBody>
+        </Table.Header>
+        <Table.Body>
           {table.getRowModel().rows?.length ? (
             rowVirtualizer.getVirtualItems().map((virtualRow) => {
               const row = table.getRowModel().rows[virtualRow.index];
               return (
-                <TableRow
+                <Table.Row
                   align="center"
                   className="group"
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <Table.Cell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
                       )}
-                    </TableCell>
+                    </Table.Cell>
                   ))}
-                </TableRow>
+                </Table.Row>
               );
             })
           ) : (
             <EmptyTableContent length={columns.length} />
           )}
-        </TableBody>
+        </Table.Body>
       </Table.Root>
     </div>
   );

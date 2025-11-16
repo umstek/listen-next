@@ -15,7 +15,7 @@ const audioFilesFilter = filterByExtensions(new Set(env.supportedExtensions));
 /**
  * Renders the Explorer view component.
  *
- * @return {JSX.Element} The rendered Explorer view.
+ * @return The rendered Explorer view.
  */
 export function ExplorerView() {
   const dispatch = useDispatch();
@@ -103,6 +103,43 @@ export function ExplorerView() {
                   ? 'remote'
                   : 'sandbox'
             }
+            onPlay={async () => {
+              if (item.kind === 'file') {
+                const linkTarget = await tryGetLinkTarget(item);
+                if (linkTarget) {
+                  if (
+                    (await linkTarget.queryPermission({ mode: 'read' })) ===
+                      'granted' ||
+                    (await linkTarget.requestPermission({ mode: 'read' })) ===
+                      'granted'
+                  ) {
+                    if (linkTarget.kind === 'file') {
+                      dispatch(
+                        setItems([URL.createObjectURL(await linkTarget.getFile())]),
+                      );
+                    }
+                  }
+                  return;
+                }
+                dispatch(setItems([URL.createObjectURL(await item.getFile())]));
+              }
+            }}
+            onDelete={async () => {
+              // If it's a link file, also delete the database entry
+              if (item.kind === 'file' && item.name.startsWith('@link')) {
+                try {
+                  const json = await item.getFile();
+                  const data = JSON.parse(await json.text()) as { id: string };
+                  await db.linkedFSEs.delete(data.id);
+                } catch (error) {
+                  console.error('Failed to delete link database entry:', error);
+                }
+              }
+
+              // Delete the file/directory from OPFS (recursive for directories)
+              await explorerRef.current?.remove(item.name, true);
+              await refresh();
+            }}
           />
         )}
         onOpen={async (item) => {

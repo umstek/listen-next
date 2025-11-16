@@ -132,12 +132,30 @@ export class Explorer {
   /**
    * Removes a file or directory with the given name.
    *
+   * WARNING: This is a destructive operation that cannot be undone.
+   * Use with caution, especially when recursive=true.
+   *
    * @param name The name of the file or directory to be removed.
+   * @param recursive If true, removes directories and all their contents. Defaults to false.
    * @return A promise that resolves when the file or directory is successfully removed.
+   * @throws Error if the entry doesn't exist or removal fails.
    */
-  async remove(name: string) {
+  async remove(name: string, recursive = false) {
     const handle = this.path[this.path.length - 1];
-    await handle.removeEntry(name);
+
+    try {
+      // Verify the entry exists before attempting deletion
+      await handle.getFileHandle(name).catch(async () => {
+        // If not a file, try as directory
+        await handle.getDirectoryHandle(name);
+      });
+
+      // Attempt removal
+      await handle.removeEntry(name, recursive ? { recursive: true } : undefined);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to remove "${name}": ${errorMessage}`);
+    }
   }
 
   /**

@@ -16,41 +16,52 @@ export async function getFilesAndFoldersRecursively(
   const basePath = directoryEntity.path;
   const directories: DirectoryEntity[] = [];
   const files: FileEntity[] = [];
-  for await (const handle of directoryEntity.handle?.values() || []) {
-    if (handle.kind === 'directory') {
-      const subdirectoryEntity: DirectoryEntity = {
-        kind: 'directory',
-        name: handle.name,
-        parent: basePath,
-        path: `${basePath}/${handle.name}`,
-        handle,
-      };
-      directories.push(subdirectoryEntity);
-      const { files: f, directories: d } = await getFilesAndFoldersRecursively(
-        subdirectoryEntity,
-        type,
-      );
-      directories.push(...d);
-      files.push(...f);
-    } else if (handle.kind === 'file') {
-      const file = await handle.getFile();
-      if (type && !type.test(file.name)) {
+
+  try {
+    for await (const handle of directoryEntity.handle?.values() || []) {
+      try {
+        if (handle.kind === 'directory') {
+          const subdirectoryEntity: DirectoryEntity = {
+            kind: 'directory',
+            name: handle.name,
+            parent: basePath,
+            path: `${basePath}/${handle.name}`,
+            handle,
+          };
+          directories.push(subdirectoryEntity);
+          const { files: f, directories: d } = await getFilesAndFoldersRecursively(
+            subdirectoryEntity,
+            type,
+          );
+          directories.push(...d);
+          files.push(...f);
+        } else if (handle.kind === 'file') {
+          const file = await handle.getFile();
+          if (type && !type.test(file.name)) {
+            continue;
+          }
+          Object.defineProperty(file, 'webkitRelativePath', {
+            configurable: true,
+            enumerable: true,
+            get: () => `${basePath}/${handle.name}`,
+          });
+          files.push({
+            kind: 'file',
+            name: handle.name,
+            parent: basePath,
+            path: `${basePath}/${handle.name}`,
+            handle,
+            file,
+          });
+        }
+      } catch (error) {
+        // Skip files/folders that can't be accessed (permissions, not found, etc.)
+        console.warn(`Skipping ${handle.name}:`, error);
         continue;
       }
-      Object.defineProperty(file, 'webkitRelativePath', {
-        configurable: true,
-        enumerable: true,
-        get: () => `${basePath}/${handle.name}`,
-      });
-      files.push({
-        kind: 'file',
-        name: handle.name,
-        parent: basePath,
-        path: `${basePath}/${handle.name}`,
-        handle,
-        file,
-      });
     }
+  } catch (error) {
+    console.error('Error scanning directory:', error);
   }
 
   return { files, directories };

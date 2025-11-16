@@ -28,7 +28,7 @@ export function VolumeControl({ onChange, value }: VolumeControlProps) {
         max={2}
         value={[value]}
         step={0.01}
-        className="w-24"
+        className="w-40"
         onValueChange={([v]) => void onChange(v as number)}
       />
       <IconButton

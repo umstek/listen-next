@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react-swc';
-import tailwindcss from 'tailwindcss';
+import tailwindcss from '@tailwindcss/postcss';
 import { defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -12,7 +12,7 @@ export default defineConfig({
   },
   css: {
     postcss: {
-      plugins: [tailwindcss()],
+      plugins: [tailwindcss],
     },
   },
   plugins: [tsconfigPaths(), react(), nodePolyfills()],

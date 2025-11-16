@@ -11,7 +11,7 @@ import { overlaps, SelectionMode } from './util';
 export interface TileViewProps<T> {
   items: T[];
   extractKey: (item: T) => string;
-  renderItem: (item: T) => JSX.Element;
+  renderItem: (item: T) => React.ReactElement;
   onOpen: (item: T) => void;
 }
 
@@ -206,7 +206,7 @@ export function TileView<T>({
                 } else if (e.ctrlKey) {
                   setSelected(
                     selected.has(key)
-                      ? new Set([...selected].filter((key) => key !== key))
+                      ? new Set([...selected].filter((k) => k !== key))
                       : new Set([...selected, key]),
                   );
                 } else {
@@ -216,7 +216,7 @@ export function TileView<T>({
               onCheckClick={() => {
                 if (selected.has(key)) {
                   setSelected(
-                    new Set([...selected].filter((key) => key !== key)),
+                    new Set([...selected].filter((k) => k !== key)),
                   );
                 } else {
                   setSelected(new Set([...selected, key]));
