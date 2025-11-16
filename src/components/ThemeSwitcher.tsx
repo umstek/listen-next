@@ -9,7 +9,12 @@ const THEME_STORAGE_KEY = 'listen-theme-preference';
 export function useThemePreference() {
   const [theme, setTheme] = useState<ThemePreference>(() => {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
-    return (stored as ThemePreference) || 'light'; // Default to light for better visibility
+    // Always default to light for better visibility
+    if (!stored || stored === 'auto') {
+      localStorage.setItem(THEME_STORAGE_KEY, 'light');
+      return 'light';
+    }
+    return stored as ThemePreference;
   });
 
   useEffect(() => {
