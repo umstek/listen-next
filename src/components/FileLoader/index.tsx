@@ -46,8 +46,11 @@ interface FileLoaderProps {
 export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
   const [files, setFiles] = useState<FileEntity[]>([]);
   const [directories, setDirectories] = useState<DirectoryEntity[]>([]);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showNotImplementedDialog, setShowNotImplementedDialog] =
     useState(false);
+
+  const selectedFiles = files.filter(f => selected.has(f.path));
 
   return (
     <Card variant="ghost">
@@ -71,34 +74,55 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
         >
           <DropChoiceHelpAlert />
         </DropZone>
-        <FileList data={files} />
+        <FileList
+          data={files}
+          selected={selected}
+          onSelectionChange={setSelected}
+        />
       </Flex>
-      <Flex justify="end" gap="3" align="center" pt="3">
-        {/* Store in Provider -- someday */}
+      <Flex justify="end" gap="2" align="center" pt="3" wrap="wrap">
+        {selected.size > 0 && (
+          <Text size="1" color="gray">
+            {selected.size} selected
+          </Text>
+        )}
         <Tooltip content="Play the selected files without indexing.">
-          <Button variant="outline" onClick={() => onPlayNow(files)}>
+          <Button
+            variant="outline"
+            size="2"
+            onClick={() => onPlayNow(selected.size > 0 ? selectedFiles : files)}
+            disabled={files.length === 0}
+          >
             Play Now
           </Button>
         </Tooltip>
-        <Flex>
+        <Flex gap="0">
           <Tooltip content="Create a sandboxed copy of the selected files inside your browser.">
             <Button
-              onClick={() => onCopy({ files, directories })}
+              size="2"
+              onClick={() => onCopy({
+                files: selected.size > 0 ? selectedFiles : files,
+                directories
+              })}
               className="rounded-r-[0]"
+              disabled={files.length === 0}
             >
               Copy to Browser
             </Button>
           </Tooltip>
           <DropdownMenu.Root>
             <DropdownMenu.Trigger>
-              <IconButton className="rounded-l-[0]">
+              <IconButton size="2" className="rounded-l-[0]">
                 <ChevronDownIcon />
               </IconButton>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>
               <Tooltip content="Store links to the original files/folders you dropped. You'll be asked for permission each time you open them and, the changes to the original files will be reflected here.">
                 <DropdownMenu.Item
-                  onClick={() => onLink({ files, directories })}
+                  onClick={() => onLink({
+                    files: selected.size > 0 ? selectedFiles : files,
+                    directories
+                  })}
                 >
                   Store as Links
                 </DropdownMenu.Item>
@@ -107,9 +131,19 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
           </DropdownMenu.Root>
         </Flex>
         <Tooltip content={<StoreChoiceHelpAlert />}>
-          <QuestionMarkCircledIcon />
+          <IconButton variant="ghost" size="2">
+            <QuestionMarkCircledIcon />
+          </IconButton>
         </Tooltip>
-        <Button variant="outline" color="crimson" onClick={() => setFiles([])}>
+        <Button
+          variant="outline"
+          color="crimson"
+          size="2"
+          onClick={() => {
+            setFiles([]);
+            setSelected(new Set());
+          }}
+        >
           Clear
         </Button>
       </Flex>
