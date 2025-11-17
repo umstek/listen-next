@@ -67,19 +67,20 @@
   ::after {
     border-color: hsl(var(--border));
   }
+
+  html,
   body {
+    margin: 0;
+    padding: 0;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  #root {
+    height: 100vh;
+    width: 100vw;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
-}
-
-#root {
-  height: 100vh;
-  width: 100vw;
-}
-
-*,
-::before,
-::after {
-  margin: 0;
 }
