@@ -1,5 +1,14 @@
 import { PersonSimpleRun } from '@phosphor-icons/react'
-import { Flex, Select } from '@radix-ui/themes'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from ':ui/select'
+import { Flex } from ':layout/Flex'
 
 export interface PlaybackRateControlProps {
   onChange: (value: number) => void
@@ -12,31 +21,32 @@ export function PlaybackRateControl({
 }: PlaybackRateControlProps) {
   return (
     <Flex align="center" gap="2">
-      <Select.Root
-        size="1"
+      <PersonSimpleRun size={16} />
+      <Select
         value={value.toFixed(2)}
         onValueChange={(v) => onChange(Number.parseFloat(v))}
       >
-        <PersonSimpleRun size={16} />
-        <Select.Trigger placeholder="Playback speed" />
-        <Select.Content>
-          <Select.Group>
-            <Select.Item value="0.25">25%</Select.Item>
-            <Select.Item value="0.50">50%</Select.Item>
-            <Select.Item value="0.80">80%</Select.Item>
-          </Select.Group>
-          <Select.Separator />
-          <Select.Group>
-            <Select.Item value="1.00">100%</Select.Item>
-          </Select.Group>
-          <Select.Separator />
-          <Select.Group>
-            <Select.Item value="1.25">125%</Select.Item>
-            <Select.Item value="2.00">200%</Select.Item>
-            <Select.Item value="4.00">400%</Select.Item>
-          </Select.Group>
-        </Select.Content>
-      </Select.Root>
+        <SelectTrigger className="w-24">
+          <SelectValue placeholder="Playback speed" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="0.25">25%</SelectItem>
+            <SelectItem value="0.50">50%</SelectItem>
+            <SelectItem value="0.80">80%</SelectItem>
+          </SelectGroup>
+          <SelectSeparator />
+          <SelectGroup>
+            <SelectItem value="1.00">100%</SelectItem>
+          </SelectGroup>
+          <SelectSeparator />
+          <SelectGroup>
+            <SelectItem value="1.25">125%</SelectItem>
+            <SelectItem value="2.00">200%</SelectItem>
+            <SelectItem value="4.00">400%</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </Flex>
   )
 }

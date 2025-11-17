@@ -3,7 +3,9 @@ import {
   SpeakerSimpleLow,
   SpeakerSimpleNone,
 } from '@phosphor-icons/react'
-import { Flex, IconButton, Slider } from '@radix-ui/themes'
+import { Slider } from ':ui/slider'
+import { Flex } from ':layout/Flex'
+import { IconButton } from ':layout/IconButton'
 
 import { clamp } from '~util/math'
 
@@ -22,14 +24,12 @@ export function PanControl({ onChange, value }: VolumeControlProps) {
     <Flex align="center" gap="1">
       <IconButton
         variant="ghost"
-        size="1"
+        size="sm"
         onClick={() => onChange(clamp(value - 0.1, -1, 1))}
       >
         <LeftSpeaker mirrored size={16} weight="fill" />
       </IconButton>
       <Slider
-        size="1"
-        variant="soft"
         defaultValue={[0]}
         min={-1}
         max={1}
@@ -40,7 +40,7 @@ export function PanControl({ onChange, value }: VolumeControlProps) {
       />
       <IconButton
         variant="ghost"
-        size="1"
+        size="sm"
         onClick={() => onChange(value + 0.1)}
       >
         <RightSpeaker size={16} weight="fill" />

@@ -4,7 +4,9 @@ import {
   SpeakerNone,
   SpeakerX,
 } from '@phosphor-icons/react'
-import { Flex, IconButton, Slider } from '@radix-ui/themes'
+import { Slider } from ':ui/slider'
+import { Flex } from ':layout/Flex'
+import { IconButton } from ':layout/IconButton'
 import { clamp } from '~util/math'
 
 export interface VolumeControlProps {
@@ -17,12 +19,10 @@ export function VolumeControl({ onChange, value }: VolumeControlProps) {
 
   return (
     <Flex align="center" gap="1">
-      <IconButton variant="ghost" size="1" onClick={() => onChange(0)}>
+      <IconButton variant="ghost" size="sm" onClick={() => onChange(0)}>
         <SpeakerX size={16} weight="fill" />
       </IconButton>
       <Slider
-        size="1"
-        variant="soft"
         defaultValue={[1]}
         min={0}
         max={2}
@@ -33,7 +33,7 @@ export function VolumeControl({ onChange, value }: VolumeControlProps) {
       />
       <IconButton
         variant="ghost"
-        size="1"
+        size="sm"
         onClick={() => onChange(clamp(value + 0.1, 0, 2))}
       >
         <Speaker size={16} weight="fill" />

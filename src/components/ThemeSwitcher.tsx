@@ -1,6 +1,19 @@
 import { Monitor, Moon, Sun } from '@phosphor-icons/react'
-import { Button, DropdownMenu, Flex, Tooltip } from '@radix-ui/themes'
 import { useEffect, useState } from 'react'
+import { Button } from ':ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from ':ui/dropdown-menu'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from ':ui/tooltip'
+import { Flex } from ':layout'
 
 export type ThemePreference = 'light' | 'dark' | 'auto'
 
@@ -45,40 +58,47 @@ export function ThemeSwitcher() {
   }
 
   return (
-    <DropdownMenu.Root>
-      <Tooltip content="Change theme">
-        <DropdownMenu.Trigger>
-          <Button variant="ghost" size="2">
-            {icons[theme]}
-          </Button>
-        </DropdownMenu.Trigger>
-      </Tooltip>
-      <DropdownMenu.Content>
-        <DropdownMenu.Item
+    <DropdownMenu>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                {icons[theme]}
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Change theme</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <DropdownMenuContent>
+        <DropdownMenuItem
           onClick={() => setTheme('auto')}
           className={theme === 'auto' ? 'font-bold' : ''}
         >
           <Flex align="center" gap="2">
             {icons.auto} Auto (System)
           </Flex>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item
+        </DropdownMenuItem>
+        <DropdownMenuItem
           onClick={() => setTheme('light')}
           className={theme === 'light' ? 'font-bold' : ''}
         >
           <Flex align="center" gap="2">
             {icons.light} Light
           </Flex>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item
+        </DropdownMenuItem>
+        <DropdownMenuItem
           onClick={() => setTheme('dark')}
           className={theme === 'dark' ? 'font-bold' : ''}
         >
           <Flex align="center" gap="2">
             {icons.dark} Dark
           </Flex>
-        </DropdownMenu.Item>
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

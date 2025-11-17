@@ -1,6 +1,8 @@
 import { ArrowDownIcon } from '@radix-ui/react-icons'
-import { Box, Button, Flex } from '@radix-ui/themes'
 import { useState } from 'react'
+import { Button } from ':ui/button'
+import { Box } from ':layout/Box'
+import { Flex } from ':layout/Flex'
 
 import {
   type DirectoryEntity,

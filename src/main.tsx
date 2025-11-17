@@ -1,6 +1,4 @@
 import { type Temporal, toTemporalInstant } from '@js-temporal/polyfill'
-import { Theme } from '@radix-ui/themes'
-import '@radix-ui/themes/styles.css'
 
 import { useThemePreference } from ':ThemeSwitcher'
 import React from 'react'
@@ -21,17 +19,25 @@ Date.prototype.toTemporalInstant = toTemporalInstant
 function ThemedApp() {
   const [theme] = useThemePreference()
 
-  const appearance = theme === 'auto' ? 'inherit' : theme
+  React.useEffect(() => {
+    const root = window.document.documentElement
+    root.classList.remove('light', 'dark')
+
+    if (theme === 'auto') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+        .matches
+        ? 'dark'
+        : 'light'
+      root.classList.add(systemTheme)
+    } else {
+      root.classList.add(theme)
+    }
+  }, [theme])
 
   return (
-    <Theme
-      className="w-full h-full"
-      accentColor="indigo"
-      appearance={appearance}
-      radius="large"
-    >
+    <div className="w-full h-full">
       <App />
-    </Theme>
+    </div>
   )
 }
 
