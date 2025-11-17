@@ -46,8 +46,8 @@ Listen-Next is a client-side music player that runs entirely in the browser usin
 - **Vite 7.2** - Build tool and dev server
 
 ### UI Components
-- **Radix UI Themes 3.2** - Component primitives and theming
-- **Tailwind CSS 4.1** - Utility-first styling
+- **shadcn/ui** - Component library built on Radix UI primitives (see [CLAUDE.md](./CLAUDE.md))
+- **Tailwind CSS 4.1** - Utility-first styling with OKLCH colors
 - **Phosphor Icons 2.1** - Icon library
 - **Dockview 4.11** - Panel layout system
 
@@ -200,13 +200,15 @@ listen-next/
 │   ├── store.ts                   # Redux store configuration
 │   ├── config.ts                  # App configuration
 │   │
-│   ├── components/                # Reusable UI components
+│   ├── components/                # UI components
+│   │   ├── ui/                    # shadcn/ui registry components
+│   │   ├── layout/                # Layout primitives (Flex, Box, Text, etc.)
 │   │   ├── Breadcrumbs/           # Path navigation with dropdowns
 │   │   ├── Dialogs/               # Alert dialogs
 │   │   ├── ExplorerTileBody/      # File/folder thumbnail with context menu (Play, Delete)
 │   │   ├── FileLoader/            # File upload/drag-drop UI with checkboxes
 │   │   ├── Player/                # Playback controls and metadata display
-│   │   ├── ThemeSwitcher/         # Light/Dark/Auto theme toggle
+│   │   ├── ThemeSwitcher.tsx      # Light/Dark/Auto theme toggle
 │   │   └── TileView/              # Grid layout with drag-to-select
 │   │
 │   ├── modules/                   # Feature modules
@@ -819,10 +821,11 @@ See [TODO.md](./TODO.md) for prioritized list. High-value areas:
 - **React 19 Docs**: https://react.dev/
 - **TypeScript Handbook**: https://www.typescriptlang.org/docs/
 - **Vite Guide**: https://vite.dev/
+- **shadcn/ui**: https://ui.shadcn.com/
 - **Radix UI**: https://www.radix-ui.com/
 - **Tailwind CSS**: https://tailwindcss.com/
 - **Dexie.js**: https://dexie.org/
-- **Web Audio API**: https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+- **Web Audio API**: https://developer.mozilla.org/en-docs/Web/API/Web_Audio_API
 - **File System Access API**: https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API
 
 ---
@@ -840,4 +843,4 @@ See [TODO.md](./TODO.md) for prioritized list. High-value areas:
 
 ---
 
-**Last Updated**: 2025-11-16
+**Last Updated**: 2025-11-17
