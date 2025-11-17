@@ -58,7 +58,6 @@
     "@vitejs/plugin-react": "^5.1.1",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "autoprefixer": "^10.4.22",
-    "playwright": "^1.56.1",
     "postcss": "^8.5.6",
     "rimraf": "^6.1.0",
     "tailwindcss": "^4.1.17",
