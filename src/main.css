@@ -1,5 +1,6 @@
 @import "dockview/dist/styles/dockview.css";
 @import "tailwindcss";
+@import "tw-animate-css";
 
 :root {
   --radius: 0.5rem;
@@ -11,7 +12,7 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0.007 285.884);
   /* Primary blue color for better aesthetics */
-  --primary: oklch(0.476 0.130 255.508);
+  --primary: oklch(0.476 0.13 255.508);
   --primary-foreground: oklch(0.985 0.003 285.884);
   /* Secondary with subtle zinc tone */
   --secondary: oklch(0.967 0.004 285.884);
@@ -28,11 +29,11 @@
   /* Borders and inputs with subtle tone */
   --border: oklch(0.894 0.005 285.884);
   --input: oklch(0.894 0.005 285.884);
-  --ring: oklch(0.476 0.130 255.508);
+  --ring: oklch(0.476 0.13 255.508);
   /* Chart colors */
   --chart-1: oklch(0.705 0.151 35.179);
   --chart-2: oklch(0.535 0.123 191.455);
-  --chart-3: oklch(0.476 0.130 255.508);
+  --chart-3: oklch(0.476 0.13 255.508);
   --chart-4: oklch(0.775 0.139 84.648);
   --chart-5: oklch(0.741 0.155 320.866);
 }
@@ -114,7 +115,8 @@
     padding: 0;
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
   }
 
   #root {
