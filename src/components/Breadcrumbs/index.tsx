@@ -4,8 +4,16 @@ import {
   ArrowUpIcon,
   ChevronRightIcon,
 } from '@radix-ui/react-icons'
-import { Button, DropdownMenu, Flex, IconButton } from '@radix-ui/themes'
 import type React from 'react'
+import { Button } from ':ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from ':ui/dropdown-menu'
+import { Flex } from ':layout/Flex'
+import { IconButton } from ':layout/IconButton'
 
 interface BreadcrumbsProps {
   onUp?: () => void
@@ -24,13 +32,13 @@ export function Breadcrumbs({
 }: BreadcrumbsProps) {
   return (
     <Flex>
-      <IconButton variant="soft" className="rounded-r-[0]" onClick={onUp}>
+      <IconButton variant="ghost" className="rounded-r-[0]" onClick={onUp}>
         <ArrowUpIcon />
       </IconButton>
-      <IconButton variant="soft" className="rounded-[0]" onClick={onBack}>
+      <IconButton variant="ghost" className="rounded-[0]" onClick={onBack}>
         <ArrowLeftIcon />
       </IconButton>
-      <IconButton variant="soft" className="rounded-l-[0]" onClick={onForward}>
+      <IconButton variant="ghost" className="rounded-l-[0]" onClick={onForward}>
         <ArrowRightIcon />
       </IconButton>
       <Flex className="group/breadcrumbs ml-2 *:rounded-[0]">{children}</Flex>
@@ -57,33 +65,33 @@ export function Breadcrumb({
     <>
       <Button
         className="first:rounded-l-1 last:rounded-r-1"
-        variant="soft"
+        variant="ghost"
         onClick={onClick}
       >
         {name}
       </Button>
       {itemNames.length > 0 && (
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <IconButton
               className="first:rounded-l-1 last:rounded-r-1"
-              variant="soft"
+              variant="ghost"
             >
               <ChevronRightIcon />
             </IconButton>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
             {itemNames.map((itemName) => (
-              <DropdownMenu.Item
+              <DropdownMenuItem
                 key={itemName}
                 onClick={() => onItemClick(itemName)}
                 className={selected === itemName ? 'font-bold' : ''}
               >
                 {itemName}
-              </DropdownMenu.Item>
+              </DropdownMenuItem>
             ))}
-          </DropdownMenu.Content>
-        </DropdownMenu.Root>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
     </>
   )

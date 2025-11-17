@@ -8,16 +8,19 @@ import {
   SkipBack,
   SkipForward,
 } from '@phosphor-icons/react'
-import {
-  Avatar,
-  Button,
-  Card,
-  Flex,
-  IconButton,
-  Text,
-  Tooltip,
-} from '@radix-ui/themes'
 import { useEffect, useState } from 'react'
+import { Avatar, AvatarFallback } from ':ui/avatar'
+import { Button } from ':ui/button'
+import { Card } from ':ui/card'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from ':ui/tooltip'
+import { Flex } from ':layout/Flex'
+import { IconButton } from ':layout/IconButton'
+import { Text } from ':layout/Text'
 
 import usePlayer, { PlayerState } from '~hooks/usePlayer'
 import { type BasicAudioMetadata, getAudioMetadata } from '~lib/musicMetadata'
@@ -77,91 +80,101 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
   const [mb, setMb] = useState<'m' | 'b'>('m')
 
   return (
-    <Card variant="surface">
-      <Flex gap="4" align="center">
-        <Tooltip content="Volume / Pan / Playback Rate">
-          <Button
-            variant="surface"
-            radius="full"
-            size="1"
-            onClick={() => {
-              setVpr(VPR[(VPR.indexOf(vpr) + 1) % VPR.length])
-            }}
-          >
-            {vpr.toUpperCase()}
-          </Button>
-        </Tooltip>
+    <TooltipProvider>
+      <Card>
+        <Flex gap="4" align="center">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                className="rounded-full"
+                size="sm"
+                onClick={() => {
+                  setVpr(VPR[(VPR.indexOf(vpr) + 1) % VPR.length])
+                }}
+              >
+                {vpr.toUpperCase()}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Volume / Pan / Playback Rate</TooltipContent>
+          </Tooltip>
 
-        <Flex direction="column" flexGrow="0" align="end" justify="center">
-          {vpr === 'v' && <VolumeControl value={volume} onChange={setVolume} />}
-          {vpr === 'p' && <PanControl value={pan} onChange={setPan} />}
-          {vpr === 'r' && (
-            <PlaybackRateControl
-              value={playbackRate}
-              onChange={setPlaybackRate}
-            />
-          )}
-        </Flex>
-
-        <Flex gap="3" flexGrow="1">
-          <Avatar variant="solid" fallback="LP" />
-          <Flex flexGrow="1" direction="column">
-            <Text as="div" size="1" weight="medium">
-              {metadata?.title}
-            </Text>
-            <Flex justify="between">
-              <Text as="div" size="1">
-                {metadata?.artists.join(' / ')} - {metadata?.album}
-              </Text>
-              <Text as="div" size="1">
-                {toHmmss(position)} / {toHmmss(duration)}
-              </Text>
-            </Flex>
-            <SeekBar duration={duration} position={position} onChange={seek} />
-          </Flex>
-        </Flex>
-
-        <Flex flexGrow="0" align="center" justify="start" gap="3">
-          {mb === 'm' && (
-            <IconButton size="1" variant="ghost" onClick={onPrevious}>
-              <SkipBack size={20} />
-            </IconButton>
-          )}
-          {mb === 'b' && (
-            <IconButton size="1" variant="ghost" onClick={() => rewind(10)}>
-              <ClockCounterClockwise size={20} />
-            </IconButton>
-          )}
-          <IconButton variant="solid" radius="full" onClick={playPause}>
-            {state === PlayerState.PLAYING ? (
-              <Pause size={24} weight="fill" />
-            ) : (
-              <Play size={24} weight="fill" />
+          <Flex direction="column" flexGrow="0" align="end" justify="center">
+            {vpr === 'v' && <VolumeControl value={volume} onChange={setVolume} />}
+            {vpr === 'p' && <PanControl value={pan} onChange={setPan} />}
+            {vpr === 'r' && (
+              <PlaybackRateControl
+                value={playbackRate}
+                onChange={setPlaybackRate}
+              />
             )}
-          </IconButton>
-          {mb === 'b' && (
-            <IconButton size="1" variant="ghost" onClick={() => forward(10)}>
-              <ClockClockwise size={20} />
-            </IconButton>
-          )}
-          {mb === 'm' && (
-            <IconButton size="1" variant="ghost" onClick={onNext}>
-              <SkipForward size={20} />
-            </IconButton>
-          )}
-        </Flex>
+          </Flex>
 
-        <Tooltip content="Music / Audio book">
-          <IconButton
-            variant="surface"
-            radius="full"
-            size="1"
-            onClick={() => setMb(mb === 'm' ? 'b' : 'm')}
-          >
-            {mb === 'm' ? <MusicNote size={16} /> : <BookOpen size={16} />}
-          </IconButton>
-        </Tooltip>
-      </Flex>
-    </Card>
+          <Flex gap="3" flexGrow="1">
+            <Avatar>
+              <AvatarFallback>LP</AvatarFallback>
+            </Avatar>
+            <Flex flexGrow="1" direction="column">
+              <Text as="div" size="sm" weight="medium">
+                {metadata?.title}
+              </Text>
+              <Flex justify="between">
+                <Text as="div" size="sm">
+                  {metadata?.artists.join(' / ')} - {metadata?.album}
+                </Text>
+                <Text as="div" size="sm">
+                  {toHmmss(position)} / {toHmmss(duration)}
+                </Text>
+              </Flex>
+              <SeekBar duration={duration} position={position} onChange={seek} />
+            </Flex>
+          </Flex>
+
+          <Flex flexGrow="0" align="center" justify="start" gap="3">
+            {mb === 'm' && (
+              <IconButton size="sm" variant="ghost" onClick={onPrevious}>
+                <SkipBack size={20} />
+              </IconButton>
+            )}
+            {mb === 'b' && (
+              <IconButton size="sm" variant="ghost" onClick={() => rewind(10)}>
+                <ClockCounterClockwise size={20} />
+              </IconButton>
+            )}
+            <IconButton variant="default" className="rounded-full" onClick={playPause}>
+              {state === PlayerState.PLAYING ? (
+                <Pause size={24} weight="fill" />
+              ) : (
+                <Play size={24} weight="fill" />
+              )}
+            </IconButton>
+            {mb === 'b' && (
+              <IconButton size="sm" variant="ghost" onClick={() => forward(10)}>
+                <ClockClockwise size={20} />
+              </IconButton>
+            )}
+            {mb === 'm' && (
+              <IconButton size="sm" variant="ghost" onClick={onNext}>
+                <SkipForward size={20} />
+              </IconButton>
+            )}
+          </Flex>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <IconButton
+                variant="outline"
+                className="rounded-full"
+                size="sm"
+                onClick={() => setMb(mb === 'm' ? 'b' : 'm')}
+              >
+                {mb === 'm' ? <MusicNote size={16} /> : <BookOpen size={16} />}
+              </IconButton>
+            </TooltipTrigger>
+            <TooltipContent>Music / Audio book</TooltipContent>
+          </Tooltip>
+        </Flex>
+      </Card>
+    </TooltipProvider>
   )
 }

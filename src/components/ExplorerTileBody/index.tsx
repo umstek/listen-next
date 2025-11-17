@@ -7,8 +7,24 @@ import {
   HardDrive,
   Planet,
 } from '@phosphor-icons/react'
-import { DropdownMenu, IconButton, Tooltip } from '@radix-ui/themes'
 import { useState } from 'react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from ':ui/dropdown-menu'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from ':ui/tooltip'
+import { IconButton } from ':layout/IconButton'
 
 interface TileBodyProps {
   title: string
@@ -31,21 +47,20 @@ export function Thumbnail({
     useState(false)
 
   return (
-    <>
+    <TooltipProvider>
       <NotImplementedDialog
         open={showNotImplementedDialog}
         onOpenChange={setShowNotImplementedDialog}
       />
       <div className="invisible absolute right-4 top-4 group-hover/tile:visible">
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger>
-            <IconButton radius="full" variant="ghost">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <IconButton className="rounded-full" variant="ghost">
               <DotsThree size={24} weight="bold" />
             </IconButton>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
-            <DropdownMenu.Item
-              shortcut="⌘ P"
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation()
                 if (onPlay && kind === 'file') {
@@ -57,63 +72,63 @@ export function Thumbnail({
               disabled={kind === 'directory'}
             >
               Play
-            </DropdownMenu.Item>
-            <DropdownMenu.Item
-              shortcut="⌘ A"
+              <span className="ml-auto text-xs">⌘ P</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
               onClick={() => setShowNotImplementedDialog(true)}
             >
               Add to current playlist
-            </DropdownMenu.Item>
-            <DropdownMenu.Separator />
-            <DropdownMenu.Item
-              shortcut="⌘ F"
+              <span className="ml-auto text-xs">⌘ A</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
               onClick={() => setShowNotImplementedDialog(true)}
             >
               Favorite
-            </DropdownMenu.Item>
+              <span className="ml-auto text-xs">⌘ F</span>
+            </DropdownMenuItem>
 
-            <DropdownMenu.Sub>
-              <DropdownMenu.SubTrigger>Add to playlist</DropdownMenu.SubTrigger>
-              <DropdownMenu.SubContent>
-                <DropdownMenu.Item
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Add to playlist</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem
                   onClick={() => setShowNotImplementedDialog(true)}
                 >
                   Playlist 1
-                </DropdownMenu.Item>
-                <DropdownMenu.Item
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   onClick={() => setShowNotImplementedDialog(true)}
                 >
                   Playlist 2
-                </DropdownMenu.Item>
+                </DropdownMenuItem>
 
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
                   onClick={() => setShowNotImplementedDialog(true)}
                 >
                   More playlists...
-                </DropdownMenu.Item>
-                <DropdownMenu.Item
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   onClick={() => setShowNotImplementedDialog(true)}
                 >
                   Create playlist...
-                </DropdownMenu.Item>
-              </DropdownMenu.SubContent>
-            </DropdownMenu.Sub>
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
 
-            <DropdownMenu.Separator />
-            <DropdownMenu.Item
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
               onClick={() => setShowNotImplementedDialog(true)}
             >
               Hide
-            </DropdownMenu.Item>
-            <DropdownMenu.Item
+            </DropdownMenuItem>
+            <DropdownMenuItem
               onClick={() => setShowNotImplementedDialog(true)}
             >
               Re-index
-            </DropdownMenu.Item>
-            <DropdownMenu.Item
-              shortcut="⌘ ⌫"
-              color="red"
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive"
               onClick={(e) => {
                 e.stopPropagation()
                 if (onDelete) {
@@ -124,9 +139,10 @@ export function Thumbnail({
               }}
             >
               Delete
-            </DropdownMenu.Item>
-          </DropdownMenu.Content>
-        </DropdownMenu.Root>
+              <span className="ml-auto text-xs">⌘ ⌫</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="mt-4 flex flex-col items-center justify-start">
         {kind === 'file' && (
@@ -135,10 +151,13 @@ export function Thumbnail({
         {kind === 'directory' && (
           <FolderSimple className="fill-current" size={64} weight="thin" />
         )}
-        <Tooltip content={title}>
-          <p className="text-sm line-clamp-2 select-none overflow-hidden text-ellipsis break-all">
-            {title}
-          </p>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <p className="text-sm line-clamp-2 select-none overflow-hidden text-ellipsis break-all">
+              {title}
+            </p>
+          </TooltipTrigger>
+          <TooltipContent>{title}</TooltipContent>
         </Tooltip>
       </div>
       <div className="flex w-full justify-center gap-1">
@@ -150,6 +169,6 @@ export function Thumbnail({
           />
         )}
       </div>
-    </>
+    </TooltipProvider>
   )
 }

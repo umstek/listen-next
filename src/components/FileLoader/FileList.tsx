@@ -1,5 +1,4 @@
 import { Play } from '@phosphor-icons/react'
-import { Checkbox, Flex, IconButton, Table } from '@radix-ui/themes'
 import {
   type CellContext,
   createColumnHelper,
@@ -10,6 +9,17 @@ import {
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Checkbox } from ':ui/checkbox'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from ':ui/table'
+import { Flex } from ':layout/Flex'
+import { IconButton } from ':layout/IconButton'
 
 import usePlayer from '~hooks/usePlayer'
 import type { FileEntity, FileSystemEntity } from '~lib/fileLoader'
@@ -71,11 +81,11 @@ type EmptyTableContentProps = {
 
 function EmptyTableContent(props: EmptyTableContentProps) {
   return (
-    <Table.Row>
-      <Table.Cell colSpan={props.length} className="h-24 text-center">
+    <TableRow>
+      <TableCell colSpan={props.length} className="h-24 text-center">
         No results.
-      </Table.Cell>
-    </Table.Row>
+      </TableCell>
+    </TableRow>
   )
 }
 
@@ -165,52 +175,51 @@ export function FileList({
 
   return (
     <div ref={tableContainerRef} className="overflow-auto h-[300px]">
-      <Table.Root>
-        <Table.Header>
+      <Table>
+        <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id}>
+            <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <Table.ColumnHeaderCell key={header.id}>
+                  <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
-                  </Table.ColumnHeaderCell>
+                  </TableHead>
                 )
               })}
-            </Table.Row>
+            </TableRow>
           ))}
-        </Table.Header>
-        <Table.Body>
+        </TableHeader>
+        <TableBody>
           {table.getRowModel().rows?.length ? (
             rowVirtualizer.getVirtualItems().map((virtualRow) => {
               const row = table.getRowModel().rows[virtualRow.index]
               return (
-                <Table.Row
-                  align="center"
+                <TableRow
                   className="group"
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <Table.Cell key={cell.id}>
+                    <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
                       )}
-                    </Table.Cell>
+                    </TableCell>
                   ))}
-                </Table.Row>
+                </TableRow>
               )
             })
           ) : (
             <EmptyTableContent length={columns.length} />
           )}
-        </Table.Body>
-      </Table.Root>
+        </TableBody>
+      </Table>
     </div>
   )
 }

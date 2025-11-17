@@ -1,5 +1,5 @@
 import { TaskStatusDisplay } from ':TaskStatusDisplay'
-import { Flex } from '@radix-ui/themes'
+import { Flex } from ':layout/Flex'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '~store'
 

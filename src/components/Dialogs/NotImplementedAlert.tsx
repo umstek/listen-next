@@ -1,21 +1,29 @@
-import { AlertDialog, Button, Flex } from '@radix-ui/themes'
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+} from ':ui/alert-dialog'
+import { Button } from ':ui/button'
+import { Flex } from ':layout/Flex'
 
 export function NotImplementedDialog(
-  props: React.ComponentProps<typeof AlertDialog.Root>,
+  props: React.ComponentProps<typeof AlertDialog>,
 ) {
   return (
-    <AlertDialog.Root {...props}>
-      <AlertDialog.Content>
-        <AlertDialog.Title>Oops 😞</AlertDialog.Title>
-        <AlertDialog.Description>
+    <AlertDialog {...props}>
+      <AlertDialogContent>
+        <AlertDialogTitle>Oops</AlertDialogTitle>
+        <AlertDialogDescription>
           This feature is not implemented yet.
-        </AlertDialog.Description>
-        <Flex gap="3" mt="4" justify="end">
-          <AlertDialog.Cancel>
+        </AlertDialogDescription>
+        <Flex gap="3" className="mt-4" justify="end">
+          <AlertDialogCancel asChild>
             <Button variant="outline">Okay</Button>
-          </AlertDialog.Cancel>
+          </AlertDialogCancel>
         </Flex>
-      </AlertDialog.Content>
-    </AlertDialog.Root>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

@@ -1,4 +1,5 @@
-import { Flex, Slider } from '@radix-ui/themes'
+import { Slider } from ':ui/slider'
+import { Flex } from ':layout/Flex'
 
 export interface SeekBarProps {
   onChange: (value: number) => void
@@ -10,8 +11,6 @@ export function SeekBar({ onChange, duration, position }: SeekBarProps) {
   return (
     <Flex flexGrow="1">
       <Slider
-        variant="surface"
-        size="1"
         min={0}
         max={duration}
         value={[position]}

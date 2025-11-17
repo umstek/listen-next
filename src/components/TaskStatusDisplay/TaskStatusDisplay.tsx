@@ -1,36 +1,46 @@
-import { Pause, X } from '@phosphor-icons/react'
-import * as Progress from '@radix-ui/react-progress'
-import type { BadgeProps } from '@radix-ui/themes'
-import { Badge, Box, Button, Flex, Tooltip } from '@radix-ui/themes'
-import type { ReactNode } from 'react'
+import { Pause, X } from "@phosphor-icons/react";
+import type { ReactNode } from "react";
+import { Badge } from ":ui/badge";
+import { Button } from ":ui/button";
+import { Progress } from ":ui/progress";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from ":ui/tooltip";
+import { Box } from ":layout/Box";
+import { Flex } from ":layout/Flex";
+
+type BadgeColor = "default" | "secondary" | "destructive" | "outline";
 
 const statuses = [
-  'pending',
-  'in-progress',
-  'paused',
-  'failed',
-  'success',
-] as const
+  "pending",
+  "in-progress",
+  "paused",
+  "failed",
+  "success",
+] as const;
 
-const statusToColor: Record<(typeof statuses)[number], BadgeProps['color']> = {
-  pending: 'gray',
-  'in-progress': 'blue',
-  paused: 'yellow',
-  failed: 'red',
-  success: 'green',
-}
+const statusToColor: Record<(typeof statuses)[number], BadgeColor> = {
+  pending: "secondary",
+  "in-progress": "default",
+  paused: "outline",
+  failed: "destructive",
+  success: "default",
+};
 
 export interface TaskStatusDefinition {
-  id: string
-  display: ReactNode
-  partsCount: number
-  partsDone: number
-  status: (typeof statuses)[number]
+  id: string;
+  display: ReactNode;
+  partsCount: number;
+  partsDone: number;
+  status: (typeof statuses)[number];
 }
 
 interface TaskStatusDisplayProps extends TaskStatusDefinition {
-  onPause?: () => void
-  onAbort?: () => void
+  onPause?: () => void;
+  onAbort?: () => void;
 }
 
 export function TaskStatusDisplay({
@@ -43,50 +53,56 @@ export function TaskStatusDisplay({
   onAbort,
 }: TaskStatusDisplayProps) {
   const progress =
-    partsCount > 0 ? Math.floor((partsDone / partsCount) * 100) : 0
+    partsCount > 0 ? Math.floor((partsDone / partsCount) * 100) : 0;
 
   return (
-    <Tooltip
-      id={`task-status-display-${id}`}
-      content={`${display}: ${status} (${progress}%)`}
-    >
-      <Box width="max-content">
-        <Flex direction="column" gap="2">
-          <Flex gap="1">
-            <Box>
-              <small>{display}</small>
-            </Box>
-            <Badge radius="full" size="1" color={statusToColor[status]}>
-              {status}
-            </Badge>
-            {onPause && (
-              <Button size="1" radius="full" variant="soft" onClick={onPause}>
-                <Pause className="py-1" />
-              </Button>
-            )}
-            {onAbort && (
-              <Button size="1" radius="full" variant="soft" onClick={onAbort}>
-                <X className="py-1" />
-              </Button>
-            )}
-          </Flex>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Box className="w-max">
+            <Flex direction="column" gap="2">
+              <Flex gap="1">
+                <Box>
+                  <small>{display}</small>
+                </Box>
+                <Badge className="rounded-full" variant={statusToColor[status]}>
+                  {status}
+                </Badge>
+                {onPause && (
+                  <Button
+                    size="sm"
+                    className="rounded-full"
+                    variant="ghost"
+                    onClick={onPause}
+                  >
+                    <Pause className="py-1" />
+                  </Button>
+                )}
+                {onAbort && (
+                  <Button
+                    size="sm"
+                    className="rounded-full"
+                    variant="ghost"
+                    onClick={onAbort}
+                  >
+                    <X className="py-1" />
+                  </Button>
+                )}
+              </Flex>
 
-          <Progress.Root
-            className="relative overflow-hidden bg-accent-4 rounded-6 w-full h-rx-2"
-            style={{
-              // Fix overflow clipping in Safari
-              // https://gist.github.com/domske/b66047671c780a238b51c51ffde8d3a0
-              transform: 'translateZ(0)',
-            }}
-            value={progress}
-          >
-            <Progress.Indicator
-              className="bg-accent-9 w-full h-full transition-transform duration-500 ease-out"
-              style={{ transform: `translateX(-${100 - progress}%)` }}
-            />
-          </Progress.Root>
-        </Flex>
-      </Box>
-    </Tooltip>
-  )
+              <Progress value={progress} className="w-full" />
+            </Flex>
+          </Box>
+        </TooltipTrigger>
+        <TooltipContent>
+          <div className="flex flex-col gap-1">
+            <span>{display}</span>
+            <span>
+              {status} ({progress}%)
+            </span>
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 }

@@ -1,84 +1,145 @@
-import { Monitor, Moon, Sun } from '@phosphor-icons/react'
-import { Button, DropdownMenu, Flex, Tooltip } from '@radix-ui/themes'
-import { useEffect, useState } from 'react'
+import { Monitor, Moon, Sun } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
+import { Button } from ":ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from ":ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from ":ui/tooltip";
+import { Flex } from ":layout";
 
-export type ThemePreference = 'light' | 'dark' | 'auto'
+export type ThemePreference = "light" | "dark" | "auto";
 
-const THEME_STORAGE_KEY = 'listen-theme-preference'
+const THEME_STORAGE_KEY = "listen-theme-preference";
+
+// Custom event for theme changes
+const THEME_CHANGE_EVENT = "theme-preference-change";
 
 export function useThemePreference() {
   const [theme, setTheme] = useState<ThemePreference>(() => {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY)
+    // Guard against SSR/test environments
+    if (typeof window === "undefined") {
+      return "light";
+    }
+
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
 
     // Validate stored value against allowed themes
-    const validThemes: ThemePreference[] = ['light', 'dark', 'auto']
+    const validThemes: ThemePreference[] = ["light", "dark", "auto"];
     if (!stored || !validThemes.includes(stored as ThemePreference)) {
       // Only set default if missing or invalid
-      localStorage.setItem(THEME_STORAGE_KEY, 'light')
-      return 'light'
+      localStorage.setItem(THEME_STORAGE_KEY, "light");
+      return "light";
     }
 
     // Preserve valid stored value (including 'auto')
-    return stored as ThemePreference
-  })
+    return stored as ThemePreference;
+  });
 
   useEffect(() => {
-    localStorage.setItem(THEME_STORAGE_KEY, theme)
-  }, [theme])
+    // Guard against SSR/test environments
+    if (typeof window === "undefined") {
+      return;
+    }
 
-  return [theme, setTheme] as const
+    // Listen for theme changes from other components
+    const handleThemeChange = (e: CustomEvent<ThemePreference>) => {
+      setTheme(e.detail);
+    };
+
+    window.addEventListener(
+      THEME_CHANGE_EVENT,
+      handleThemeChange as EventListener
+    );
+    return () => {
+      window.removeEventListener(
+        THEME_CHANGE_EVENT,
+        handleThemeChange as EventListener
+      );
+    };
+  }, []);
+
+  const updateTheme = (newTheme: ThemePreference) => {
+    // Guard against SSR/test environments
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    setTheme(newTheme);
+    // Dispatch event to notify other components
+    window.dispatchEvent(
+      new CustomEvent(THEME_CHANGE_EVENT, { detail: newTheme })
+    );
+  };
+
+  return [theme, updateTheme] as const;
 }
 
 export function ThemeSwitcher() {
-  const [theme, setTheme] = useThemePreference()
+  const [theme, updateTheme] = useThemePreference();
 
   const icons = {
     light: <Sun size={16} weight="fill" />,
     dark: <Moon size={16} weight="fill" />,
     auto: <Monitor size={16} weight="fill" />,
-  }
+  };
 
   const _labels = {
-    light: 'Light',
-    dark: 'Dark',
-    auto: 'Auto',
-  }
+    light: "Light",
+    dark: "Dark",
+    auto: "Auto",
+  };
 
   return (
-    <DropdownMenu.Root>
-      <Tooltip content="Change theme">
-        <DropdownMenu.Trigger>
-          <Button variant="ghost" size="2">
-            {icons[theme]}
-          </Button>
-        </DropdownMenu.Trigger>
-      </Tooltip>
-      <DropdownMenu.Content>
-        <DropdownMenu.Item
-          onClick={() => setTheme('auto')}
-          className={theme === 'auto' ? 'font-bold' : ''}
+    <DropdownMenu>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                {icons[theme]}
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Change theme</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <DropdownMenuContent>
+        <DropdownMenuItem
+          onClick={() => updateTheme("auto")}
+          className={theme === "auto" ? "font-bold" : ""}
         >
           <Flex align="center" gap="2">
             {icons.auto} Auto (System)
           </Flex>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item
-          onClick={() => setTheme('light')}
-          className={theme === 'light' ? 'font-bold' : ''}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => updateTheme("light")}
+          className={theme === "light" ? "font-bold" : ""}
         >
           <Flex align="center" gap="2">
             {icons.light} Light
           </Flex>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item
-          onClick={() => setTheme('dark')}
-          className={theme === 'dark' ? 'font-bold' : ''}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => updateTheme("dark")}
+          className={theme === "dark" ? "font-bold" : ""}
         >
           <Flex align="center" gap="2">
             {icons.dark} Dark
           </Flex>
-        </DropdownMenu.Item>
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
-  )
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }
