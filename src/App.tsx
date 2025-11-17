@@ -1,3 +1,4 @@
+import React from 'react'
 import { ThemeSwitcher, useThemePreference } from ':ThemeSwitcher'
 import {
   DockviewReact,
@@ -29,10 +30,26 @@ const components = {
 
 function App() {
   const [theme] = useThemePreference()
+  const [systemTheme, setSystemTheme] = React.useState<'light' | 'dark'>(() => {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  })
+
+  // Listen for system theme changes
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemTheme(e.matches ? 'dark' : 'light')
+    }
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
+
+  // Determine effective theme (resolve 'auto' to actual theme)
+  const effectiveTheme = theme === 'auto' ? systemTheme : theme
 
   // Determine dockview theme class
   const dockviewTheme =
-    theme === 'dark' ? 'dockview-theme-dark' : 'dockview-theme-light'
+    effectiveTheme === 'dark' ? 'dockview-theme-dark' : 'dockview-theme-light'
 
   const onReady = (event: DockviewReadyEvent) => {
     const explorerPanel = event.api.addPanel({

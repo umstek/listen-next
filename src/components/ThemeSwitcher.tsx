@@ -19,6 +19,9 @@ export type ThemePreference = 'light' | 'dark' | 'auto'
 
 const THEME_STORAGE_KEY = 'listen-theme-preference'
 
+// Custom event for theme changes
+const THEME_CHANGE_EVENT = 'theme-preference-change'
+
 export function useThemePreference() {
   const [theme, setTheme] = useState<ThemePreference>(() => {
     const stored = localStorage.getItem(THEME_STORAGE_KEY)
@@ -36,10 +39,25 @@ export function useThemePreference() {
   })
 
   useEffect(() => {
-    localStorage.setItem(THEME_STORAGE_KEY, theme)
-  }, [theme])
+    // Listen for theme changes from other components
+    const handleThemeChange = (e: CustomEvent<ThemePreference>) => {
+      setTheme(e.detail)
+    }
 
-  return [theme, setTheme] as const
+    window.addEventListener(THEME_CHANGE_EVENT, handleThemeChange as EventListener)
+    return () => {
+      window.removeEventListener(THEME_CHANGE_EVENT, handleThemeChange as EventListener)
+    }
+  }, [])
+
+  const updateTheme = (newTheme: ThemePreference) => {
+    localStorage.setItem(THEME_STORAGE_KEY, newTheme)
+    setTheme(newTheme)
+    // Dispatch event to notify other components
+    window.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT, { detail: newTheme }))
+  }
+
+  return [theme, updateTheme] as const
 }
 
 export function ThemeSwitcher() {
