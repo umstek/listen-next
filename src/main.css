@@ -1,6 +1,5 @@
 @import "dockview/dist/styles/dockview.css";
 @import "tailwindcss";
-@import "tw-animate-css";
 
 :root {
   --radius: 0.5rem;
