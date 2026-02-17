@@ -24,7 +24,7 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "dexie": "^4.2.1",
-        "dockview": "^4.11.0",
+        "dockview": "^5.0.0",
         "events": "^3.3.0",
         "music-metadata": "^10.7.0",
         "nanoid": "^5.1.6",
@@ -559,9 +559,9 @@
 
     "diffie-hellman": ["diffie-hellman@5.0.3", "", { "dependencies": { "bn.js": "^4.1.0", "miller-rabin": "^4.0.0", "randombytes": "^2.0.0" } }, "sha512-kqag/Nl+f3GwyK25fhUMYj81BUOrZ9IuJsjIcDE5icNM9FJHAVm3VcUDxdLPoQtTuUylWm6ZIknYJwwaPxsUzg=="],
 
-    "dockview": ["dockview@4.11.0", "", { "dependencies": { "dockview-core": "^4.11.0" }, "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-C8QQPsK2SSfKgEFzC9vRADLok2YIr/AKdKRvnzWxo6SkPpH4t7oJvZJr2egL0bna1iUJaVcrWJEMZcI6slnsNA=="],
+    "dockview": ["dockview@5.0.0", "", { "dependencies": { "dockview-core": "^5.0.0" }, "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-GPUMnhaZ7pH28Ai6HPEu4cecp9xNSp4tMtDn/In7sYCDhTztBbbLEK3BqbAwiJBEUXadnZ7j01BaZkz9ndJJ7A=="],
 
-    "dockview-core": ["dockview-core@4.11.0", "", {}, "sha512-v7I9fjJ7mNsRCrtN4fLeopc46mufqUEie7hszJ4m37f3zWTnj73herI30021+v5BIxgM3Et/S95fI+ibdYZbQg=="],
+    "dockview-core": ["dockview-core@5.0.0", "", {}, "sha512-bUgH/e/PTVZ/5Y97QvF30eAs67HPzTQUbcVMojwsWX/RKys5bQCblGMvxPu+KVx+jes2JIhepFvjMepCyz1uNQ=="],
 
     "domain-browser": ["domain-browser@4.22.0", "", {}, "sha512-IGBwjF7tNk3cwypFNH/7bfzBcgSCbaMOD3GsaY1AU/JRrnHnYgEM0+9kQt52iZxjNsjBtJYtao146V+f8jFZNw=="],
 
