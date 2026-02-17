@@ -33,7 +33,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dexie": "^4.2.1",
-    "dockview": "^4.11.0",
+    "dockview": "^5.0.0",
     "events": "^3.3.0",
     "music-metadata": "^10.7.0",
     "nanoid": "^5.1.6",
