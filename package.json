@@ -27,7 +27,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@reduxjs/toolkit": "^2.10.1",
-    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-table": "^9.0.0",
     "@tanstack/react-virtual": "^3.13.12",
     "camelcase": "^9.0.0",
     "class-variance-authority": "^0.7.1",
