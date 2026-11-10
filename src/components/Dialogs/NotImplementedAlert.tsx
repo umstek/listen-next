@@ -1,3 +1,4 @@
+import { Flex } from ':layout/Flex'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -6,7 +7,6 @@ import {
   AlertDialogTitle,
 } from ':ui/alert-dialog'
 import { Button } from ':ui/button'
-import { Flex } from ':layout/Flex'
 
 export function NotImplementedDialog(
   props: React.ComponentProps<typeof AlertDialog>,

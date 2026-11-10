@@ -1,50 +1,49 @@
-import { Pause, X } from "@phosphor-icons/react";
-import type { ReactNode } from "react";
-import { Badge } from ":ui/badge";
-import { Button } from ":ui/button";
-import { Progress } from ":ui/progress";
+import { Box } from ':layout/Box'
+import { Flex } from ':layout/Flex'
+import { Badge } from ':ui/badge'
+import { Button } from ':ui/button'
+import { Progress } from ':ui/progress'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from ":ui/tooltip";
-import { Box } from ":layout/Box";
-import { Flex } from ":layout/Flex";
+} from ':ui/tooltip'
+import { Pause, X } from '@phosphor-icons/react'
+import type { ReactNode } from 'react'
 
-type BadgeColor = "default" | "secondary" | "destructive" | "outline";
+type BadgeColor = 'default' | 'secondary' | 'destructive' | 'outline'
 
 const statuses = [
-  "pending",
-  "in-progress",
-  "paused",
-  "failed",
-  "success",
-] as const;
+  'pending',
+  'in-progress',
+  'paused',
+  'failed',
+  'success',
+] as const
 
 const statusToColor: Record<(typeof statuses)[number], BadgeColor> = {
-  pending: "secondary",
-  "in-progress": "default",
-  paused: "outline",
-  failed: "destructive",
-  success: "default",
-};
+  pending: 'secondary',
+  'in-progress': 'default',
+  paused: 'outline',
+  failed: 'destructive',
+  success: 'default',
+}
 
 export interface TaskStatusDefinition {
-  id: string;
-  display: ReactNode;
-  partsCount: number;
-  partsDone: number;
-  status: (typeof statuses)[number];
+  id: string
+  display: ReactNode
+  partsCount: number
+  partsDone: number
+  status: (typeof statuses)[number]
 }
 
 interface TaskStatusDisplayProps extends TaskStatusDefinition {
-  onPause?: () => void;
-  onAbort?: () => void;
+  onPause?: () => void
+  onAbort?: () => void
 }
 
 export function TaskStatusDisplay({
-  id,
   display,
   partsCount,
   partsDone,
@@ -53,7 +52,7 @@ export function TaskStatusDisplay({
   onAbort,
 }: TaskStatusDisplayProps) {
   const progress =
-    partsCount > 0 ? Math.floor((partsDone / partsCount) * 100) : 0;
+    partsCount > 0 ? Math.floor((partsDone / partsCount) * 100) : 0
 
   return (
     <TooltipProvider>
@@ -104,5 +103,5 @@ export function TaskStatusDisplay({
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  );
+  )
 }

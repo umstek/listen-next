@@ -41,29 +41,35 @@ Listen-Next is a client-side music player that runs entirely in the browser usin
 ## Technology Stack
 
 ### Frontend Framework
+
 - **React 19.2** - UI library
 - **TypeScript 5.9** - Type safety
 - **Vite 7.2** - Build tool and dev server
 
 ### UI Components
+
 - **shadcn/ui** - Component library built on Radix UI primitives (see [CLAUDE.md](./CLAUDE.md))
 - **Tailwind CSS 4.1** - Utility-first styling with OKLCH colors
 - **Phosphor Icons 2.1** - Icon library
 - **Dockview 4.11** - Panel layout system
 
 ### State Management
+
 - **Redux Toolkit 2.10** - Global state (playlist, tasks)
 
 ### Data Tables
+
 - **TanStack React Table 8.21** - Table component
 - **TanStack React Virtual 3.13** - Virtualization
 
 ### Storage and Metadata
+
 - **Dexie 4.2** - IndexedDB wrapper
 - **music-metadata 10.9** - Audio metadata extraction
 - **Zod 4.1** - Schema validation
 
 ### Web APIs
+
 - **Web Audio API** - Audio playback and processing
 - **File System Access API** - Local file access
 - **IndexedDB** - Client-side database
@@ -71,6 +77,7 @@ Listen-Next is a client-side music player that runs entirely in the browser usin
 - **Web Workers** - Background file processing
 
 ### Development Tools
+
 - **ESLint 9.39** - Linting
 - **Prettier 3.6** - Code formatting
 - **Vitest 4.0** - Testing framework
@@ -128,17 +135,20 @@ Listen-Next is a client-side music player that runs entirely in the browser usin
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/umstek/listen-next.git
    cd listen-next
    ```
 
 2. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 3. Approve build scripts (if prompted):
+
    ```bash
    pnpm approve-builds
    ```
@@ -288,14 +298,15 @@ The `AudioPlayer` class (src/lib/AudioPlayer.ts) wraps the Web Audio API:
 - **Analyser Node** - Enables visualization (not yet used in UI)
 
 Usage:
+
 ```typescript
-import { usePlayer } from '~hooks/usePlayer';
+import { usePlayer } from '~hooks/usePlayer'
 
 function MyComponent() {
-  const { play, pause, stop, seek, setVolume } = usePlayer();
+  const { play, pause, stop, seek, setVolume } = usePlayer()
 
-  play({ url: 'blob:...', seek: 0 });
-  setVolume(0.8);
+  play({ url: 'blob:...', seek: 0 })
+  setVolume(0.8)
 }
 ```
 
@@ -326,6 +337,7 @@ The app supports three theme modes via `ThemeSwitcher` component:
 - **Auto Mode**: Follows system preference
 
 **Implementation Details:**
+
 - Theme preference stored in localStorage
 - Applied to both main app and individual dockview panels via `PanelWrapper`
 - Dockview theme class changes dynamically (`dockview-theme-light` / `dockview-theme-dark`)
@@ -377,12 +389,14 @@ See `src/modules/explorer/ExplorerView.tsx:127-142` for delete handler.
 ### Playlist Slice (src/modules/playlist/playlistSlice.ts)
 
 **Actions:**
+
 - `setItems(urls: string[])` - Replace entire playlist
 - `appendItems(urls: string[])` - Add to end of playlist
 - `clearItems()` - Remove all tracks
 - `setActiveIndex(index: number)` - Set currently playing track
 
 **Selectors:**
+
 - `selectPlaylist(state)` - Get full playlist state
 - `selectPlaylistItems(state)` - Get array of URLs
 - `selectActiveIndex(state)` - Get active track index
@@ -390,11 +404,13 @@ See `src/modules/explorer/ExplorerView.tsx:127-142` for delete handler.
 ### Tasks Slice (src/modules/tasks/tasksSlice.ts)
 
 **Actions:**
+
 - `addTask(task)` - Add new background task
 - `updateTask({ id, changes })` - Update task status/progress
 - `removeTask(id)` - Remove completed task
 
 **Task Status:**
+
 - `pending` - Waiting to start
 - `in_progress` - Currently running
 - `completed` - Finished successfully
@@ -407,9 +423,11 @@ See `src/modules/explorer/ExplorerView.tsx:127-142` for delete handler.
 ### IndexedDB Tables (Dexie)
 
 #### 1. **audioMetadata**
+
 Stores complete metadata for each audio file.
 
 **Schema (src/models/AudioMetadata.ts):**
+
 ```typescript
 {
   id: string,              // Unique ID (nanoid)
@@ -426,13 +444,16 @@ Stores complete metadata for each audio file.
 ```
 
 **Indexes:**
+
 - `++id` (auto-incrementing primary key)
 - None yet (see TODO.md for planned indexes on artist, album, genre)
 
 #### 2. **fileSystemEntities**
+
 Stores references to file system entries (sandbox or linked files).
 
 **Schema (src/models/FileMetadata.ts):**
+
 ```typescript
 {
   id: string,                         // Unique ID
@@ -445,9 +466,11 @@ Stores references to file system entries (sandbox or linked files).
 ```
 
 #### 3. **playlists**
+
 Stores user-created playlists (not yet used in UI).
 
 **Schema (src/models/Playlist.ts):**
+
 ```typescript
 {
   id: string,
@@ -459,9 +482,11 @@ Stores user-created playlists (not yet used in UI).
 ```
 
 #### 4. **playHistory**
+
 Stores play log entries (not yet used).
 
 **Schema (src/models/PlayLogEntry.ts):**
+
 ```typescript
 {
   id: string,
@@ -477,19 +502,19 @@ Stores play log entries (not yet used).
 Example queries in `src/lib/db.ts`:
 
 ```typescript
-import { db } from '~lib/db';
+import { db } from '~lib/db'
 
 // Add metadata
-await db.audioMetadata.add(metadata);
+await db.audioMetadata.add(metadata)
 
 // Query by ID
-const track = await db.audioMetadata.get(id);
+const track = await db.audioMetadata.get(id)
 
 // Query all
-const all = await db.audioMetadata.toArray();
+const all = await db.audioMetadata.toArray()
 
 // Delete
-await db.audioMetadata.delete(id);
+await db.audioMetadata.delete(id)
 ```
 
 ---
@@ -525,22 +550,22 @@ await db.audioMetadata.delete(id);
 **Usage in main thread**:
 
 ```typescript
-import worker from '~workers/indexAndCopyTask.worker.ts?worker';
+import worker from '~workers/indexAndCopyTask.worker.ts?worker'
 
-const taskWorker = new worker();
+const taskWorker = new worker()
 
 taskWorker.postMessage({
   id: nanoid(),
   files: [file1, file2],
-  directories: []
-});
+  directories: [],
+})
 
 taskWorker.addEventListener('message', (e) => {
-  const { type, progress } = e.data;
+  const { type, progress } = e.data
   if (type === 'progress') {
-    console.log(`Progress: ${progress}%`);
+    console.log(`Progress: ${progress}%`)
   }
-});
+})
 ```
 
 ---
@@ -564,15 +589,15 @@ pnpm test:ui     # Interactive UI
 ### Example Test (src/lib/Explorer.test.ts)
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { Explorer } from './Explorer';
+import { describe, it, expect } from 'vitest'
+import { Explorer } from './Explorer'
 
 describe('Explorer', () => {
   it('should initialize', () => {
-    const explorer = new Explorer();
-    expect(explorer).toBeDefined();
-  });
-});
+    const explorer = new Explorer()
+    expect(explorer).toBeDefined()
+  })
+})
 ```
 
 ### Testing Best Practices
@@ -603,27 +628,30 @@ describe('Explorer', () => {
 The app uses Pino for structured logging:
 
 ```typescript
-import logger from '~util/logger';
+import logger from '~util/logger'
 
-logger.info({ foo: 'bar' }, 'Message');
-logger.error({ err }, 'Error occurred');
+logger.info({ foo: 'bar' }, 'Message')
+logger.error({ err }, 'Error occurred')
 ```
 
 ### Common Debug Scenarios
 
 #### Audio not playing?
+
 1. Check browser console for autoplay policy errors
 2. Verify URL is a valid blob or file URL
 3. Check AudioPlayer state in Redux DevTools
 4. Verify file format is supported
 
 #### Files not loading?
+
 1. Check File System Access API permissions
 2. Verify file extensions match config.supportedExtensions
 3. Check IndexedDB for stored metadata
 4. Look for errors in worker console logs
 
 #### UI not updating?
+
 1. Check Redux state in DevTools
 2. Verify component is subscribed to correct slice
 3. Check React DevTools for re-render issues
@@ -659,8 +687,8 @@ logger.error({ err }, 'Error occurred');
 Use path aliases defined in tsconfig.json:
 
 ```typescript
-import { db } from '~lib/db';                // ~* = src/*
-import { Player } from ':Player';            // :* = src/components/*
+import { db } from '~lib/db' // ~* = src/*
+import { Player } from ':Player' // :* = src/components/*
 ```
 
 ### Formatting
@@ -736,6 +764,7 @@ See `src/App.tsx` for implementation pattern.
 ### Workflow
 
 1. **Create a branch** from `main`:
+
    ```bash
    git checkout -b feature/my-feature
    ```
@@ -743,28 +772,33 @@ See `src/App.tsx` for implementation pattern.
 2. **Make changes** and test locally
 
 3. **Format and lint**:
+
    ```bash
    pnpm format
    pnpm lint
    ```
 
 4. **Run tests**:
+
    ```bash
    pnpm test
    ```
 
 5. **Build** to verify no errors:
+
    ```bash
    pnpm build
    ```
 
 6. **Commit** with descriptive message:
+
    ```bash
    git add .
    git commit -m "feat: add playlist management UI"
    ```
 
 7. **Push** and create pull request:
+
    ```bash
    git push origin feature/my-feature
    ```
@@ -781,6 +815,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` - Maintenance (deps, config)
 
 Examples:
+
 ```
 feat: implement playlist management UI
 fix: resolve metadata parsing error for M4A files

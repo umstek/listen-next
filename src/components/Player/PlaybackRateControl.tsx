@@ -1,4 +1,4 @@
-import { PersonSimpleRun } from '@phosphor-icons/react'
+import { Flex } from ':layout/Flex'
 import {
   Select,
   SelectContent,
@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from ':ui/select'
-import { Flex } from ':layout/Flex'
+import { PersonSimpleRun } from '@phosphor-icons/react'
 
 export interface PlaybackRateControlProps {
   onChange: (value: number) => void

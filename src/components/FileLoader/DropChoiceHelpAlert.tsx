@@ -1,5 +1,5 @@
-import { QuestionMarkCircledIcon } from '@radix-ui/react-icons'
 import { Alert, AlertDescription, AlertTitle } from ':ui/alert'
+import { QuestionMarkCircledIcon } from '@radix-ui/react-icons'
 
 export function DropChoiceHelpAlert() {
   return (

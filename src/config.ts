@@ -7,9 +7,10 @@ const defaultSupportedExtensions =
 const Env = z.object({
   supportedExtensions: z.preprocess(
     (val) =>
-      (typeof val === 'string' && val.length > 0 ? val : defaultSupportedExtensions).split(
-        ',',
-      ),
+      (typeof val === 'string' && val.length > 0
+        ? val
+        : defaultSupportedExtensions
+      ).split(','),
     z.string().startsWith('.').array(),
   ),
 })

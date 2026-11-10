@@ -1,3 +1,15 @@
+import { Flex } from ':layout/Flex'
+import { IconButton } from ':layout/IconButton'
+import { Text } from ':layout/Text'
+import { Avatar, AvatarFallback } from ':ui/avatar'
+import { Button } from ':ui/button'
+import { Card } from ':ui/card'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from ':ui/tooltip'
 import {
   BookOpen,
   ClockClockwise,
@@ -9,18 +21,6 @@ import {
   SkipForward,
 } from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
-import { Avatar, AvatarFallback } from ':ui/avatar'
-import { Button } from ':ui/button'
-import { Card } from ':ui/card'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from ':ui/tooltip'
-import { Flex } from ':layout/Flex'
-import { IconButton } from ':layout/IconButton'
-import { Text } from ':layout/Text'
 
 import usePlayer, { PlayerState } from '~hooks/usePlayer'
 import { type BasicAudioMetadata, getAudioMetadata } from '~lib/musicMetadata'
@@ -100,7 +100,9 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
           </Tooltip>
 
           <Flex direction="column" flexGrow="0" align="end" justify="center">
-            {vpr === 'v' && <VolumeControl value={volume} onChange={setVolume} />}
+            {vpr === 'v' && (
+              <VolumeControl value={volume} onChange={setVolume} />
+            )}
             {vpr === 'p' && <PanControl value={pan} onChange={setPan} />}
             {vpr === 'r' && (
               <PlaybackRateControl
@@ -126,7 +128,11 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
                   {toHmmss(position)} / {toHmmss(duration)}
                 </Text>
               </Flex>
-              <SeekBar duration={duration} position={position} onChange={seek} />
+              <SeekBar
+                duration={duration}
+                position={position}
+                onChange={seek}
+              />
             </Flex>
           </Flex>
 
@@ -141,7 +147,11 @@ export function Player({ url, onPrevious, onNext }: PlayerProps) {
                 <ClockCounterClockwise size={20} />
               </IconButton>
             )}
-            <IconButton variant="default" className="rounded-full" onClick={playPause}>
+            <IconButton
+              variant="default"
+              className="rounded-full"
+              onClick={playPause}
+            >
               {state === PlayerState.PLAYING ? (
                 <Pause size={24} weight="fill" />
               ) : (

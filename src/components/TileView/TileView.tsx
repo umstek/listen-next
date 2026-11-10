@@ -58,14 +58,15 @@ export function TileView<T>({
 
   useLayoutEffect(() => {
     if (!mode) return
-    if (!selectionBoxRef.current) return
+    const selectionBox = selectionBoxRef.current
+    if (!selectionBox) return
     if (!itemRefs.current) return
 
     const overlappingItems = Object.entries(itemRefs.current)
       .filter(([, ref]) =>
         overlaps(
           ref.getBoundingClientRect(),
-          selectionBoxRef.current!.getBoundingClientRect(),
+          selectionBox.getBoundingClientRect(),
         ),
       )
       .map(([key]) => key)

@@ -198,6 +198,7 @@ Currently, Listen-Next plays individual tracks. Playlist management is planned f
 ### File Source Indicators
 
 Small icons show where files are stored:
+
 - **Browser icon**: Sandboxed copy in browser
 - **Hard drive icon**: Linked to local file system
 - **Planet icon**: Remote file (future feature)
@@ -247,15 +248,15 @@ Small icons show where files are stored:
 
 ### Choosing the Right Option
 
-| Scenario | Recommended Option |
-|----------|-------------------|
-| Trying out the app | Play Now |
-| Small-medium library (<10GB) | Copy to Browser |
-| Large library (>10GB) | Store as Links |
-| Don't want to duplicate files | Store as Links |
-| Want fastest performance | Copy to Browser |
-| Portable library (works anywhere) | Copy to Browser |
-| Files frequently updated | Store as Links |
+| Scenario                          | Recommended Option |
+| --------------------------------- | ------------------ |
+| Trying out the app                | Play Now           |
+| Small-medium library (<10GB)      | Copy to Browser    |
+| Large library (>10GB)             | Store as Links     |
+| Don't want to duplicate files     | Store as Links     |
+| Want fastest performance          | Copy to Browser    |
+| Portable library (works anywhere) | Copy to Browser    |
+| Files frequently updated          | Store as Links     |
 
 ---
 
@@ -295,6 +296,7 @@ Small icons show where files are stored:
 - Default: 1x (normal speed)
 
 **Use cases**:
+
 - Speed up audiobooks (1.5x - 2x)
 - Slow down for transcription (0.5x - 0.75x)
 - Time-stretching music (maintains pitch)
@@ -318,6 +320,7 @@ Listen-Next has two playback modes optimized for different content:
 **Best for**: Songs, albums, playlists
 
 Features:
+
 - ◀◀ Previous track button
 - ▶▶ Next track button
 - Album artwork (if available)
@@ -328,6 +331,7 @@ Features:
 **Best for**: Audiobooks, podcasts, long-form audio
 
 Features:
+
 - ⏪ Rewind 10 seconds
 - ⏩ Forward 10 seconds
 - Chapter markers (if available)
@@ -378,18 +382,18 @@ The Tasks panel shows background operations:
 
 **Note**: Keyboard shortcuts are currently being developed. The following will be available in a future update:
 
-| Shortcut | Action |
-|----------|--------|
-| **Space** | Play/Pause |
-| **⌘/Ctrl+O** | Open file picker |
-| **⌘/Ctrl+P** | Play selected file |
-| **⌘/Ctrl+A** | Add to current playlist |
-| **⌘/Ctrl+F** | Focus search |
-| **→** | Next track (music) / Forward 10s (audiobook) |
-| **←** | Previous track (music) / Rewind 10s (audiobook) |
-| **↑** | Volume up |
-| **↓** | Volume down |
-| **?** | Show keyboard shortcuts help |
+| Shortcut     | Action                                          |
+| ------------ | ----------------------------------------------- |
+| **Space**    | Play/Pause                                      |
+| **⌘/Ctrl+O** | Open file picker                                |
+| **⌘/Ctrl+P** | Play selected file                              |
+| **⌘/Ctrl+A** | Add to current playlist                         |
+| **⌘/Ctrl+F** | Focus search                                    |
+| **→**        | Next track (music) / Forward 10s (audiobook)    |
+| **←**        | Previous track (music) / Rewind 10s (audiobook) |
+| **↑**        | Volume up                                       |
+| **↓**        | Volume down                                     |
+| **?**        | Show keyboard shortcuts help                    |
 
 See [TODO.md](./TODO.md) - Priority 2.1 for development status.
 
@@ -402,6 +406,7 @@ See [TODO.md](./TODO.md) - Priority 2.1 for development status.
 **Issue**: Clicking play does nothing or shows error.
 
 **Solutions**:
+
 1. **Check format**: Ensure file is a supported audio format
 2. **Browser autoplay**: Click play button (browsers block autoplay without user interaction)
 3. **File access**: If using "Store as Links", grant file access permission
@@ -412,6 +417,7 @@ See [TODO.md](./TODO.md) - Priority 2.1 for development status.
 **Issue**: Added files don't appear in Explorer.
 
 **Solutions**:
+
 1. **Check storage**: Ensure you chose "Copy to Browser" or "Store as Links" (not "Play Now")
 2. **Wait for indexing**: Check Tasks panel for progress
 3. **Refresh**: Reload the page
@@ -430,6 +436,7 @@ See [TODO.md](./TODO.md) - Priority 2.1 for development status.
 **Issue**: App is sluggish or unresponsive.
 
 **Solutions**:
+
 1. **Reduce file count**: Add files in smaller batches
 2. **Close other tabs**: Free up browser memory
 3. **Check Tasks panel**: Wait for background tasks to finish
@@ -440,6 +447,7 @@ See [TODO.md](./TODO.md) - Priority 2.1 for development status.
 **Issue**: Error message about storage quota.
 
 **Solutions**:
+
 1. **Check usage**: DevTools → Application → Storage
 2. **Clear data**: Delete unused files from library
 3. **Use "Store as Links"**: Avoids duplicating files
@@ -450,6 +458,7 @@ See [TODO.md](./TODO.md) - Priority 2.1 for development status.
 **Issue**: Track plays but shows no title/artist/album.
 
 **Possible causes**:
+
 1. **No metadata**: File doesn't have embedded metadata
 2. **Unsupported tags**: Some tag formats not supported
 3. **Indexing failed**: Check Tasks panel for errors
@@ -471,6 +480,7 @@ See [TODO.md](./TODO.md) - Priority 2.1 for development status.
 ### Does Listen-Next work on mobile?
 
 **Partially.** The app works on mobile browsers, but:
+
 - File System Access API support varies
 - Touch gestures are limited
 - Performance may be slower
@@ -508,6 +518,7 @@ See [TODO.md](./TODO.md) - Priority 2.1 for development status.
 ### Is there a dark mode?
 
 **Yes.** Listen-Next has a theme switcher in the header with three options:
+
 - **Light**: Force light theme
 - **Dark**: Force dark theme
 - **Auto**: Follow system theme
@@ -579,14 +590,14 @@ Listen-Next uses open-source libraries (React, Dexie, etc.) loaded from CDN. No 
 
 ### Feature Availability by Browser
 
-| Feature | Chrome/Edge | Safari | Firefox |
-|---------|-------------|--------|---------|
-| Play Now | ✅ | ✅ | ✅ |
-| Copy to Browser | ✅ | ✅ | ✅ |
-| Store as Links | ✅ | ⚠️ | ❌* |
-| Web Audio API | ✅ | ✅ | ✅ |
-| IndexedDB | ✅ | ✅ | ✅ |
-| Web Workers | ✅ | ✅ | ✅ |
+| Feature         | Chrome/Edge | Safari | Firefox |
+| --------------- | ----------- | ------ | ------- |
+| Play Now        | ✅          | ✅     | ✅      |
+| Copy to Browser | ✅          | ✅     | ✅      |
+| Store as Links  | ✅          | ⚠️     | ❌*     |
+| Web Audio API   | ✅          | ✅     | ✅      |
+| IndexedDB       | ✅          | ✅     | ✅      |
+| Web Workers     | ✅          | ✅     | ✅      |
 
 *Requires enabling experimental flag
 
@@ -628,6 +639,7 @@ Open Listen-Next in your browser. If critical features are missing, you'll see a
 ### Reporting Bugs
 
 When reporting bugs, include:
+
 1. Browser name and version
 2. Operating system
 3. Steps to reproduce

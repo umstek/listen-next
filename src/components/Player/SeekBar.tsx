@@ -1,5 +1,5 @@
-import { Slider } from ':ui/slider'
 import { Flex } from ':layout/Flex'
+import { Slider } from ':ui/slider'
 
 export interface SeekBarProps {
   onChange: (value: number) => void
