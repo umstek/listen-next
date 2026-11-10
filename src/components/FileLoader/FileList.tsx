@@ -1,14 +1,5 @@
-import { Play } from '@phosphor-icons/react'
-import {
-  type CellContext,
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  type Row,
-  useReactTable,
-} from '@tanstack/react-table'
-import { useVirtualizer } from '@tanstack/react-virtual'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Flex } from ':layout/Flex'
+import { IconButton } from ':layout/IconButton'
 import { Checkbox } from ':ui/checkbox'
 import {
   Table,
@@ -18,14 +9,23 @@ import {
   TableHeader,
   TableRow,
 } from ':ui/table'
-import { Flex } from ':layout/Flex'
-import { IconButton } from ':layout/IconButton'
+import { Play } from '@phosphor-icons/react'
+import {
+  type ColumnDef,
+  type Row,
+  tableFeatures,
+  useTable,
+} from '@tanstack/react-table'
+import { useVirtualizer } from '@tanstack/react-virtual'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import usePlayer from '~hooks/usePlayer'
 import type { FileEntity, FileSystemEntity } from '~lib/fileLoader'
 
+const features = tableFeatures({})
+
 interface RowActionsProps {
-  row: Row<FileSystemEntity>
+  row: Row<typeof features, FileSystemEntity>
   preview: (url: string) => void
   stopPreview: () => void
 }
@@ -66,8 +66,6 @@ function RowActions({ row, preview, stopPreview }: RowActionsProps) {
     </Flex>
   )
 }
-
-const columnHelper = createColumnHelper<FileSystemEntity>()
 
 interface FileListProps {
   data: FileSystemEntity[]
@@ -127,9 +125,9 @@ export function FileList({
     }
   }, [selected.size, data, onSelectionChange])
 
-  const columns = useMemo(
+  const columns = useMemo<ColumnDef<typeof features, FileSystemEntity>[]>(
     () => [
-      columnHelper.display({
+      {
         id: 'select',
         header: () => (
           <Checkbox
@@ -137,32 +135,31 @@ export function FileList({
             onCheckedChange={toggleAll}
           />
         ),
-        cell: (props: CellContext<FileSystemEntity, unknown>) => (
+        cell: ({ row }) => (
           <Checkbox
-            checked={selected.has(props.row.original.path)}
-            onCheckedChange={() => toggleSelection(props.row.original.path)}
+            checked={selected.has(row.original.path)}
+            onCheckedChange={() => toggleSelection(row.original.path)}
           />
         ),
-      }),
-      columnHelper.accessor('name', { header: 'File Name' }),
-      columnHelper.display({
+      },
+      {
+        accessorKey: 'name',
+        header: 'File Name',
+      },
+      {
         id: 'actions',
-        cell: (props: CellContext<FileSystemEntity, unknown>) => (
-          <RowActions
-            row={props.row}
-            preview={preview}
-            stopPreview={stopPreview}
-          />
+        cell: ({ row }) => (
+          <RowActions row={row} preview={preview} stopPreview={stopPreview} />
         ),
-      }),
+      },
     ],
     [preview, stopPreview, selected, toggleSelection, toggleAll, data.length],
   )
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
   })
 
   const tableContainerRef = useRef<HTMLDivElement>(null)
@@ -182,12 +179,9 @@ export function FileList({
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                    {header.isPlaceholder ? null : (
+                      <table.FlexRender header={header} />
+                    )}
                   </TableHead>
                 )
               })}
@@ -199,17 +193,10 @@ export function FileList({
             rowVirtualizer.getVirtualItems().map((virtualRow) => {
               const row = table.getRowModel().rows[virtualRow.index]
               return (
-                <TableRow
-                  className="group"
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
+                <TableRow className="group" key={row.id}>
+                  {row.getAllCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      <table.FlexRender cell={cell} />
                     </TableCell>
                   ))}
                 </TableRow>

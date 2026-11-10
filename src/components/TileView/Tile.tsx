@@ -31,11 +31,19 @@ export const Tile = forwardRef(function Tile(
   ref: LegacyRef<HTMLDivElement> | undefined,
 ) {
   return (
+    // biome-ignore lint/a11y/useSemanticElements: tiles contain their own action buttons, so a semantic <button> would nest interactive content
     <div
       {...rest}
       role="button"
+      tabIndex={0}
       ref={ref}
       onPointerDown={(e) => e.stopPropagation()}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          e.currentTarget.click()
+        }
+      }}
       className={cn(
         'group/tile relative flex h-48 w-48 flex-col items-center justify-between rounded-4 p-4 transition-all duration-100 hover:ring-4 hover:ring-gray-4 hover:ring-offset-2',
         selected

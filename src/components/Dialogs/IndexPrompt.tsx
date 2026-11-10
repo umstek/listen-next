@@ -1,3 +1,5 @@
+import { Flex } from ':layout/Flex'
+import { Text } from ':layout/Text'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,12 +10,8 @@ import {
 } from ':ui/alert-dialog'
 import { Button } from ':ui/button'
 import { Checkbox } from ':ui/checkbox'
-import { Flex } from ':layout/Flex'
-import { Text } from ':layout/Text'
 
-export function IndexPrompt(
-  props: React.ComponentProps<typeof AlertDialog>,
-) {
+export function IndexPrompt(props: React.ComponentProps<typeof AlertDialog>) {
   // TODO Check battery level and charging status and decide default option and
   // also show a info box.
 

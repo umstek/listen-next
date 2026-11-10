@@ -1,10 +1,5 @@
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  ChevronRightIcon,
-} from '@radix-ui/react-icons'
-import type React from 'react'
+import { Flex } from ':layout/Flex'
+import { IconButton } from ':layout/IconButton'
 import { Button } from ':ui/button'
 import {
   DropdownMenu,
@@ -12,8 +7,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from ':ui/dropdown-menu'
-import { Flex } from ':layout/Flex'
-import { IconButton } from ':layout/IconButton'
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
+  ChevronRightIcon,
+} from '@radix-ui/react-icons'
+import type React from 'react'
 
 interface BreadcrumbsProps {
   onUp?: () => void

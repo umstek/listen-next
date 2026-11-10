@@ -23,6 +23,7 @@ export function ExplorerView() {
     Map<FileSystemDirectoryHandle, FileSystemHandleUnion[]>
   >(new Map())
   const [pathDirs, setPathDirs] = useState<FileSystemDirectoryHandle[]>([])
+  const currentDir = pathDirs.at(-1)
 
   const refresh = useCallback(async () => {
     const folder = await explorerRef?.current?.getCurrentDirectory()
@@ -88,7 +89,7 @@ export function ExplorerView() {
         })}
       </Breadcrumbs>
       <TileView
-        items={pathDirContentsRef.current.get(pathDirs.at(-1)!) || []}
+        items={(currentDir && pathDirContentsRef.current.get(currentDir)) || []}
         extractKey={(item) => item.name}
         renderItem={(item) => (
           <Thumbnail

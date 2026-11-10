@@ -9,7 +9,7 @@ export default defineConfig({
   base: process.env.NODE_ENV === 'production' ? '/listen-next/' : '/',
   build: {
     target: 'esnext',
-    minify: 'esbuild',
+    minify: 'oxc',
   },
   css: {
     postcss: {

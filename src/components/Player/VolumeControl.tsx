@@ -1,12 +1,12 @@
+import { Flex } from ':layout/Flex'
+import { IconButton } from ':layout/IconButton'
+import { Slider } from ':ui/slider'
 import {
   SpeakerHigh,
   SpeakerLow,
   SpeakerNone,
   SpeakerX,
 } from '@phosphor-icons/react'
-import { Slider } from ':ui/slider'
-import { Flex } from ':layout/Flex'
-import { IconButton } from ':layout/IconButton'
 import { clamp } from '~util/math'
 
 export interface VolumeControlProps {

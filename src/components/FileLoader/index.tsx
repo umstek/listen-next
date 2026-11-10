@@ -1,6 +1,8 @@
 import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert'
-import { ChevronDownIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icons'
-import { useState } from 'react'
+import { Flex } from ':layout/Flex'
+import { Heading } from ':layout/Heading'
+import { IconButton } from ':layout/IconButton'
+import { Text } from ':layout/Text'
 import { Button } from ':ui/button'
 import { Card } from ':ui/card'
 import {
@@ -15,10 +17,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from ':ui/tooltip'
-import { Flex } from ':layout/Flex'
-import { Heading } from ':layout/Heading'
-import { IconButton } from ':layout/IconButton'
-import { Text } from ':layout/Text'
+import { ChevronDownIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icons'
+import { useState } from 'react'
 import config from '~config'
 import type { DirectoryEntity, FileEntity } from '~lib/fileLoader'
 
@@ -107,13 +107,17 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
             <TooltipTrigger asChild>
               <Button
                 variant="outline"
-                onClick={() => onPlayNow(selected.size > 0 ? selectedFiles : files)}
+                onClick={() =>
+                  onPlayNow(selected.size > 0 ? selectedFiles : files)
+                }
                 disabled={files.length === 0}
               >
                 Play Now
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Play the selected files without indexing.</TooltipContent>
+            <TooltipContent>
+              Play the selected files without indexing.
+            </TooltipContent>
           </Tooltip>
           <Flex gap="0">
             <Tooltip>
@@ -131,7 +135,10 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
                   Copy to Browser
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Create a sandboxed copy of the selected files inside your browser.</TooltipContent>
+              <TooltipContent>
+                Create a sandboxed copy of the selected files inside your
+                browser.
+              </TooltipContent>
             </Tooltip>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -153,7 +160,11 @@ export function FileLoader({ onPlayNow, onCopy, onLink }: FileLoaderProps) {
                       Store as Links
                     </DropdownMenuItem>
                   </TooltipTrigger>
-                  <TooltipContent>Store links to the original files/folders you dropped. You'll be asked for permission each time you open them and, the changes to the original files will be reflected here.</TooltipContent>
+                  <TooltipContent>
+                    Store links to the original files/folders you dropped.
+                    You'll be asked for permission each time you open them and,
+                    the changes to the original files will be reflected here.
+                  </TooltipContent>
                 </Tooltip>
               </DropdownMenuContent>
             </DropdownMenu>

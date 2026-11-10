@@ -54,7 +54,7 @@ function usePlayer({ autoplay }: { autoplay?: boolean } = {}) {
     getPlayer().on('trackset', (url) => {
       setUrl(url)
     })
-    getPlayer().on('loadedmetadata', ({ duration, seekable, tracks }) => {
+    getPlayer().on('loadedmetadata', ({ duration }) => {
       setDuration(duration)
     })
     getPlayer().on('play', () => {

@@ -3,6 +3,7 @@
 > **Project Status**: Functional MVP with core audio playback implemented. Many advanced features planned but not yet built.
 
 **Related Resources:**
+
 - Original Project: [umstek/listen](https://github.com/umstek/listen)
 - Epic Issue: [#157 - Music Library Implementation](https://github.com/umstek/listen/issues/157)
 - Project Board: [Listen Development](https://github.com/users/umstek/projects/9)
@@ -12,6 +13,7 @@
 ## Current State Summary
 
 ### ✅ What's Working
+
 - **Audio Playback**: Full playback controls (play/pause, seek, volume, pan, playback rate)
 - **File System Access**: Explorer, drag-drop, file picker with two storage modes
 - **Metadata Reading**: Extracts title, artist, album, genre, duration from audio files
@@ -21,6 +23,7 @@
 - **Background Processing**: Web Worker for file copying and indexing
 
 ### ❌ What's Missing
+
 - Playlist management UI (schema exists, no implementation)
 - Search and filtering functionality
 - Settings/preferences UI
@@ -35,11 +38,13 @@
 ## Priority 1: Core Feature Completion
 
 ### 1.1 Playlist Management UI
+
 **Related**: [#157](https://github.com/umstek/listen/issues/157), Subtask [#205 - Playlist Schema](https://github.com/umstek/listen/issues/205)
 
 **Status**: Schema defined, UI not implemented
 
 **Tasks**:
+
 - [ ] Implement `PlaylistView` module (currently empty stub)
 - [ ] Create playlist CRUD operations UI
   - [ ] Create new playlist
@@ -55,6 +60,7 @@
   - [ ] Shuffle/repeat modes
 
 **Files to Create/Modify**:
+
 - `src/modules/playlist/PlaylistView.tsx` (currently empty)
 - `src/lib/db.ts` (add playlist queries)
 - `src/hooks/usePlaylist.ts` (new hook for playlist operations)
@@ -62,11 +68,13 @@
 ---
 
 ### 1.2 Search and Filtering
+
 **Related**: [#157](https://github.com/umstek/listen/issues/157), Subtask [#207 - Metadata Schema](https://github.com/umstek/listen/issues/207)
 
 **Status**: Not implemented
 
 **Tasks**:
+
 - [ ] Add search bar component to Explorer module
 - [ ] Implement file name search
 - [ ] Add metadata-based filtering
@@ -78,6 +86,7 @@
 - [ ] Implement full-text search across metadata using Dexie
 
 **Files to Create/Modify**:
+
 - `src/components/SearchBar.tsx` (new)
 - `src/modules/explorer/ExplorerView.tsx` (add search UI)
 - `src/lib/db.ts` (add search queries with indexes)
@@ -85,11 +94,13 @@
 ---
 
 ### 1.3 Play History and Statistics
+
 **Related**: [#157](https://github.com/umstek/listen/issues/157), Subtask [#206 - History Record Schema](https://github.com/umstek/listen/issues/206)
 
 **Status**: Schema defined, not used
 
 **Tasks**:
+
 - [ ] Implement play logging in Player component
 - [ ] Save play history to database using `PlayLogEntry` schema
 - [ ] Create history view UI
@@ -104,6 +115,7 @@
   - [ ] Listening trends over time
 
 **Files to Create/Modify**:
+
 - `src/modules/player/Player.tsx` (add logging on play/pause/skip)
 - `src/modules/history/HistoryView.tsx` (new module)
 - `src/lib/db.ts` (add history queries)
@@ -112,9 +124,11 @@
 ---
 
 ### 1.4 Settings and Preferences
+
 **Status**: Not implemented
 
 **Tasks**:
+
 - [ ] Create Settings module
 - [ ] Add preferences storage using localStorage or IndexedDB
 - [ ] Implement settings UI
@@ -128,6 +142,7 @@
 - [ ] Implement settings import/export
 
 **Files to Create**:
+
 - `src/modules/settings/SettingsView.tsx` (new module)
 - `src/lib/settings.ts` (settings persistence)
 - `src/hooks/useSettings.ts` (new hook)
@@ -137,9 +152,11 @@
 ## Priority 2: User Experience Enhancements
 
 ### 2.1 Keyboard Shortcuts
+
 **Status**: Placeholders exist in context menus, not functional
 
 **Tasks**:
+
 - [ ] Implement global keyboard event handler
 - [ ] Add standard shortcuts:
   - [ ] Space: Play/Pause
@@ -154,6 +171,7 @@
 - [ ] Make shortcuts configurable in settings
 
 **Files to Create/Modify**:
+
 - `src/hooks/useKeyboardShortcuts.ts` (new hook)
 - `src/App.tsx` (register global shortcuts)
 - `src/components/KeyboardShortcutsHelp.tsx` (new dialog)
@@ -161,9 +179,11 @@
 ---
 
 ### 2.2 Audio Visualization
+
 **Status**: Infrastructure exists (AudioPlayer has analyser node), not rendered
 
 **Tasks**:
+
 - [ ] Create visualization component using Canvas API
 - [ ] Implement visualization types:
   - [ ] Frequency bars (spectrum analyzer)
@@ -174,15 +194,18 @@
 - [ ] Optimize rendering with requestAnimationFrame
 
 **Files to Create**:
+
 - `src/components/AudioVisualizer.tsx` (new)
 - `src/modules/player/Player.tsx` (integrate visualizer)
 
 ---
 
 ### 2.3 Import/Export Features
+
 **Status**: Not implemented
 
 **Tasks**:
+
 - [ ] Implement playlist export
   - [ ] Export to M3U format
   - [ ] Export to JSON format
@@ -195,15 +218,18 @@
 - [ ] Add bulk operations UI
 
 **Files to Create**:
+
 - `src/lib/importExport.ts` (import/export utilities)
 - `src/components/ImportExportDialog.tsx` (new)
 
 ---
 
 ### 2.4 Advanced File Operations
+
 **Status**: Not implemented
 
 **Tasks**:
+
 - [ ] Add file deletion/removal UI
   - [ ] Remove from library (keep file)
   - [ ] Delete file (with confirmation)
@@ -214,6 +240,7 @@
 - [ ] Implement tag editing UI
 
 **Files to Modify**:
+
 - `src/modules/explorer/ExplorerView.tsx` (add context menu actions)
 - `src/lib/Explorer.ts` (add file operation methods)
 - `src/models/AudioMetadata.ts` (add rating, favorite fields)
@@ -223,11 +250,13 @@
 ## Priority 3: Technical Improvements
 
 ### 3.1 Database Optimization
+
 **Related**: [#157](https://github.com/umstek/listen/issues/157)
 
 **Status**: TODO comment exists in Player component
 
 **Tasks**:
+
 - [ ] Move metadata to Redux store instead of refetching on each track load
 - [ ] Add database indexes for search performance
   - [ ] Index on artist, album, genre
@@ -238,6 +267,7 @@
 - [ ] Add database cleanup/maintenance utilities
 
 **Files to Modify**:
+
 - `src/modules/player/Player.tsx` (use store instead of direct db fetch)
 - `src/lib/db.ts` (add indexes, optimization)
 - `src/store.ts` (add metadata slice)
@@ -245,9 +275,11 @@
 ---
 
 ### 3.2 Battery and Performance Optimization
+
 **Status**: TODO comment in IndexPrompt
 
 **Tasks**:
+
 - [ ] Check battery level and charging status using Battery API
 - [ ] Decide default options based on device state
   - [ ] Disable background indexing on low battery
@@ -258,15 +290,18 @@
 - [ ] Implement service worker for offline support
 
 **Files to Modify**:
+
 - `src/modules/fileLoader/IndexPrompt.tsx` (add battery check)
 - `src/workers/indexAndCopyTask.worker.ts` (optimize performance)
 
 ---
 
 ### 3.3 Testing Suite
+
 **Status**: Only 1 test file exists with limited coverage
 
 **Tasks**:
+
 - [ ] Set up testing infrastructure
   - [ ] Configure Vitest/Jest
   - [ ] Add React Testing Library
@@ -285,6 +320,7 @@
 - [ ] Aim for >80% code coverage
 
 **Files to Create**:
+
 - `vitest.config.ts` or `jest.config.js`
 - `tests/unit/**/*.test.ts`
 - `tests/integration/**/*.test.ts`
@@ -293,9 +329,11 @@
 ---
 
 ### 3.4 Error Handling and Logging
+
 **Status**: Basic logging with pino exists
 
 **Tasks**:
+
 - [ ] Implement global error boundary
 - [ ] Add user-friendly error messages
 - [ ] Improve error handling for:
@@ -308,6 +346,7 @@
 - [ ] Add optional error reporting to external service
 
 **Files to Create/Modify**:
+
 - `src/components/ErrorBoundary.tsx` (new)
 - `src/components/Toast.tsx` (new notification system)
 - `src/util/logger.ts` (enhance logging)
@@ -315,9 +354,11 @@
 ---
 
 ### 3.5 TypeScript and Code Quality
+
 **Status**: Multiple `@ts-expect-error` workarounds exist
 
 **Tasks**:
+
 - [ ] Fix polyfill type conflicts
   - [ ] Resolve FileSystemDirectoryHandle issues
   - [ ] Fix Redux selector types
@@ -330,6 +371,7 @@
 - [ ] Document complex type definitions
 
 **Files to Modify**:
+
 - `tsconfig.json` (enable strict mode)
 - `.eslintrc.json` (new)
 - `.prettierrc` (new)
@@ -340,9 +382,11 @@
 ## Priority 4: Documentation and Developer Experience
 
 ### 4.1 Developer Guide
+
 **Status**: Not created
 
 **Tasks**:
+
 - [ ] Create `DEVELOPER.md` with:
   - [ ] Project architecture overview
   - [ ] Technology stack explanation
@@ -357,9 +401,11 @@
 ---
 
 ### 4.2 User Manual
+
 **Status**: Not created
 
 **Tasks**:
+
 - [ ] Create `USER_MANUAL.md` with:
   - [ ] Installation instructions
   - [ ] Getting started guide
@@ -373,9 +419,11 @@
 ---
 
 ### 4.3 API Documentation
+
 **Status**: Not created
 
 **Tasks**:
+
 - [ ] Add JSDoc comments to all public APIs
 - [ ] Document component props
 - [ ] Document Redux actions and selectors
@@ -388,6 +436,7 @@
 ## Priority 5: Future Enhancements
 
 ### 5.1 Advanced Features
+
 - [ ] Cloud storage integration (Google Drive, Dropbox, OneDrive)
 - [ ] Lyrics display with synchronization
 - [ ] Album art fetching from online services
@@ -401,6 +450,7 @@
 - [ ] Music recommendations
 
 ### 5.2 Mobile and PWA
+
 - [ ] Responsive design for mobile devices
 - [ ] Touch gesture support
 - [ ] PWA manifest and service worker
@@ -409,6 +459,7 @@
 - [ ] Media session API integration (lock screen controls)
 
 ### 5.3 Accessibility
+
 - [ ] ARIA labels for all interactive elements
 - [ ] Keyboard navigation for all features
 - [ ] Screen reader support
@@ -463,6 +514,7 @@ Priority 4 (Documentation) → Ongoing → Throughout all development
 ---
 
 ## Notes
+
 - All schema definitions from Epic [#157](https://github.com/umstek/listen/issues/157) are complete (Playlist, History, Metadata, Metadata Proxy)
 - MVP milestone is at 72.7% completion (as of Dec 2022)
 - Core playback functionality is solid - focus on management and UX features

@@ -1,13 +1,5 @@
 import { NotImplementedDialog } from ':Dialogs/NotImplementedAlert'
-import {
-  Browser,
-  DotsThree,
-  FileAudio,
-  FolderSimple,
-  HardDrive,
-  Planet,
-} from '@phosphor-icons/react'
-import { useState } from 'react'
+import { IconButton } from ':layout/IconButton'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +16,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from ':ui/tooltip'
-import { IconButton } from ':layout/IconButton'
+import {
+  Browser,
+  DotsThree,
+  FileAudio,
+  FolderSimple,
+  HardDrive,
+  Planet,
+} from '@phosphor-icons/react'
+import { useState } from 'react'
 
 interface TileBodyProps {
   title: string
@@ -74,16 +74,12 @@ export function Thumbnail({
               Play
               <span className="ml-auto text-xs">⌘ P</span>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setShowNotImplementedDialog(true)}
-            >
+            <DropdownMenuItem onClick={() => setShowNotImplementedDialog(true)}>
               Add to current playlist
               <span className="ml-auto text-xs">⌘ A</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => setShowNotImplementedDialog(true)}
-            >
+            <DropdownMenuItem onClick={() => setShowNotImplementedDialog(true)}>
               Favorite
               <span className="ml-auto text-xs">⌘ F</span>
             </DropdownMenuItem>
@@ -117,14 +113,10 @@ export function Thumbnail({
             </DropdownMenuSub>
 
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => setShowNotImplementedDialog(true)}
-            >
+            <DropdownMenuItem onClick={() => setShowNotImplementedDialog(true)}>
               Hide
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setShowNotImplementedDialog(true)}
-            >
+            <DropdownMenuItem onClick={() => setShowNotImplementedDialog(true)}>
               Re-index
             </DropdownMenuItem>
             <DropdownMenuItem
