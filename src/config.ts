@@ -1,9 +1,15 @@
 import camelCase from 'camelcase'
 import { z } from 'zod'
 
+const defaultSupportedExtensions =
+  '.wave,.wav,.mp3,.m4a,.m4b,.m4p,.m4r,.aac,.oga,.ogg,.spx,.opus,.flac,.caf'
+
 const Env = z.object({
   supportedExtensions: z.preprocess(
-    (val) => (val as string | '').split(','),
+    (val) =>
+      (typeof val === 'string' && val.length > 0 ? val : defaultSupportedExtensions).split(
+        ',',
+      ),
     z.string().startsWith('.').array(),
   ),
 })
