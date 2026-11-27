@@ -35,7 +35,7 @@
     "dexie": "^4.4.7",
     "dockview-react": "^8.9.0",
     "events": "^3.3.0",
-    "music-metadata": "^12.3.5",
+    "music-metadata": "^13.0.0",
     "nanoid": "^6.0.2",
     "native-file-system-adapter": "^3.0.1",
     "pino": "^10.4.0",
